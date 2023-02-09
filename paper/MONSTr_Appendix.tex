@@ -42,7 +42,7 @@
 \setlist{nosep,after=\vspace{\baselineskip}}
 
 \title{\singlespacing Supplemental Appendix for \textit{A Wiki-based Dataset of Military Operations with Novel Strategic Technologies (MONSTr)}}
-\author{Anonymized}
+\author{Authorship Anonymized}
 \vspace{.1cm}
 \date{}
 
@@ -63,9 +63,42 @@
 \renewcommand\thefigure{A\arabic{figure}}
 \thispagestyle{empty}
 
-\section{Validation checks}
+This appendix accompanies the paper ``A Wiki-based Dataset of Military Operations with Novel Strategic Technologies (MONSTr)". It provides supplemental information concerning the data used in the model and its relationship to existing datasets.
 
-To verify wikipedia's codings of the variables, we performed manual validation checks on a random 6\% sample of the observations in the data. The sample was drawn from all wikipedia pages on US military interventions, not just the child nodes of military \textit{operations} used in the statistical model since accuracy about wikipedia's coverage of higher aggregation operations and interventions is of interest.
+\tableofcontents
+
+\newpage
+
+\section{Descriptive Statistics}
+
+\begin{table}[!htbp] \centering 
+  \caption{Summary Statistics} 
+  \label{tab:summary-stats} 
+\begin{tabular}{@{\extracolsep{5pt}}lccccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+Statistic & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{Mean} & \multicolumn{1}{c}{St. Dev.} & \multicolumn{1}{c}{Min} & \multicolumn{1}{c}{Max} \\ 
+\hline \\[-1.8ex] 
+Drones & 336 & 0.09 & 0.28 & 0 & 1 \\ 
+Air to air & 336 & 0.02 & 0.15 & 0 & 1 \\ 
+Cruise missiles & 336 & 0.04 & 0.20 & 0 & 1 \\ 
+Aerial bombing & 336 & 0.43 & 0.50 & 0 & 1 \\ 
+Close air support & 336 & 0.32 & 0.47 & 0 & 1 \\ 
+Ground troops & 336 & 0.49 & 0.50 & 0 & 1 \\ 
+Paramilitary & 336 & 0.26 & 0.44 & 0 & 1 \\ 
+Duration (days) & 333 & 50.67 & 181.76 & 0 & 2,151 \\ 
+Days into parent (days) & 336 & 1,625.26 & 1,475.81 & $-$4 & 9,596 \\ 
+Ally count & 336 & 1.57 & 2.35 & 0 & 32 \\ 
+Adversary count (state) & 336 & 0.32 & 0.63 & 0 & 5 \\ 
+Adversary count (non-state) & 336 & 1.49 & 2.52 & 0 & 39 \\ 
+\hline \\[-1.8ex] 
+\multicolumn{6}{l}{All military means in the original dataset shown.} \\ 
+\end{tabular} 
+\end{table}
+
+\section{Validation Checks}
+
+To verify Wikipedia's codings of the variables, we performed manual validation checks on a random 6\% sample of the observations in the data. The sample was drawn from all wikipedia pages on US military interventions, not just the child nodes of military \textit{operations} used in the statistical model since accuracy about wikipedia's coverage of higher aggregation operations and interventions is of interest.
 
 The authors consulted with personnel from all four of the major military services to identify reputable government sources that could contain information on military operations. For each observation, the following list of government sources was searched for a match based on the name of the military operation:\footnote{The date was also included in searches where necessary to provide accurate search results, especially given wikipedia naming conventions sometimes differ from the military's. For example, the observation that wikipedia identifies as the ``Second Battle of Fallujah" is not known as the ``Second" in official records, so dates are used to ensure the correct match.}
 
@@ -80,7 +113,7 @@ The authors consulted with personnel from all four of the major military service
     \item Marines BSP (Battle Study Packages)
 \end{itemize}
 
-Once a match was found in a government source, variables were verified for the start and end date, location (either geo-coordinates or city/town name. Government sources primarily provided the latter), belligerents (both allied partners and adversaries) and the military means used. In cases where none of the selected government or military sources contained information about an operation, reputable think tank sources or news outlets were used. To avoid circularity in validation, we tried to select news outlets that were not themselves cited in the wikipedia article, although that was not possible in a few instances. Two Freedom of Information Act (FOIA) requests were also filed for After Action Reports (AAR), Battle Damage Assessments (BDA), and ship deck logs for dates and ships where known missile attacks occurred but little open source evidence existed. CENTCOM FOIA #18-0027 was returned without any information, as it was all deemed classified. AFRICOM FOIA #2017-78 was returned with partially redacted information on cruise missile targets from select naval vessels that validated some of the data on wikipedia.
+Once a match was found in a government source, variables were verified for the start and end date, location (either geo-coordinates or city/town name. Government sources primarily provided the latter), belligerents (both allied partners and adversaries) and the military means used. In cases where none of the selected government or military sources contained information about an operation, reputable think tank sources or news outlets were used. To avoid circularity in validation, we tried to select news outlets that were not themselves cited in the wikipedia article, although that was not possible in a few instances. Two Freedom of Information Act (FOIA) requests were also filed for After Action Reports (AAR), Battle Damage Assessments (BDA), and ship deck logs for dates and ships where known missile attacks occurred but little open source evidence existed. CENTCOM FOIA \#18-0027 was returned without any information, as it was all deemed classified. AFRICOM FOIA \#2017-78 was returned with partially redacted information on cruise missile targets from select naval vessels that validated some of the data on wikipedia.
 
 The 6\% random sample chosen for validation, verification sources used for each case, and data evaluations are provided in full below.
 
@@ -228,8 +261,9 @@ The 6\% random sample chosen for validation, verification sources used for each 
     \item \textbf{Evaluation:} exact matches for means used and date. BDA (Battle Damage Assessment) column with target information redacted
 \end{itemize}
 
-\begin{landscape}
-	\begin{table}[ht]
+\section{Comparison of Dataset Definitions and Scope}
+
+         \begin{table}[ht]
 		\begin{center}
 			\caption{Definitional Boundaries Across Datasets Capturing Military Interventions} 
 			\label{tableA1}
@@ -237,7 +271,7 @@ The 6\% random sample chosen for validation, verification sources used for each 
 			\begin{tabular}{lccccc}
 				\hline \hline
 				\noalign{\vskip 0.15cm}
-				\textbf{Dataset} $\rightarrow$ & \textit{MONSTR} & \textit{MIPS} & \textit{IMI} & \textit{MIP} & \textit{RAND} \\
+				\textbf{Dataset} $\rightarrow$ & \textit{MONSTr} & \textit{MIPS} & \textit{IMI} & \textit{MIP} & \textit{RAND} \\
 				\textbf{Criterion} $\downarrow$ & & & & & \\
 				\noalign{\vskip 0.15cm}
 				\hline
@@ -292,38 +326,12 @@ The 6\% random sample chosen for validation, verification sources used for each 
 			\end{tabular}
 		\end{center}
 	\end{table}
-\end{landscape}
 \setstretch{2.0}
 
-\clearpage
-\thispagestyle{empty}
-\begin{table}[!htbp] \centering 
-  \caption{Summary Statistics} 
-  \label{tab:summary-stats} 
-\begin{tabular}{@{\extracolsep{5pt}}lccccc} 
-\\[-1.8ex]\hline 
-\hline \\[-1.8ex] 
-Statistic & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{Mean} & \multicolumn{1}{c}{St. Dev.} & \multicolumn{1}{c}{Min} & \multicolumn{1}{c}{Max} \\ 
-\hline \\[-1.8ex] 
-Drones & 336 & 0.09 & 0.28 & 0 & 1 \\ 
-Air to air & 336 & 0.02 & 0.15 & 0 & 1 \\ 
-Cruise missiles & 336 & 0.04 & 0.20 & 0 & 1 \\ 
-Aerial bombing & 336 & 0.43 & 0.50 & 0 & 1 \\ 
-Close air support & 336 & 0.32 & 0.47 & 0 & 1 \\ 
-Ground troops & 336 & 0.49 & 0.50 & 0 & 1 \\ 
-Paramilitary & 336 & 0.26 & 0.44 & 0 & 1 \\ 
-Duration (days) & 333 & 50.67 & 181.76 & 0 & 2,151 \\ 
-Days into parent (days) & 336 & 1,625.26 & 1,475.81 & $-$4 & 9,596 \\ 
-Ally count & 336 & 1.57 & 2.35 & 0 & 32 \\ 
-Adversary count (state) & 336 & 0.32 & 0.63 & 0 & 5 \\ 
-Adversary count (non-state) & 336 & 1.49 & 2.52 & 0 & 39 \\ 
-\hline \\[-1.8ex] 
-\multicolumn{6}{l}{All military means in the original dataset shown.} \\ 
-\end{tabular} 
-\end{table}
+\section{Comparison of Dataset Coverage and Granularity}
 
-%Placeholder for new home for Table 2 from original manuscript showing apples to oranges comparison of dataset coverage from diffuse domains to granular operations.
+Placeholder for new home for Table 2 from original manuscript showing apples to oranges comparison of dataset coverage from diffuse domains to granular operations.
 
-\bibliography{monstr}
+\bibliography{MONSTr.bib}
 
 \end{document}
