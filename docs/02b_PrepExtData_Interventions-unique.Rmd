@@ -1,0 +1,45 @@
+---
+title: "02b_PrepExtData_InterventionList"
+author: "J Andres Gannon"
+date: "9/19/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(magrittr)
+```
+
+Now that we've identified the wikidata qcode for each US intervention found in previous datasets, we can create a single list of potential intervention cases, code whether or not they are a military intervention, and identify the unit of analysis used by that dataset.
+
+# Load data
+02a_intervention_preprocess-wikidata.csv was loaded into a google doc called 02b_intervention_preprocess. Coders manually identified the wikidata page for each row and inputed those values into the columns wikidata_name and wikidata_id.
+
+We now load the googlesheet where the wikidata info for each US intervention was loaded
+```{r}
+df <- googlesheets4::read_sheet(ss = "https://docs.google.com/spreadsheets/d/1wiiuNVE2Wt-ZWyZRWDoqyxvg-y-hWpNdDWwdZjYCvM4/edit#gid=221751876",
+                                sheet = "02b_interventions_priordata-all")
+```
+
+# Subset to unique US military interventions
+## Subset to unique
+Collapse all observations that have the same wikidata ID into the same row
+
+We are looking only at cases that are a US military intervention, defined the same as IMI (the movement of regular troops or forces (airborne, seaborne, shelling, etc) of one country inside another, in the context of some political issue or dispute).
+
+We thus drop cases from prior datasets that refer to hostage extractions, humanitarian and disaster relief, military training exercises, missile tests, and events where the US military was not a participant in any kinetic activities.
+
+```{r}
+df_id <- df %>%
+  dplyr::filter(drop == 0) %>%
+  dplyr::select(wikidata_name, wikidata_id) %>%
+  dplyr::distinct()
+```
+
+# Save
+The dataframe is now set up so that coders can identify whether each wikidata entry qualified as a US military intervention as well as what unit of analysis that intervention describes. Coders can then fill in the rest of the unit of analysis columns to populate the full universe of cases
+```{r}
+write.csv(df_id, paste0(here::here(), "/data/","02b_interventions_priordata-unique.csv"))
+```
+
+This document is then loaded into the googlesheet 02b_intervention_caselist_raw and the intervention column is manually coded.

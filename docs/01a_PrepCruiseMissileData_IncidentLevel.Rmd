@@ -1,0 +1,253 @@
+---
+title: "01 Prep Cruise Missile Data"
+author: "J Andres Gannon"
+date: "01/29/18"
+output:
+  html_document:
+    toc: yes
+  html_notebook:
+    toc: yes
+    toc_float: yes
+editor_options:
+  chunk_output_type: inline
+---
+<style>
+    body .main-container {
+        max-width: 100%;
+    }
+</style>
+
+This is the entry point for the paper "Cruisin' for a Bruisin': The Effects of US Cruise Missile Strikes Since the Gulf War" 
+
+In this file, a raw csv file of the cruise missile dataset created for the US from 1991-2017 is loaded and processed.
+
+# Load Library
+
+# Load google sheet of raw data for cleaning and diagnostics
+```{r}
+cruise <- googlesheets4::read_sheet(ss = "https://docs.google.com/spreadsheets/d/1wiiuNVE2Wt-ZWyZRWDoqyxvg-y-hWpNdDWwdZjYCvM4/edit#gid=487765801",
+                                sheet = "01a_CruiseMissile_all")
+
+cruise <- as.data.frame(cruise)
+```
+
+# Cleaning
+
+### Dropping unnecessary columns
+Drop bureaucratic and quality check columns used in dataset construction t hat are not needed in the final cleaned dataset
+```{r}
+vars_cruise_drop <- names(cruise) %in% c("operation_complete",
+                                         "all_rows_found",
+                                         "coder", 
+                                         "time_est",
+                                         "time_local", 
+                                         "date_notes",
+                                         "date_source", 
+                                         "mid",
+                                         "launch_name_notes",
+                                         "launch_location_source",
+                                         "launch_location_notes",
+                                         "number_fired_ship_source",
+                                         "number_fired_notes",
+                                         "number_fired_missileincident_notes",
+                                         "number_fired_missileincident_source",
+                                         "demand_regime_change",
+                                         "punishment_vulnerability",
+                                         "outcome",
+                                         "purpose_government",
+                                         "purpose_government_source", 
+                                         "results_casualties_intentional",
+                                         "results_casualties_civilians",
+                                         "results_casualties_infrastructure",
+                                         "results_notes",
+                                         "results_source", 
+                                         "general_source_1",
+                                         "general_source_2")
+
+cruise <- cruise[!vars_cruise_drop]
+```
+
+### Geographic map coordinates
+```{r}
+cruise$launch_location_from_latitude <- dms2dec(cruise$launch_location_from_latitude)
+cruise$launch_location_from_longitude <- dms2dec(cruise$launch_location_from_longitude)
+cruise$launch_location_to_latitude <- dms2dec(cruise$launch_location_to_latitude)
+cruise$launch_location_to_longitude <- dms2dec(cruise$launch_location_to_longitude)
+```
+
+### Dates
+Re-format dates to ensure incident start/end dates and war start/end dates interact appropriately
+```{r}
+### Re-format incident dates
+cruise$incident_start_date <- as.Date(with(cruise, paste(incident_start_year, incident_start_month, incident_start_day, sep = "-")), "%Y-%m-%d")
+cruise$incident_end_date <- as.Date(with(cruise, paste(incident_end_year, incident_end_month, incident_end_day, sep = "-")), "%Y-%m-%d")
+
+### Re-format war dates
+cruise$war_start_date <- as.Date(with(cruise, paste(war_start_year, war_start_month, war_start_day, sep = "-")), "%Y-%m-%d")
+cruise$war_end_date <- as.Date(with(cruise, paste(war_end_year, war_end_month, war_end_day, sep = "-")), "%Y-%m-%d")
+
+### Re-format operation dates
+cruise$operation_start_date <- as.Date(with(cruise, paste(operation_start_year, operation_start_month, operation_start_day, sep = "-")), "%Y-%m-%d")
+cruise$operation_end_date <- as.Date(with(cruise, paste(operation_end_year, operation_end_month, operation_end_day, sep = "-")), "%Y-%m-%d")
+
+### Create new variables for days into the war and operation that the incident occurred
+cruise$days_into_war <- difftime(cruise$incident_start_date, cruise$war_start_date, units = c("days"))
+cruise$days_into_operation <- difftime(cruise$incident_start_date, cruise$operation_start_date, units = c("days"))
+
+### Timing during the conflict
+cruise$days_into_war <- as.numeric(cruise$days_into_war)
+cruise$days_into_operation <- as.numeric(cruise$days_into_operation)
+
+### Add war and year of incident column
+cruise$war_year <- NA
+cruise <- within(cruise,  war_year <- paste(cruise$war_wikidata_name, " (", cruise$incident_start_year, ")", sep = ""))
+```
+
+### Spelling
+Correct spelling errors or naming errors
+```{r}
+### Correct Odyssey Dawn naming
+cruise$operation_name[grepl('Odyssey Dawn', cruise$operation_name)] <- 'Operation Odyssey Dawn'
+
+### Correct Statistica Naming
+cruise$statistica_incident_name[grepl('Refusal to cooperatewith UN weapons inspectors', cruise$statistica_incident_name)] <- 'Refusal to cooperate with UN weapons inspectors'
+
+### Correct Somalia war name
+cruise$war_year[grepl('War in Somalia (2006-2009) (2008)', cruise$war_year)] <- 'War in Somalia (2008)'
+
+### Correct Libyan civil war name
+cruise$war_year[grepl('2011 Libyan Civil War (2011)', cruise$war_year)] <- 'Libyan Civil War (2011)'
+```
+
+### Launch Domain
+Label indicating if the missile originated from a platform under the ocean, on the ocean, or in the air
+```{r}
+cruise$launch_platform <- as.factor(cruise$launch_platform)
+cruise$platform_type <- NA
+cruise$platform_type[cruise$launch_platform %in% c("Destroyer", "Cruiser", "Battleship")] <- "Surface"
+cruise$platform_type[cruise$launch_platform %in% c("Submarine")] <- "Submarine"
+cruise$platform_type[cruise$launch_platform %in% c("Bomber")] <- "Air"
+```
+
+### Target Actor
+Label indicating whether the target was a state or nonstate actor
+```{r}
+### Add state_nonstate column
+cruise$state_nonstate <- NA
+cruise$state_nonstate <- ifelse(cruise$target_actor_wikidata_name %in% c("Iraq", "Afghanistan", "Republika Srpska", "Serbia and Montenegro","Libya", "Syria"), "State", "Nonstate")
+```
+
+### Missile Counts
+```{r}
+### Change variables to numeric type
+cruise$number_fired_ship_precise <- as.numeric(cruise$number_fired_ship_precise)
+cruise$number_fired_ship_estimate_high <- as.numeric(cruise$number_fired_ship_estimate_high)
+cruise$number_fired_ship_estimate_low <- as.numeric(cruise$number_fired_ship_estimate_low)
+
+### Add new missile_count column
+cruise$missile_count <- ifelse(test = !is.na(cruise$number_fired_ship_precise), yes = cruise$number_fired_ship_precise, 
+                               no = round(.5*(cruise$number_fired_ship_estimate_high + cruise$number_fired_ship_estimate_low)))
+cruise$missile_count[is.na(cruise$missile_count)] <- cruise$number_fired_ship_estimate_high[is.na(cruise$missile_count)]
+cruise$missile_count[is.na(cruise$missile_count)] <- cruise$number_fired_ship_estimate_low[is.na(cruise$missile_count)]
+cruise$missile_count[is.na(cruise$missile_count)] <- 1
+```
+
+# Merging
+## International conflict data
+We can also merge so our dataset includes common variables used in similar studies. Here we will use the Polity V4 scores, CINC Ver 5.0 scores, GPD data from Graham and Tucker's IPE dataset, and minimum distance originally calculated using the cshapes package
+```{r}
+### Polity scores
+polity <- readxl::read_excel("../inst/extdata/p4v2016.xls")
+vars_polity <- c("ccode", "year", "polity2")
+polity <- polity[vars_polity]
+names(polity) <- c("ccode1", "operation_year", "polity")
+cruise <- plyr::join(cruise, polity, by = c("ccode1", "operation_year"), type = "left")
+names(cruise)[names(cruise) == 'polity'] <- 'polity_1'
+names(polity) <- c("ccode2", "operation_year", "polity")
+cruise <- plyr::join(cruise, polity, by = c("ccode2", "operation_year"), type = "left")
+names(cruise)[names(cruise) == 'polity'] <- 'polity_2'
+
+### CINC scores
+cinc <- read.csv("../inst/extdata/NMC_5_0.csv", header = TRUE)
+vars_cinc <- c("ccode", "year", "cinc")
+cinc <- cinc[vars_cinc]
+names(cinc) <- c("ccode1", "operation_year", "cinc")
+cruise <- plyr::join(cruise, cinc, by = c("ccode1", "operation_year"), type = "left")
+names(cruise)[names(cruise) == 'cinc'] <- 'cinc_1'
+names(cinc) <- c("ccode2", "operation_year", "cinc")
+cruise <- plyr::join(cruise, cinc, by = c("ccode2", "operation_year"), type = "left")
+names(cruise)[names(cruise) == 'cinc'] <- 'cinc_2'
+
+### GDP
+load("../inst/extdata/3. Graham_Tucker_IPE_v2_0.RDATA")
+vars_ipe <- c("year", "ccode", "gdp_WDI")
+ipe <- ipe[vars_ipe]
+names(ipe) <- c("operation_year", "ccode1", "gdp_WDI")
+cruise <- plyr::join(cruise, ipe, by = c("ccode1", "operation_year"), type = "left")
+names(cruise)[names(cruise) == 'gdp_WDI'] <- 'gdp_1'
+names(ipe) <- c("operation_year", "ccode2", "gdp_WDI")
+cruise <- plyr::join(cruise, ipe, by = c("ccode2", "operation_year"), type = "left")
+names(cruise)[names(cruise) == 'gdp_WDI'] <- 'gdp_2'
+
+### Minimum distance (using distance matrix calculated from cshapes)
+distance <- read.table("../inst/extdata/distance.txt", header = TRUE, as.is = TRUE)
+names(distance) <- c("ccode1", "ccode2", "mindist", "operation_year")
+cruise <- plyr::join(cruise, distance, by = c("ccode1", "ccode2", "operation_year"), type = "left")
+```
+
+Fix data types for each column so plots are appropriate
+```{r}
+sapply(cruise, class)
+
+# Columns that should be numeric
+
+# Columns that should be factors
+
+# Columns that should be characters
+
+```
+
+# Create case IDs
+Create a case ID for every unique military operation. This will make it easier to merge and keep track of the data as its aggregated to the campaign unit of analysis
+```{r}
+# Create unique names for the two Operation Infinite Reach targets since they are different target states
+cruise[cruise$operation_year == "1998" & cruise$target_country == "Afghanistan", "statistica_incident_name"] <- "US embassy bombing retaliation (Afghanistan)"
+cruise[cruise$operation_year == "1998" & cruise$target_country == "Sudan", "statistica_incident_name"] <- "US embassy bombing retaliation (Sudan)"
+
+# Fix name for operation viking hammer
+cruise[cruise$missile_incident_wikidata_name == "Operation Viking Hammer" & cruise$target_country == "Iraq", "statistica_incident_name"] <- "Iraq invasion (Ansar al-Islam)"
+
+# Create unique IDs
+cruise$campaign_id <- dplyr::group_indices(cruise, statistica_incident_name)
+```
+
+# Final examination
+Check the missingness, dispersion, and summary stats of key newly created variable columns to make sure nothing looks off
+```{r}
+vars_cruise_doublecheck <- c("initiator_country",
+                             "target_country",
+                             "operation_name",
+                             "operation_year",
+                             "missile_incident_wikidata_id",
+                             "launch_domain",
+                             "launch_platform",
+                             "launch_name_wikidata_id",
+                             "launch_location_from_wikidata_id",
+                             "launch_location_from_latitude",
+                             "launch_location_to_wikidata_id",
+                             "launch_location_to_latitude",
+                             "number_fired_ship_estimate_low",
+                             "number_fired_ship_precise",
+                             "number_fired_missileincident_estimate_low",
+                             "number_fired_missileincident_precise")
+
+cruise_doublecheck <- cruise[vars_cruise_doublecheck]
+
+DataExplorer::plot_missing(cruise_doublecheck)
+
+```
+
+## Save cleaned, final dataset
+```{r}
+saveRDS(cruise, paste0(here::here(), "/data/","CruiseMissiles.rds"))
+```
