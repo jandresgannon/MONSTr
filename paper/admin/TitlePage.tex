@@ -1,0 +1,69 @@
+\documentclass[fleqn,12pt]{article}
+
+\usepackage{setspace,url,fullpage,latexsym,amsmath,amsthm,amssymb,pifont,graphicx,appendix,float,rotating,caption,subcaption,multirow,longtable,colortbl,natbib,graphics,graphicx,enumitem,pdflscape,epstopdf,verbatim,longtable}
+
+\setcitestyle{aysep={},yysep={;}}
+\bibliographystyle{apsr}
+
+
+\usepackage{lipsum}
+\usepackage{filecontents}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{cleveref}
+\usepackage{pdflscape}
+\usepackage{afterpage}
+\usepackage{capt-of}
+\usepackage{soul}
+\hypersetup{
+	backref =       true,
+	pagebackref  =  true,
+	colorlinks =    true,
+	linkcolor =     blue,
+	anchorcolor =   [rgb]{0.0,0.9,0.9},
+	citecolor =     blue,
+	filecolor =     [rgb]{0.0,0.1,0.7},
+	urlcolor =      [rgb]{0.0,0.0,0.7},
+}
+
+% Packages for regression table
+\usepackage{booktabs}
+\usepackage{siunitx}
+\newcolumntype{d}{S[
+    input-open-uncertainty=,
+    input-close-uncertainty=,
+    parse-numbers = false,
+    table-align-text-pre=false,
+    table-align-text-post=false
+ ]}
+
+\onehalfspacing
+
+\title{\singlespacing A Wiki-based Dataset of Military Operations with Novel Strategic Technologies (MONSTr)}
+\author{J Andr\'{e}s Gannon{\thanks{Stanton Nuclear Security Fellow, Council on Foreign Relations, \texttt{jgannon@cfr.org}}} \\ Kerry Ch\'{a}vez{\thanks{Texas Tech University, Department of Political Science, \texttt{kerry.chavez@ttu.edu} \\
+Previous versions of this paper were presented at APSA 2021 and 2022. For feedback on earlier drafts, the authors thank Jonathan Caverley, Rex Douglass, Erik Gartzke, Nadiya Kostyuk, Kendrick Kuo, Ashley Leeds, Erik Lin-Greenberg, Sara Plana, Thomas Scherer, Ryan Shandler, and Sanne Verschuren. Excellent research assistance was provided by Thomas Brailey, Zoe Coutlakis, Allison Lilley, Amanda Madany, Christie Marquez, David McCrum, Jordan Merkel, Matthew Miltimore, Dominick Nguyen, Peyton Olszowka, Cole Reynolds, Caitlen Rodriguez, Yiyi Sun, Qitao Wu, and Lisa Yen. This research was sponsored by Office of Naval Research Grant N00014-14-1-0071, the Department of Defense Minerva Research Initiative, the APSA Centennial Center, and the University of California -- San Diego Undergraduate Research Apprenticeship Program (URAP). Any opinions, findings, and conclusions or recommendations expressed in this publication are those of the author and do not necessarily reflect the view of the Office of Naval Research.}}}
+\date{}
+
+\usepackage{helvet}
+\usepackage{titlesec}
+
+\titleformat{\subsubsection}
+{\normalfont\fontsize{12}{17}\bfseries\slshape}
+{\thesubsection}
+{1em}
+{}
+
+\begin{document}
+	\maketitle
+	\thispagestyle{empty}
+	\setcounter{page}{0}
+
+	\begin{abstract}
+		\singlespacing \noindent Research on strategies and force structures in modern warfare is prolific, but siloed. While some examine boots on the ground, others focus on aerial bombing or unpiloted platforms. Consequently, most studies focus on the effects of one approach, seldom considering it in lieu of or conjunction with others. Furthermore, there is less knowledge on the origins and implementations of these strategic choices analyzed in isolation. The primary reason for these gaps lies with data limitations. This paper introduces a comprehensive dataset on the universe of United States military interventions from 1989-2021 from a single source: Wikipedia. Using automated extraction techniques on its two structured knowledge databases$-$Wikidata and DBpedia$-$we uncover information about nearly every post-1989 military intervention described in existing academic datasets plus 425 additional operations. The data we introduce offers unprecedented coverage and granularity that enables analysis of myriad factors associated with how, when, and where the United States conducts military interventions. We describe the data collection process, demonstrate its contents and validity, and discuss its potential applications to existing theories about force structure design and strategy in war.\\
+
+		\noindent
+		\textbf{Keywords:} military intervention, use of force, dataset
+	\end{abstract}
+
+\end{document}
