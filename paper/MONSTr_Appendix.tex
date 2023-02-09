@@ -96,169 +96,168 @@ Adversary count (non-state) & 336 & 1.49 & 2.52 & 0 & 39 \\
 \end{tabular} 
 \end{table}
 
-\section{Validation Checks}
+\section{Validation checks}
+To verify Wikipedia's codings of the variables, we performed manual validation checks on a random 6\% sample of the observations in the data. The sample was drawn from all Wikipedia pages on US military interventions, not just the child nodes of military \textit{operations} used in the statistical model since accuracy about Wikipedia's coverage of higher aggregation operations and interventions is of interest. \\
 
-To verify Wikipedia's codings of the variables, we performed manual validation checks on a random 6\% sample of the observations in the data. The sample was drawn from all wikipedia pages on US military interventions, not just the child nodes of military \textit{operations} used in the statistical model since accuracy about wikipedia's coverage of higher aggregation operations and interventions is of interest.
-
-The authors consulted with personnel from all four of the major military services to identify reputable government sources that could contain information on military operations. For each observation, the following list of government sources was searched for a match based on the name of the military operation:\footnote{The date was also included in searches where necessary to provide accurate search results, especially given wikipedia naming conventions sometimes differ from the military's. For example, the observation that wikipedia identifies as the ``Second Battle of Fallujah" is not known as the ``Second" in official records, so dates are used to ensure the correct match.}
+The authors consulted with personnel from all four of the major military services to identify reputable government sources that could contain information on military operations. For each observation, the following list of government sources was searched for a match based on the name of the military operation:\footnote{The date was also included in searches where necessary to produce accurate search results, especially given that Wikipedia naming conventions sometimes differ from the military's. For example, the observation that Wikipedia identifies as the ``Second Battle of Fallujah" is not known as the ``Second" in official records, so dates are used to ensure the correct match.} \\
 
 \begin{itemize}
-    \item Air Force Historical Research Agency (AFHRA)
+    \item Air Force Historical Research Agency
     \item Air Force Public Affairs Office
-    \item Army AWG (Asymmetric Working Group)
-    \item Army CMH (Center for Military History)
-    \item Army COST (Contemporary Operations Study Team)
-    \item Army CAC (Combined Arms Center)
-    \item CALL (Center for Army Lessons Learned)
-    \item Marines BSP (Battle Study Packages)
+    \item Army Asymmetric Working Group
+    \item Army Center for Military History
+    \item Army Contemporary Operations Study Team
+    \item Army Combined Arms Center
+    \item Center for Army Lessons Learned
+    \item Marines Battle Study Packages
 \end{itemize}
 
-Once a match was found in a government source, variables were verified for the start and end date, location (either geo-coordinates or city/town name. Government sources primarily provided the latter), belligerents (both allied partners and adversaries) and the military means used. In cases where none of the selected government or military sources contained information about an operation, reputable think tank sources or news outlets were used. To avoid circularity in validation, we tried to select news outlets that were not themselves cited in the wikipedia article, although that was not possible in a few instances. Two Freedom of Information Act (FOIA) requests were also filed for After Action Reports (AAR), Battle Damage Assessments (BDA), and ship deck logs for dates and ships where known missile attacks occurred but little open source evidence existed. CENTCOM FOIA \#18-0027 was returned without any information, as it was all deemed classified. AFRICOM FOIA \#2017-78 was returned with partially redacted information on cruise missile targets from select naval vessels that validated some of the data on wikipedia.
+Once a match was located in a government source, variables were verified for the start and end date, location (either geo-coordinates or city/town name,  government sources primarily providing the latter), belligerents (both allied partners and adversaries) and the military means used. In cases where none of the selected government or military sources contained information about an operation, reputable think tank sources or news outlets were used. To avoid circularity in validation, we were mindful to select news outlets that were not themselves cited in the Wikipedia article, although that was not possible in a few instances. Two Freedom of Information Act (FOIA) requests were also filed for After Action Reports (AAR), Battle Damage Assessments (BDA), and ship deck logs for dates and ships where known missile attacks occurred but little open source evidence existed. CENTCOM FOIA #18-0027 was returned without any information, as it was all deemed classified. AFRICOM FOIA #2017-78 was returned with partially redacted information on cruise missile targets from select naval vessels that validated some of the data on Wikipedia. \\
 
-The 6\% random sample chosen for validation, verification sources used for each case, and data evaluations are provided in full below.
+The random sample chosen for validation, verification sources used for each case, and data evaluations are provided in full below. \\
 
 \textbf{Observation:} Deir ez-Zor Governorate clashes (April 2018)
 \begin{itemize}
-    \item \textbf{Verification source:} REACH NGO\footnote{https://reliefweb.int/report/syrian-arab-republic/informal-site-and-settlement-profiles-deir-ez-zor-governorate-syria-september-2022}, Reuters\footnote{https://www.reuters.com/article/us-mideast-crisis-syria-euphrates/syrian-army-says-captured-villages-from-u-s-backed-forces-idUSKBN1I00EX}
-    \item \textbf{Evaluation:} exact matches
+    \item \textit{Verification source:} \href{https://reliefweb.int/report/syrian-arab-republic/informal-site-and-settlement-profiles-deir-ez-zor-governorate-syria-september-2022}{REACH NGO}, \href{https://www.reuters.com/article/us-mideast-crisis-syria-euphrates/syrian-army-says-captured-villages-from-u-s-backed-forces-idUSKBN1I00EX}{Reuters}
+    \item \textit{Evaluation:} exact matches
 \end{itemize}
 
 \textbf{Observation:} Insurgency in Khyber Pakhtunkhwa
 \begin{itemize}
-    \item \textbf{Verification source:} CRS\footnote{https://crsreports.congress.gov/product/pdf/IF/IF11934}, Reuters\footnote{https://www.reuters.com/article/us-pakistan-militants-alliance-idUSKBN0M81WF20150312}
-    \item \textbf{Evaluation:} exact matches
+    \item \textit{Verification source:} \href{https://crsreports.congress.gov/product/pdf/IF/IF11934}{Congressional Research Service (CRS)}, \href{https://www.reuters.com/article/us-pakistan-militants-alliance-idUSKBN0M81WF20150312}{Reuters}
+    \item \textit{Evaluation:} exact matches
 \end{itemize}
 
 \textbf{Observation:} Second Battle of Fallujah
 \begin{itemize}
-    \item \textbf{Verification source:} Marines BSP (Battle Study Packages)\footnote{https://www.usmcu.edu/Portals/218/FALLUJAH.pdf}
-    \item \textbf{Evaluation:} exact matches
+    \item \textit{Verification source:} \href{https://www.usmcu.edu/Portals/218/FALLUJAH.pdf}{Marines Battle Study Packages}
+    \item \textit{Evaluation:} exact matches
 \end{itemize}
 
 \textbf{Observation:} Banja Luka incident
 \begin{itemize}
-    \item \textbf{Verification source:} Air Force Historical Research Agency (AFHRA)\footnote{https://www.afhra.af.mil/Portals/16/documents/Airmen-at-War/Haulman-MannedAircraftLossesYugoslavia1994-1999.pdf?ver=2016-08-22-131404-383}
-    \item \textbf{Evaluation:} exact matches
+    \item \textit{Verification source:} \href{https://www.afhra.af.mil/Portals/16/documents/Airmen-at-War/Haulman-MannedAircraftLossesYugoslavia1994-1999.pdf?ver=2016-08-22-131404-383}{Air Force Historical Research Agency}
+    \item \textit{Evaluation:} exact matches
 \end{itemize}
 
 \textbf{Observation:} Battle of Samarra (2004)
 \begin{itemize}
-    \item \textbf{Verification source:} Army Combined Arms Center (Army CAC)\footnote{https://www.armyupress.army.mil/Portals/7/combat-studies-institute/csi-books/BetweenTheRivers_McGrath.pdf}
-    \item \textbf{Evaluation:} exact matches
+    \item \textit{Verification source:} \href{https://www.armyupress.army.mil/Portals/7/combat-studies-institute/csi-books/BetweenTheRivers_McGrath.pdf}{Army Combined Arms Center}
+    \item \textit{Evaluation:} exact matches
 \end{itemize}
 
-\textbf{Observation:} Battle of Hit (2016)
+\textbf{Observation:} Battle of Hit (2016)\footnote{Also known as Operation Desert Lynx}
 \begin{itemize}
-    \item \textbf{Verification source:} CJTF-OIR\footnote{https://www.inherentresolve.mil/NEWSROOM/Article/776143/oir-spokesman-attacks-in-baghdad-show-isil-reverting-to-terrorist-roots/}, DOD News\footnote{https://media.defense.gov/2016/Jun/07/2001550104/-1/-1/0/160515-O-ZZ999-001.JPG}
-    \item \textbf{Evaluation:} Also known as Operation Desert Lynx. Exact matches from DOD News. Only dates and means verifiable from CFTF-OIR source.
+    \item \textit{Verification source:} \href{https://www.inherentresolve.mil/NEWSROOM/Article/776143/oir-spokesman-attacks-in-baghdad-show-isil-reverting-to-terrorist-roots/}{Combined Joint Fast Force - Operation Inherent Resolve (CJTF-OIR)}, \href{https://media.defense.gov/2016/Jun/07/2001550104/-1/-1/0/160515-O-ZZ999-001.JPG}{Department Of Defense News}
+    \item \textit{Evaluation:} Exact matches from DOD News. Only dates and means verifiable from CFTF-OIR source.
 \end{itemize}
 
 \textbf{Observation:} Battle of Khasham
 \begin{itemize}
-    \item \textbf{Verification source:} US CENTCOM Senate Committee Hearing\footnote{https://www.armed-services.senate.gov/imo/media/doc/22-12_03-15-2022.pdf}
-    \item \textbf{Evaluation:} exact matches
+    \item \textit{Verification source:} \href{https://www.armed-services.senate.gov/imo/media/doc/22-12_03-15-2022.pdf}{CENTCOM Senate Committee Hearing}
+    \item \textit{Evaluation:} exact matches
 \end{itemize}
 
 \textbf{Observation:} Battle of Basra (2008)
 \begin{itemize}
-    \item \textbf{Verification source:} Army Center for Military History (CMH)\footnote{https://history.army.mil/html/books/059/59-3-1/CMH_59-3-1.pdf}, Institute for the Study of Warfare (ISW)\footnote{https://www.understandingwar.org/report/battle-basra}
-    \item \textbf{Evaluation:} exact matches
+    \item \textit{Verification source:} \href{{https://history.army.mil/html/books/059/59-3-1/CMH_59-3-1.pdf}}{Army Center for Military History}, \href{https://www.understandingwar.org/report/battle-basra}{Institute for the Study of Warfare}
+    \item \textit{Evaluation:} exact matches
 \end{itemize}
 
 \textbf{Observation:} Mosul offensive (2015)
 \begin{itemize}
-    \item \textbf{Verification source:} Combined Joint Fast Force - Operation Inherent Resolve (CJTF-OIR)\footnote{https://www.inherentresolve.mil/NEWSROOM/Strike-Releases/}
-    \item \textbf{Evaluation:} exact matches
+    \item \textit{Verification source:} \href{https://www.inherentresolve.mil/NEWSROOM/Strike-Releases/}{CJTF-OIR}
+    \item \textit{Evaluation:} exact matches
 \end{itemize}
 
 \textbf{Observation:} Battle of Suq al Ghazi
 \begin{itemize}
-    \item \textbf{Verification source:} New York Times\footnote{https://www.nytimes.com/2014/09/16/world/middleeast/us-airstrikes-hit-targets-near-baghdad-held-by-isis.html?_r=0}
-    \item \textbf{Evaluation:} exact matches. No government or military record found
+    \item \textit{Verification source:} \href{https://www.nytimes.com/2014/09/16/world/middleeast/us-airstrikes-hit-targets-near-baghdad-held-by-isis.html?_r=0}{\textit{New York Times}}
+    \item \textit{Evaluation:} exact matches, no government or military record found
 \end{itemize}
 
 \textbf{Observation:} United States bombing of the Chinese embassy in Belgrade
 \begin{itemize}
-    \item \textbf{Verification source:} US State Department Public Statement\footnote{https://1997-2001.state.gov/policy_remarks/1999/990617_pickering_emb.html}
-    \item \textbf{Evaluation:} belligerent unclear since event was an accident/GPS targeting mistake (wiki describes the target as "disputed"). Sources confirm wiki's coordinates for target
+    \item \textit{Verification source:} \href{https://1997-2001.state.gov/policy_remarks/1999/990617_pickering_emb.html}{US State Department Public Statement}
+    \item \textit{Evaluation:} Belligerent unclear since event was an accident / GPS targeting mistake (Wiki describes the target as ``disputed"). Sources confirm Wiki's target coordinates.
 \end{itemize}
 
 \textbf{Observation:} Night raid on Narang
 \begin{itemize}
-    \item \textbf{Verification source:} Center for Civilians in Conflict (CIVIC)\footnote{https://civiliansinconflict.org/wp-content/uploads/2021/10/In-Search-of-Answers-Report_Amended.pdf}, New York Times\footnote{https://www.nytimes.com/2009/12/31/world/asia/31afghan.html}
-    \item \textbf{Evaluation:} exact matches. No government or military record found
+    \item \textit{Verification source:} \href{https://civiliansinconflict.org/wp-content/uploads/2021/10/In-Search-of-Answers-Report_Amended.pdf}{Center for Civilians in Conflict}, \href{https://www.nytimes.com/2009/12/31/world/asia/31afghan.html}{\textit{New York Times}}
+    \item \textit{Evaluation:} exact matches, no government or military record found
 \end{itemize}
 
 \textbf{Observation:} Operation Iron Saber
 \begin{itemize}
-    \item \textbf{Verification source:} Army War College (AWC) Monograph\footnote{https://www.armyupress.army.mil/Portals/7/military-review/Archives/English/MilitaryReview_20100930ER_art016.pdf}, Washington Times\footnote{https://www.washingtontimes.com/news/2004/jun/22/20040622-113720-3352r/}
-    \item \textbf{Evaluation:} Wiki end date earlier than end date provided by media sources
+    \item \textit{Verification source:} \href{https://www.armyupress.army.mil/Portals/7/military-review/Archives/English/MilitaryReview_20100930ER_art016.pdf}{Army War College (AWC) Monograph}, \href{https://www.washingtontimes.com/news/2004/jun/22/20040622-113720-3352r/}{\textit{Washington Times}}
+    \item \textit{Evaluation:} Wiki end date earlier than end date provided by media sources
 \end{itemize}
 
-\textbf{Observation:} Battle of Fallujah (2016)
+\textbf{Observation:} Battle of Fallujah (2016)\footnote{Code-named Operation Breaking Terrorism}
 \begin{itemize}
-    \item \textbf{Verification source:} Congressional Research Service (CRS)\footnote{https://crsreports.congress.gov/product/pdf/R/R45025/4}, US Institute for Peace (USIP)\footnote{https://www.usip.org/iraq-timeline-2003-war}
-    \item \textbf{Evaluation:} Exact matches. Code-named Operation Breaking Terrorism
+    \item \textit{Verification source:} \href{https://crsreports.congress.gov/product/pdf/R/R45025/4}{CRS}, \href{https://www.usip.org/iraq-timeline-2003-war}{US Institute for Peace}
+    \item \textit{Evaluation:} exact matches
 \end{itemize}
 
 \textbf{Observation:} Battle of Samawah (2003)
 \begin{itemize}
-    \item \textbf{Verification source:} Army War College (AWC) monograph\footnote{https://apps.dtic.mil/sti/pdfs/AD1066345.pdf}
-    \item \textbf{Evaluation:} exact matches
+    \item \textit{Verification source:} \href{https://apps.dtic.mil/sti/pdfs/AD1066345.pdf}{AWC monograph}
+    \item \textit{Evaluation:} exact matches
 \end{itemize}
 
 \textbf{Observation:} Battle of Abu Ghraib
 \begin{itemize}
-    \item \textbf{Verification source:} Air Force Public Affairs Office\footnote{https://www.af.mil/News/Article-Display/Article/134452/air-force-medics-treat-patients-at-abu-ghraib/}
-    \item \textbf{Evaluation:} exact matches
+    \item \textit{Verification source:} \href{https://www.af.mil/News/Article-Display/Article/134452/air-force-medics-treat-patients-at-abu-ghraib/}{Air Force Public Affairs Office}
+    \item \textit{Evaluation:} exact matches
 \end{itemize}
 
 \textbf{Observation:} Operation Hammer Down
 \begin{itemize}
-    \item \textbf{Verification source:} US Army Combined Arms Center (CAC)\footnote{http://cacti35th.com/active/HammerDown.pdf}
+    \item \textbf{Verification source:} \href{http://cacti35th.com/active/HammerDown.pdf}{Army Combined Arms Center}
     \item \textbf{Evaluation:} exact matches
 \end{itemize}
 
 \textbf{Observation:} Operation Freedom's Sentinel
 \begin{itemize}
-    \item \textbf{Verification source:} Defense Manpower Data Center's (DMDC) Defense Casualty Analysis System (DCAS)\footnote{https://dcas.dmdc.osd.mil/dcas/app/conflictCasualties/ofs}
-    \item \textbf{Evaluation:} exact matches
+    \item \textit{Verification source:} \href{https://dcas.dmdc.osd.mil/dcas/app/conflictCasualties/ofs}{Defense Manpower Data Center's Defense Casualty Analysis System}
+    \item \textit{Evaluation:} exact matches
 \end{itemize}
 
 \textbf{Observation:} Fall of Mazar-i-Sharif
 \begin{itemize}
-    \item \textbf{Verification source:} US Army Contemporary Operations Study Team (COST) \footnote{https://history.army.mil/html/bookshelves/resmat/GWOT/DifferentKindofWar.pdf}
-    \item \textbf{Evaluation:} belligerent described by gov source as Taliban and al-Qaeda, described by wiki as just al-Qaeda
+    \item \textit{Verification source:} \href{https://history.army.mil/html/bookshelves/resmat/GWOT/DifferentKindofWar.pdf}{Army Contemporary Operations Study Team}
+    \item \textit{Evaluation:} belligerent described by gov source as Taliban and al-Qaeda, described by Wiki as just al-Qaeda
 \end{itemize}
 
 \textbf{Observation:} Operation Dragon Strike
 \begin{itemize}
-    \item \textbf{Verification source:} Marine Corps University Press\footnote{https://www.marines.mil/Portals/1/Publications/War,\%20Will,\%20and\%20Warlords.pdf}, Institute for the Study of War (ISW)\footnote{https://www.understandingwar.org/sites/default/files/Afghanistan\%20Report\%207_15Dec.pdf}
-    \item \textbf{Evaluation:} End date could not be verified - not described in external sources.
+    \item \textit{Verification source:} \href{https://www.marines.mil/Portals/1/Publications/War,\%20Will,\%20and\%20Warlords.pdf}{Marine Corps University Press}, \href{https://www.understandingwar.org/sites/default/files/Afghanistan\%20Report\%207_15Dec.pdf}{Institute for the Study of Warfare}
+    \item \textbf{Evaluation:} end date could not be verified - not described in external sources
 \end{itemize}
 
-\textbf{Observation:} Battle of Mosul (2016-2017)
+\textbf{Observation:} Battle of Mosul (2016-2017)\footnote{Code-named Operation Eagle Strike}
 \begin{itemize}
-    \item \textbf{Verification source:} Center for Army Lessons Learned (CALL)\footnote{https://usacac.army.mil/sites/default/files/publications/CALL\%20Insider\%20MAR-APR17.pdf}
-    \item \textbf{Evaluation:} Exact matches. Code-name Operation Eagle Strike used in CALL.
+    \item \textit{Verification source:} \href{https://usacac.army.mil/sites/default/files/publications/CALL\%20Insider\%20MAR-APR17.pdf}{Center for Army Lessons Learned}
+    \item \textit{Evaluation:} exact matches
 \end{itemize}
 
 \textbf{Observation:} Operation Odyssey Dawn (March 19 - April 27, 2011)
 \begin{itemize}
-    \item \textbf{Verification source:} USAFRICOM FOIA case number 2017-78
-    \item \textbf{Evaluation:} exact matches for means used and date. BDA (Battle Damage Assessment) column with target information redacted
+    \item \textit{Verification source:} AFRICOM FOIA case number 2017-78
+    \item \textit{Evaluation:} exact matches for means used and date, BDA column with target information redacted
 \end{itemize}
 
 \textbf{Observation:} Operation Iraqi Freedom (March 21, 2003)
 \begin{itemize}
-    \item \textbf{Verification source:} USS O'Kane (DDG 77) deck log
-    \item \textbf{Evaluation:} exact matches for means used and date. Target information not provided in deck log
+    \item \textit{Verification source:} USS O'Kane (DDG 77) deck log
+    \item \textit{Evaluation:} exact matches for means used and date, target information not provided
 \end{itemize}
 
 \textbf{Observation:} Operation Inherent Resolve (April 7, 2017)
 \begin{itemize}
-    \item \textbf{Verification source:} USAFRICOM FOIA case number 2017-78, USS Porter (DDG 78) deck log
-    \item \textbf{Evaluation:} exact matches for means used and date. BDA (Battle Damage Assessment) column with target information redacted
+    \item \textit{Verification source:} AFRICOM FOIA case number 2017-78, USS Porter (DDG 78) deck log
+    \item \textit{Evaluation:} exact matches for means used and date, BDA column with target information redacted
 \end{itemize}
 
 \section{Comparison of Dataset Definitions and Scope}
