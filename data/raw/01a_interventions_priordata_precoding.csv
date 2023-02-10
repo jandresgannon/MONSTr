@@ -1,0 +1,343 @@
+"","Year","Intervention","dataset","Target","wikidata_name","wikidata_id"
+"1","1989","INVASION OF PANAMA","icb",NA,NA,NA
+"2","1990","GULF WAR","icb",NA,NA,NA
+"3","1993","N. KOREA NUCLEAR I","icb",NA,NA,NA
+"4","1994","HAITI MIL. REGIME","icb",NA,NA,NA
+"5","1994","IRAQ DEPLOY./KUWAIT","icb",NA,NA,NA
+"6","1996","DESERT STRIKE","icb",NA,NA,NA
+"7","1997","UNSCOM I","icb",NA,NA,NA
+"8","1998","US EMBASSY BOMBINGS","icb",NA,NA,NA
+"9","1998","UNSCOM II","icb",NA,NA,NA
+"10","1999","KOSOVO","icb",NA,NA,NA
+"11","2001","AFGHANISTAN/US","icb",NA,NA,NA
+"12","2003","IRAQ REGIME CHANGE","icb",NA,NA,NA
+"13","2002","N. KOREA NUCLEAR II","icb",NA,NA,NA
+"14","2006","IRAN NUCLEAR II","icb",NA,NA,NA
+"15","2006","N. KOREA NUCLEAR III","icb",NA,NA,NA
+"16","2009","N. KOREA NUCLEAR IV-SATELLITE LAUNCH","icb",NA,NA,NA
+"17","2011","LIBYAN CIVILWAR","icb",NA,NA,NA
+"18","2013","N. KOREA NUCLEAR V","icb",NA,NA,NA
+"19","2013","SYRIA CHEMICAL WEAPONS","icb",NA,NA,NA
+"20","2015","TURKEY-RUSSIA JET INCIDENT","icb",NA,NA,NA
+"21","1989","U.S evacuates diplomats from Lebanon (AP, NYT)","imi","Lebanon",NA,NA
+"22","1989","US aids Phillippine government after coup attempt (AP, UPI, Xinh)","imi","Philippines",NA,NA
+"23","1989","US removes Panamanian government (WP, NYT)","imi","Panama",NA,NA
+"24","1990","US evacuates American citizens from Liberia during civil conflict (CSM, AP, WP)","imi","Liberia",NA,NA
+"25","1990","US in Saudi Arabia to protect it from Iraqi invasion in Op. Desert Shield (US Today, Des. Shield Factbook, Gulf War Chronicle)","imi","Saudi Arabia",NA,NA
+"26","1990","US restores Kuwaiti government in Desert Storm (USA Today, Gulf War Chronicle)","imi","Kuwait",NA,NA
+"27","1991","US moves troops into Iraq from Saudi Arabia (USA Today, Factbook, Gulf War Chronicle)","imi","Iraq",NA,NA
+"28","1992","U.S.troops evacuate Americans from Sierra Leone (AP, Herald)","imi","Sierra Leone",NA,NA
+"29","1992","U.S. troops give humanitarian relief to Somalia (Xinh, UP, AP) ","imi","Somalia",NA,NA
+"30","1993","US planes drop food in Bosnia-Herzegovina  (TS, Xinh, UP)    ","imi","Bosnia & Herzegovina",NA,NA
+"31","1994","US troops provide humanitarian assistance in Zaire (Reuters)","imi","Congo - Kinshasa",NA,NA
+"32","1994","US provides humanitarian relief in Rwanda (UPI, WP)","imi","Rwanda",NA,NA
+"33","1994","US restores democratically elected government in Haiti  (UPI, AP)","imi","Haiti",NA,NA
+"34","1994","US build up in Kuwait to respond to Iraqi border build-up (UPI, AP)","imi","Kuwait",NA,NA
+"35","1996","Operation Assured Response by US to evacuate 2444 people from Liberia (globalsecurity.org)","imi","Liberia",NA,NA
+"36","1996","US evacuates nationals and protects embassy in the Central African Republic (UPI)","imi","Central African Republic",NA,NA
+"37","1996","US buildup of troops in Kuwait after Iraq's provocation (SDUT, Reuters)","imi","Kuwait",NA,NA
+"38","1997","US evacuates American citizens from Albania (GNL)","imi","Albania",NA,NA
+"39","1997","US evacuates civilians from Sierra Leone (DP, Xinh)","imi","Sierra Leone",NA,NA
+"40","1997","US evacuates diplomats from Congo (BBN, TN)","imi","Congo - Brazzaville",NA,NA
+"41","1998","US evacuates Americans from Eritrea (AP, AFP, UPI)","imi","Eritrea",NA,NA
+"42","1998","US gives aid to Papua-New Guinea following tidal wave disaster (FDAD, Canberra)","imi","Papua New Guinea",NA,NA
+"43","1998","US Air Force delivers relief to China after devastating flood (M2, Comm)","imi","China",NA,NA
+"44","1998","US carries out air strikes against suspected terrorist facilities in Sudan (TNS, PI)","imi","Sudan",NA,NA
+"45","1998","US uses cruise missiles to attack suspected terrorist facilities (Xinh, IP, DP)","imi","Afghanistan",NA,NA
+"46","1998","US evacuates opposition militia member from Liberia (NYT)","imi","Liberia",NA,NA
+"47","2001","US forces attack Taliban positions in Afghanistan (Global Security, TASS)","imi","Afghanistan",NA,NA
+"48","2001","US forces patrol and provide security and act as peacekeeping force in Afghanistan (globalsecurity.org)","imi","Afghanistan",NA,NA
+"49","2002","US evacuates foreigners in Ivory Coast (AFP, AllAfrica, CW)","imi","Côte d’Ivoire",NA,NA
+"50","2003","US topples Iraqi government (DP, AFX, CNN)","imi","Iraq",NA,NA
+"51","2003","US send peacekeepers to Liberia (Fed. Info, AFP, DP)","imi","Liberia",NA,NA
+"52","2004","US aids in restoring order in Haiti (AP, AFP)","imi","Haiti",NA,NA
+"53","2004","US pursues Taliban insurgents into Pakistan (AFP)","imi","Pakistan",NA,NA
+"54","2004","US provides tsunami relief to Thailand (AP, BBC)","imi","Thailand",NA,NA
+"55","2004","US provides tsunami relief to Indonesia (FT, AFP, Scripps)","imi","Indonesia",NA,NA
+"56","2005","US provides tsunami relief to Sri Lanka (AFP, AP)","imi","Sri Lanka",NA,NA
+"57","2005","US troops build schools and provide medical aid in Haiti (AP, Navy Newsstand)","imi","Haiti",NA,NA
+"58","2005","US troops give humanitarian aid to Pakistan after earthquake (FT, Reuters)","imi","Pakistan",NA,NA
+"59","1992","3550","mids",NA,NA,NA
+"60","1992","3551","mids",NA,NA,NA
+"61","1992","3552","mids",NA,NA,NA
+"62","1993","3568","mids",NA,NA,NA
+"63","1989","3900","mids",NA,NA,NA
+"64","1989","3901","mids",NA,NA,NA
+"65","1990","3950","mids",NA,NA,NA
+"66","1990","3957","mids",NA,NA,NA
+"67","1991","3972","mids",NA,NA,NA
+"68","1991","3973","mids",NA,NA,NA
+"69","1991","3974","mids",NA,NA,NA
+"70","1993","4016","mids",NA,NA,NA
+"71","1993","4021","mids",NA,NA,NA
+"72","1993","4022","mids",NA,NA,NA
+"73","1994","4046","mids",NA,NA,NA
+"74","1995","4064","mids",NA,NA,NA
+"75","1994","4065","mids",NA,NA,NA
+"76","1999","4088","mids",NA,NA,NA
+"77","1999","4125","mids",NA,NA,NA
+"78","1998","4137","mids",NA,NA,NA
+"79","1997","4174","mids",NA,NA,NA
+"80","1997","4183","mids",NA,NA,NA
+"81","2000","4186","mids",NA,NA,NA
+"82","1996","4190","mids",NA,NA,NA
+"83","1996","4196","mids",NA,NA,NA
+"84","2000","4197","mids",NA,NA,NA
+"85","2000","4213","mids",NA,NA,NA
+"86","1997","4216","mids",NA,NA,NA
+"87","1998","4217","mids",NA,NA,NA
+"88","2000","4218","mids",NA,NA,NA
+"89","2000","4220","mids",NA,NA,NA
+"90","1998","4227","mids",NA,NA,NA
+"91","1998","4254","mids",NA,NA,NA
+"92","2000","4261","mids",NA,NA,NA
+"93","1994","4269","mids",NA,NA,NA
+"94","1996","4271","mids",NA,NA,NA
+"95","1997","4273","mids",NA,NA,NA
+"96","2001","4280","mids",NA,NA,NA
+"97","2001","4281","mids",NA,NA,NA
+"98","2001","4283","mids",NA,NA,NA
+"99","2000","4298","mids",NA,NA,NA
+"100","1993","4299","mids",NA,NA,NA
+"101","1999","4342","mids",NA,NA,NA
+"102","2000","4343","mids",NA,NA,NA
+"103","2004","4371","mids",NA,NA,NA
+"104","2008","4397","mids",NA,NA,NA
+"105","2002","4450","mids",NA,NA,NA
+"106","2002","4451","mids",NA,NA,NA
+"107","2003","4455","mids",NA,NA,NA
+"108","2003","4460","mids",NA,NA,NA
+"109","2004","4465","mids",NA,NA,NA
+"110","2010","4483","mids",NA,NA,NA
+"111","2009","4486","mids",NA,NA,NA
+"112","2010","4506","mids",NA,NA,NA
+"113","2003","4512","mids",NA,NA,NA
+"114","2003","4516","mids",NA,NA,NA
+"115","2004","4518","mids",NA,NA,NA
+"116","2004","4519","mids",NA,NA,NA
+"117","2004","4524","mids",NA,NA,NA
+"118","2005","4527","mids",NA,NA,NA
+"119","2007","4535","mids",NA,NA,NA
+"120","2007","4538","mids",NA,NA,NA
+"121","2008","4540","mids",NA,NA,NA
+"122","2008","4541","mids",NA,NA,NA
+"123","2009","4543","mids",NA,NA,NA
+"124","2002","4552","mids",NA,NA,NA
+"125","2005","4568","mids",NA,NA,NA
+"126","2005","4571","mids",NA,NA,NA
+"127","2006","4575","mids",NA,NA,NA
+"128","2007","4577","mids",NA,NA,NA
+"129","2008","4581","mids",NA,NA,NA
+"130","2010","4598","mids",NA,NA,NA
+"131","1989","Operation Nimrod Dancer","mips","Panama",NA,NA
+"132","1989","Operation Just Cause","mips","Panama",NA,NA
+"133","1990","Desert Shield","mips","Saudi Arabia",NA,NA
+"134","1991","Desert Storm","mips","Kuwait",NA,NA
+"135","1992","Operation Restore Hope (UNITAF)","mips","Somalia",NA,NA
+"136","1993","Operation Continue Hope (UNOSOM)","mips","Somalia",NA,NA
+"137","1994","Operation Uphold Democracy","mips","Haiti",NA,NA
+"138","1994","Operation Vigilant Warrior","mips","Kuwait",NA,NA
+"139","1995","Operation Deliberate Force","mips","Bosnia",NA,NA
+"140","1996","Taiwan Strait Crisis of 1995/1996","mips","Taiwan",NA,NA
+"141","1998","Ops Desert Thunder/ Desert Fox","mips","Iraq",NA,NA
+"142","1999","Operation Allied Force/ Noble Anvil","mips","Yugoslavia",NA,NA
+"143","1991","Ops Provide Comfort/ Northern Watch","mips","Iraq",NA,NA
+"144","1992","Operation Southern Watch","mips","Iraq",NA,NA
+"145","1996","Desert Strike/ Kuwait deployment","mips","Kuwait",NA,NA
+"146","2001","Operation Enduring Freedom-Afghanistan","mips","Afghanistan",NA,NA
+"147","2001",NA,"prio","Al-Qaeda",NA,NA
+"148","2002",NA,"prio","Al-Qaeda",NA,NA
+"149","2003",NA,"prio","Al-Qaeda",NA,NA
+"150","2004",NA,"prio","Al-Qaeda",NA,NA
+"151","2005",NA,"prio","Al-Qaeda",NA,NA
+"152","2006",NA,"prio","Al-Qaeda",NA,NA
+"153","2007",NA,"prio","Al-Qaeda",NA,NA
+"154","2008",NA,"prio","Al-Qaeda",NA,NA
+"155","2009",NA,"prio","Al-Qaeda",NA,NA
+"156","2010",NA,"prio","Al-Qaeda",NA,NA
+"157","2011",NA,"prio","Al-Qaeda",NA,NA
+"158","2012",NA,"prio","Al-Qaeda",NA,NA
+"159","2013",NA,"prio","Al-Qaeda",NA,NA
+"160","2014",NA,"prio","Al-Qaeda",NA,NA
+"161","2015",NA,"prio","Al-Qaeda",NA,NA
+"162","2016",NA,"prio","Al-Qaeda",NA,NA
+"163","2017",NA,"prio","Al-Qaeda",NA,NA
+"164","1991","Operation Desert Storm","rand","Iraq",NA,NA
+"165","1991","Task Force Freedom","rand","Kuwait",NA,NA
+"166","1991","Operation Provide Comfort","rand","Turkey",NA,NA
+"167","1991","Operation Northern Watch","rand","Iraq",NA,NA
+"168","1991","Operation Sea Angel","rand","Bangladesh",NA,NA
+"169","1991","Operation Safe Harbor","rand","Cuba",NA,NA
+"170","1995","IFOR","rand","Bosnia",NA,NA
+"171","1996","SFOR","rand","Bosnia and Herzegovina",NA,NA
+"172","2004","EUFOR","rand","Bosnia and Herzegovina",NA,NA
+"173","1992","Operation Restore Hope","rand","Somalia",NA,NA
+"174","1992","Operation Continue Hope","rand","Somalia",NA,NA
+"175","1992","Operation United Shield","rand","Somalia",NA,NA
+"176","1992","Operation Southern Watch ","rand","",NA,NA
+"177","1992","Operation Vigilant Warrior","rand","",NA,NA
+"178","1992","Operation Vigilant Sentinel","rand","",NA,NA
+"179","1992","Operation Desert Strike","rand","",NA,NA
+"180","1992","Operation Desert Thunder ","rand","",NA,NA
+"181","1992","Operation Desert Fox ","rand","",NA,NA
+"182","1992","Operation Desert Focus ","rand","",NA,NA
+"183","1992","Exercise Intrinsic Action/Desert Spring","rand","",NA,NA
+"184","1992","Exercise Iris Gold","rand","",NA,NA
+"185","1994","Operation Sea Signal ","rand","",NA,NA
+"186","1994","Operation Safe Haven ","rand","",NA,NA
+"187","1994","Operation Safe Passage","rand","",NA,NA
+"188","1994","Operation Support Hope","rand","Rwanda",NA,NA
+"189","1994","Operation Uphold Democracy ","rand","Haiti",NA,NA
+"190","1994","Operation New Horizons","rand","Haiti",NA,NA
+"191","1996","Operation Assured Response","rand","Liberia",NA,NA
+"192","1998","Operation Infinite Reach","rand","",NA,NA
+"193","1998","Operation Strong Support/Fuerte Apoyo","rand","",NA,NA
+"194","1999","Plan Colombia","rand","Colombia",NA,NA
+"195","1999","Operation Allied Force","rand","Kosovo",NA,NA
+"196","1999","Operation Noble Anvil","rand","Kosovo",NA,NA
+"197","1999","Operation Sustain Hope","rand","Kosovo",NA,NA
+"198","1999","Operation Shining Hope","rand","Kosovo",NA,NA
+"199","1999","Multinational Peacekeeping Force in Kosovo","rand","Kosovo",NA,NA
+"200","1999","Operation Avid Response","rand","Turkey",NA,NA
+"201","2000","Operation Atlas Response","rand","Mozambique",NA,NA
+"202","2001","Operation Enduring Freedom","rand","",NA,NA
+"203","2001","Operation Swift Freedom","rand","",NA,NA
+"204","2001","Operation Enduring Freedom","rand","Afghanistan",NA,NA
+"205","2001","International Security Assistance Force","rand","Afghanistan",NA,NA
+"206","2001","Operation Freedom's Sentinel","rand","Afghanistan",NA,NA
+"207","2001","Operation Resolute Support","rand","Afghanistan",NA,NA
+"208","2002","Joint Task Force Horn of Africa","rand","",NA,NA
+"209","2003","Operation Iraqi Freedom","rand","Iraq",NA,NA
+"210","2003","Operation New Dawn","rand","Iraq",NA,NA
+"211","2003","Joint Task Force Liberia","rand","Liberia",NA,NA
+"212","2004","Operation Secure Tomorrow","rand","Haiti",NA,NA
+"213","2004","Operation Unified Assistance","rand","",NA,NA
+"214","2005","Operation Lifeline","rand","Pakistan",NA,NA
+"215","2010","Operation Unified Response","rand","Haiti",NA,NA
+"216","2010","Flood Relief in Pakistan","rand","Pakistan",NA,NA
+"217","2010","Deterrence of China in Japan","rand","China",NA,NA
+"218","2011","Operation Odyssey Dawn","rand","",NA,NA
+"219","2011","Operation Unified Protector","rand","",NA,NA
+"220","2011","Operation Tomodachi","rand","Japan",NA,NA
+"221","2011","U.S. Military Support to African-Led Counter–Lord’s Resistance Army Operations","rand","",NA,NA
+"222","2013","Typhoon Humanitarian Relief in the Philippines","rand","Philippines",NA,NA
+"223","2014","Operation Atlantic Resolve","rand","",NA,NA
+"224","2014","U.S. Military Support to African-Led Counter–Boko Haram Operations","rand","",NA,NA
+"225","2014","Operation Inherent Resolve","rand","",NA,NA
+"226","2014","Operation United Assistance","rand","",NA,NA
+"227","2016","Anti-ISIL Air Strikes in Libya","rand","Libya",NA,NA
+"228","1989","Andean Initiative War on Drugs","mip","COL, BOL, PER",NA,NA
+"229","1989","Philippines Coup Attempt","mip","PHI",NA,NA
+"230","1989","Operation Just Cause","mip","PAN",NA,NA
+"231","1990","Operation Desert Shield","mip","SAU",NA,NA
+"232","1990","Operation Sharp Edge","mip","LBR",NA,NA
+"233","1991","Attack on USS La Salle","mip","IRN",NA,NA
+"234","1991","Operation Desert Storm","mip","IRQ",NA,NA
+"235","1991","Operation Southern Watch, Operation Vigilant Warrior, Operation Provide Comfort/ Provide Comfort II/ Operation Northern Watch","mip","IRQ",NA,NA
+"236","1991","Fishing Boats","mip","CAN",NA,NA
+"237","1991","DRC Troops Airlift","mip","DRC",NA,NA
+"238","1991","Operation Eastern Exit","mip","SOM",NA,NA
+"239","1992","NATO Intervention in Yugoslavia","mip","YUG",NA,NA
+"240","1992","Air Skirmish","mip","PER",NA,NA
+"241","1992","Embassy Evacuation","mip","SIE",NA,NA
+"242","1992","Operation Provide Relief","mip","SOM",NA,NA
+"243","1992","Operation Restore Hope","mip","SOM",NA,NA
+"244","1993","NPT Threats","mip","PRK",NA,NA
+"245","1993","PRK Tension","mip","PRK",NA,NA
+"246","1993","NATO Intervention in Bosnia","mip","BOS",NA,NA
+"247","1993","UN Resolution 842","mip","MAC",NA,NA
+"248","1993","UNOSOM II","mip","SOM",NA,NA
+"249","1994","Operation Support Hope","mip","DRC",NA,NA
+"250","1994","Operation Uphold Democracy","mip","HAI",NA,NA
+"251","1994","Operation Support Hope","mip","RWA",NA,NA
+"252","1995","Third Taiwan Strait Crisis","mip","CHN",NA,NA
+"253","1996","Embassy Evacuation NEO","mip","CEN",NA,NA
+"254","1996","Operation Assured Response NEO","mip","LBR",NA,NA
+"255","1997","Citizen Protection Operation","mip","CAM",NA,NA
+"256","1997","Operation Silver Wake NEO","mip","ALB",NA,NA
+"257","1997","Operation Southern Watch","mip","IRN",NA,NA
+"258","1997","Evacuating U.S. citizens","mip","DRC",NA,NA
+"259","1997","Operation Nobel Obelisk NEO","mip","SIE",NA,NA
+"260","1998","Operation Infinite Reach","mip","AFG",NA,NA
+"261","1998","Evacuation (NEO)","mip","GNB",NA,NA
+"262","1998","Operation Resolute Response","mip","KEN, TAZ",NA,NA
+"263","1998","Liberian Civil Wars","mip","LBR",NA,NA
+"264","1998","Operation Infinite Reach","mip","SUD",NA,NA
+"265","1999","East Timorese Crisis","mip","ETM",NA,NA
+"266","1999","Taiwan Strait Skirmishes","mip","CHN",NA,NA
+"267","1999","Korean Peninsula Hostilities","mip","PRK",NA,NA
+"268","1999","Kosovo Intervention","mip","YUG",NA,NA
+"269","1999","Vargas Tragedy","mip","VEN",NA,NA
+"270","2000","Bering Straight Probes","mip","RUS",NA,NA
+"271","2000","Russian ship carries illegal Iraqi oil","mip","RUS",NA,NA
+"272","2000","Kosovo Border","mip","YUG",NA,NA
+"273","2000","Phiblex 2000","mip","YUG",NA,NA
+"274","2000","Counterterrorism mission","mip","YEM",NA,NA
+"275","2000","UN Mission in Ethiopia and Eritrea","mip","ERI",NA,NA
+"276","2000","IMATT","mip","SIE",NA,NA
+"277","2001","Hainan Island Incident","mip","CHN",NA,NA
+"278","2001","China/Taiwan Dispute","mip","CHN",NA,NA
+"279","2001","War in Afghanistan","mip","AFG",NA,NA
+"280","2002","Operation Freedom Eagle; Operation Enduring Freedom - Philippines","mip","PHI",NA,NA
+"281","2002","Colombia Special Forces Deployment","mip","COL",NA,NA
+"282","2002","Operation Enduring Freedom - Horn of Africa","mip","DJI",NA,NA
+"283","2002","U.S. Assistance to Pakistan","mip","PAK",NA,NA
+"284","2002","Evacuation Mission","mip","CDI",NA,NA
+"285","2003","Indonesia Freedom of Navigation Operation","mip","INS",NA,NA
+"286","2003","PRK withdraws from NPT","mip","PRK",NA,NA
+"287","2003","Hood Event","mip","TUR",NA,NA
+"288","2003","Operation Iraqi Freedom","mip","IRQ",NA,NA
+"289","2003","Detention of U.S. Service members","mip","IRN",NA,NA
+"290","2003","Joint Task Force Liberia","mip","LBR",NA,NA
+"291","2003","Operation Enduring Freedom - Horn of Africa (OEF-HOA)","mip","ETH",NA,NA
+"292","2004","Fortification of Kwangju","mip","PRK",NA,NA
+"293","2004","Operation Secure Tomorrow","mip","HAI",NA,NA
+"294","2004","Iran Border Fortification","mip","IRN",NA,NA
+"295","2004","Violations of Iranian Airspace","mip","IRN",NA,NA
+"296","2004","Syria Border Clash","mip","SYR",NA,NA
+"297","2004","Operation Enduring Freedom - Horn of Africa","mip","KEN",NA,NA
+"298","2005","Counterterrorism mission/drones","mip","YEM",NA,NA
+"299","2005","Iraqi Border Clashes","mip","SYR",NA,NA
+"300","2005","Pakistan Earthquake Response","mip","PAK",NA,NA
+"301","2005","Pakistan drone strikes","mip","PAK",NA,NA
+"302","2005","Drone Strikes in Waziristan","mip","PAK",NA,NA
+"303","2006","Israel-Hezbollah War/July War","mip","LEB",NA,NA
+"304","2006","Drone strikes","mip","PAK",NA,NA
+"305","2006","Support of AMISOM","mip","SOM",NA,NA
+"306","2007","Erbil Raid","mip","IRN",NA,NA
+"307","2007","Detaining Iranian Nationals","mip","IRN",NA,NA
+"308","2008","Abu Kamal Raid","mip","SYR",NA,NA
+"309","2008","Airspace violation","mip","PAK",NA,NA
+"310","2008","Waziristan Drone Strikes","mip","PAK",NA,NA
+"311","2009","Naval Skirmish","mip","CHN",NA,NA
+"312","2009","Korean Sea Hostilities","mip","PRK",NA,NA
+"313","2009","Al-Majalah Cruise Missile Strikes","mip","YEM",NA,NA
+"314","2009","Trespassing Drone","mip","IRN",NA,NA
+"315","2010","Venezuela Airspace Violation","mip","VEN",NA,NA
+"316","2010","Border clash","mip","PAK",NA,NA
+"317","2011","Operation Odyssey Dawn","mip","LIB",NA,NA
+"318","2011","Operation Observant Compass","mip","UGA",NA,NA
+"319","2012","Philippines Typhon Relief","mip","PHI",NA,NA
+"320","2012","Hostage Rescue Mission","mip","SOM",NA,NA
+"321","2013","Syrian Civil War/Counter IS","mip","JOR",NA,NA
+"322","2013","Burundi Airlift","mip","CEN",NA,NA
+"323","2013","Operation Juniper Shield","mip","NIR",NA,NA
+"324","2014","Ukraine Military Assistance","mip","UKR",NA,NA
+"325","2014","Operation Inherent Resolve","mip","IRQ, SYR",NA,NA
+"326","2014","U.S. involvement in Syrian Civil War","mip","SYR",NA,NA
+"327","2014","Operation United Assistance","mip","LBR",NA,NA
+"328","2015","Operation Freedom Sentinel","mip","AFG",NA,NA
+"329","2015","Boko Haram","mip","CAO",NA,NA
+"330","2016","Hurricane Matthew Relief","mip","HAI",NA,NA
+"331","2016","Cruise Missile Strikes","mip","YEM",NA,NA
+"332","2017","Hurricane Maria Relief","mip","DMA",NA,NA
+"333","2017","Operation Continuing Promise","mip","GUA, HON, COL",NA,NA
+"334","2017","Peru Flooding Relief","mip","PER",NA,NA
+"335","2017","Joint Task Force Hurricane Relief","mip","Dominica,  St. Martin,",NA,NA
+"336","2017","Stella Daisy Uruguay Search and Rescue Assistance","mip","URU",NA,NA
+"337","2017","Sri Lanka Humanitarian Assistance","mip","LKA",NA,NA
+"338","2018","Thai Cave Rescue","mip","THI",NA,NA
+"339","2018","Venezuelan Refugees Humanitarian mission","mip","HON",NA,NA
+"340","2018","Operation Enduring Promise","mip","ECU",NA,NA
+"341","2019","Baghdad Embassy Protection","mip","IRQ",NA,NA
+"342","2019","Oil tanker attacks response","mip","SAU",NA,NA

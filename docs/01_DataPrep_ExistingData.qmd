@@ -1,0 +1,287 @@
+---
+title: '01 Data Prep - Existing Intervention Datasets'
+author:
+  - J Andrés Gannon
+  - Kerry Chavez
+  - Cole Reynolds
+  - Thomas Brailey
+format:
+  pdf:
+    fig-format: png
+  html:
+    title-block-banner: true
+    toc: true
+    toc-location: right
+    html-math-method: katex
+    css: styles.css
+    citations-hover: true
+    footnotes-hover: true
+    code-tools: true
+    code-fold: true
+    code-summary: "Show the code"
+    code-overflow: wrap
+    code-copy: true
+editor: visual
+execute:
+  echo: false
+  warning: false
+  cache: true
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+bibliography: ../paper/MONSTr.bib
+---
+
+```{r knitr_options, echo = FALSE, warning = FALSE, cache = FALSE}
+library(knitr)
+library(kableExtra)
+library(magrittr)
+library(ggplot2)
+```
+
+Our universe of cases is US military interventions after the Cold War.
+
+# Existing datasets
+
+We start by identifying list of US interventions coded in existing IR datasets as well as their temporal scope. We can then compare their coverage to see what covariates may conflict and where things may be missing.
+
+The first step will be loading each dataset and subsetting it to the appropriate actor (US as intervenor) and time period (post-Cold War).
+
+## Aerial bombing
+
+```{r}
+allen_17 <- readstata13::read.dta13(paste0(here::here(), "/inst/extdata/AllenMtzMachainAerialBombingData2016CMPS.dta")) %>%
+  dplyr::filter(year >= 1989,
+                ccode1 == 2)
+
+horowitz_01 <- foreign::read.dta(paste0(here::here(), "/inst/extdata/jcr01.dta")) %>%
+  dplyr::filter(attacker %in% c('United States', 'Allies', 'U.S./Britain', 'NATO', 'US')) %>%
+  dplyr::mutate(date = dplyr::recode(date,
+                                     '1944-1945' = "1944",
+                                     '1942-1944' = "1942",
+                                     'Aug. 1945' = "1945",
+                                     '1965-1968' = "1965",
+                                     '1950-1951' = "1950")) %>%
+  dplyr::mutate(date = as.numeric(date)) %>%
+  dplyr::filter(date >= 1989)
+```
+
+## ICB
+
+The International Crisis Behavior (ICB) datasets concerns international crises that may or may not have escalated to war [@brecher_studycrisis_1997]. We filter the dataset so that it only includes the crisis in which the United States was an actor in the post-Cold War period.
+
+```{r}
+icb <- read.csv(paste0(here::here(),"/inst/extdata/icb2v12.csv")) %>%
+  dplyr::filter(yrtrig >= 1989 &
+                  actor == "USA")
+
+DT::datatable(icb)
+```
+
+## IMI
+
+The IMI dataset includes international military interventions from 1946-2005 [@pearson_internationalmilitaryintervention_1993, @kisangani_internationalmilitaryintervention_2008]. It defines interventions as "the movement of regular troops or forces (airborne, seaborne, shelling, etc) of one country inside another, in the context of some political issue or dispute". We filter the dataset so that it only includes the crisis in which the United States was an actor in the post-Cold War period.
+
+```{r}
+imi <- read.csv(paste0(here::here(),"/inst/extdata/IMI/IMI_dataset.csv")) %>%
+  dplyr::filter(start >= 19890101 &
+                  intervener == 2)
+imi$start <- gsub('.{4}$', '', imi$start)
+
+DT::datatable(imi)
+```
+
+## MIDs
+
+The MIDs dataset covers all conflicts in which a state threatens, displays, or uses force against another state from 1816-2010 [@palmer_mid4dataset2002_2015]. Dispute level dataset is chosen at the participant level to best identify broader disputes where the US was an actor. Disputes are inclusive of their incidents and the participant-level data allows us to subset to the US. Covariates for those disputes can later be merged from the dispute-level dataset. We filter the dataset so that it only includes the interventions in which the United States was an actor in the post-Cold War period.
+
+```{r}
+mids <- read.csv(paste0(here::here(),"/inst/extdata/MIDs/MIDs_dispute-participants.csv")) %>%
+  dplyr::filter(styear >= 1989 &
+                  ccode == 2)
+
+DT::datatable(mids)
+```
+
+## MIP
+
+```{r}
+mip <- readstata13::read.dta13(paste0(here::here(),"/inst/extdata/MIP/MIPDataKushiToft.dta")) %>%
+  dplyr::filter(styear >= 1989 &
+                  RemoveCase == 0)
+```
+
+The MIP data also covers US military interventions, broadly defined as "united instances of international conflict or potential conflict outside of normal peacetime activities in which the purposeful threat, display, or use of military force by official US government channels is explicitly directed toward the government, official representatives, official forces, property, or territory of another state actor" [@kushi_introducingmilitaryintervention_2022, 4]. This is inclusive of IMI (purposeful movement of troops inside another country), CRS (armed forces abroad outside of normal peacetime purposes), RAND RUGID (at least 100 ground troops in a year), MIPS (at least 500 military personnel), and MID (military force short of war).[^1]
+
+[^1]: As there are `r ncol(mip)` columns in the MIP dataset, a table summary cannot be rendered in this document.
+
+## MIPS
+
+The MIPS dataset codes Military Interventions by Powerful States from 1946-2003 [@sullivan_militaryinterventionpowerful_2009]. It includes the US, China, France, and Russia using force against state and non-state targets as well as their political objects, the costs of the operation, and the interventions outcomes. We filter the dataset so that it only includes the interventions in which the United States was an actor in the post-Cold War period.
+
+```{r}
+mips <- read.csv(paste0(here::here(),"/inst/extdata/MIPS/MIPS_dataset.csv")) %>%
+  dplyr::filter(styr >= 1989 &
+                  MP == 2)
+
+DT::datatable(mips)
+```
+
+## PRIO
+
+The PRIO dataset on armed conflict includes internal and external conflicts from 1946-2008 [@gleditsch_armedconflict19462001_2002]. We filter the dataset so that it only includes the interventions in which the United States was an actor in the post-Cold War period.
+
+```{r}
+prio <- read.csv(paste0(here::here(),"/inst/extdata/PRIO/UCDP-PRIO_armed_conflict_dataset.csv")) %>%
+  dplyr::filter(year >= 1989 &
+                  side_a_id == 3) # PRIO does not use the GW identifier. It is confirmed that this refers to the USA
+
+DT::datatable(prio)
+```
+
+## RAND
+
+RAND has a forthcoming dataset on US military interventions from 1898-2016 [@kavanagh_characteristicssuccessfulmilitary_2019]. Because the raw data is not yet public, the list of cases is taken from their appendix and copied into a dataframe. We filter the dataset so that it only includes the interventions in the post-Cold War period.
+
+```{r}
+rand <- read.csv(paste0(here::here(),"/inst/extdata/rand_interventionlist.csv")) %>%
+  dplyr::filter(incident_start_year >= 1989)
+
+DT::datatable(rand)
+```
+
+# Merge
+
+Now that we know the interventions each dataset identifies for the US post-1989, we can compare them and see what cases each one covers. Then we merge those cases to get a non-duplicated list of interventions for which we want to identify the campaigns and operations. Each dataset should have each US intervention as a unique row.
+
+Rather than trying to manually merge each dataset to one another, the easiest method will be merging each observation from each dataset to the Q code for that event. Then we see which Q codes match up
+
+We subset to only variables useful for Q code identification To help coders identify the ccode for each observation, we'll want the name provided by the dataset, target country, and date.
+
+```{r}
+# ICB
+## Subset to relevant columns
+icb_id <- icb[ , c('yrtrig', 'crisname')]
+
+## Standardize column names
+icb_id <- icb_id %>% dplyr::rename('Year' = yrtrig,
+                                   'Intervention' = crisname)
+
+## Create identifier column
+icb_id$dataset <- 'icb'
+icb_id$Intervention <- as.character(icb_id$Intervention)
+
+# IMI
+## Subset to relevant columns
+imi_id <- imi[ , c('target', 'start', 'description')]
+
+## Add country name from ccode
+imi_id$target <- countrycode::countrycode(imi_id$target, "cown", "country.name")
+
+## Standardize column names
+imi_id <- imi_id %>% dplyr::rename('Target' = target,
+                                   'Intervention' = description,
+                                   'Year' = start)
+
+## Create identifier column
+imi_id$dataset <- 'imi'
+imi_id$Intervention <- as.character(imi_id$Intervention)
+
+# MIPS
+## Subset to relevant columns
+mips_id <- mips[ , c('location', 'intervention', 'styr')]
+
+## Set country names so they are not numeric factors
+mips_id$location <- as.character(mips_id$location)
+
+## Standardize column names
+mips_id <- mips_id %>% dplyr::rename('Target' = location,
+                                   'Intervention' = intervention,
+                                   'Year' = styr)
+
+## Create identifier column
+mips_id$dataset <- 'mips'
+mips_id$Intervention <- as.character(mips_id$Intervention)
+
+# PRIO
+## Subset to relevant columns
+prio_id <- prio[ , c('side_b', 'year')]
+
+## Make clear the target name is Al-Qaeda
+prio_id$side_b <- 'Al-Qaeda'
+
+## Standardize column names
+prio_id <- prio_id %>% dplyr::rename('Target' = side_b,
+                                   'Year' = year)
+
+## Create identifier column
+prio_id$dataset <- 'prio'
+
+# MIDS
+## Subset to relevant columns
+mids_id <- mids[ , c('dispnum3', 'styear')]
+
+## Standardize column names
+mids_id <- mids_id %>% dplyr::rename('Intervention' = dispnum3,
+                                   'Year' = styear)
+
+## Create identifier column
+mids_id$dataset <- 'mids'
+
+# RAND
+## Subset to relevant columns
+rand_id <- rand[ , c('operation_name', 'target_country', 'incident_start_year')]
+
+## Standardize column names
+rand_id <- rand_id %>% dplyr::rename('Year' = incident_start_year,
+                                   'Intervention' = operation_name,
+                                   'Target' = target_country)
+
+## Create identifier column
+rand_id$dataset <- 'rand'
+rand_id$Intervention <- as.character(rand_id$Intervention)
+
+# MIP
+## Subset to relevant columns
+mip_id <- mip %>%
+  dplyr::select(styear, Name, StateB)
+
+## Standardize column names
+mip_id <- mip_id %>%
+  dplyr::rename('Year' = styear,
+                'Intervention' = Name,
+                'Target' = StateB)
+
+mip_id$dataset <- 'mip'
+mip_id$Intervention <- as.character(mip_id$Intervention)
+
+# Coerce to df
+combined_id <- plyr::rbind.fill(icb_id, imi_id, mids_id, mips_id, prio_id, rand_id, mip_id)
+
+# Add columns to be filled by coders
+combined_id$wikidata_name <- NA
+combined_id$wikidata_id <- NA
+
+DT::datatable(combined_id)
+
+write.csv(combined_id, paste0(here::here(), "/data/raw/","01a_interventions_priordata_precoding.csv"))
+```
+
+# Match to Wiki
+
+Now that we have standardized identifier columns across all the datasets, we can bind them into a single dataset that we then export to a googlesheet. The coders can then identify the qcodes for each event using the information provided. "01a_interventions_priordata_precoding.csv". was loaded into a google doc called 02b_intervention_preprocess. Coders manually identified the wikidata page for each row and inputed those values into the columns wikidata_name and wikidata_id. The completed version of that googlesheet is saved in './data/raw/' as "01b_interventions_priordata_postcoding.csv".
+
+We collapse all observations that have the same wikidata ID into the same row. We are looking only at cases that are a US military intervention, defined the same as IMI (the movement of regular troops or forces (airborne, seaborne, shelling, etc) of one country inside another, in the context of some political issue or dispute).
+
+We thus drop cases from prior datasets that refer to hostage extractions, humanitarian and disaster relief, military training exercises, missile tests, and events where the US military was not a participant in any kinetic activities.
+
+```{r}
+df <- read.csv(paste0(here::here(), "/data/raw/","01b_interventions_priordata_postcoding.csv")) %>% 
+  dplyr::filter(drop == 0) %>%
+  dplyr::select(wikidata_name, wikidata_id) %>%
+  dplyr::distinct()
+
+DT::datatable(df)
+
+write.csv(df, paste0(here::here(), "/data/raw","01c_interventions_priordata_unique.csv"))
+```
+
+The dataframe is now set up so that coders can identify whether each wikidata entry qualified as a US military intervention as well as what unit of analysis that intervention describes. Coders can then fill in the rest of the unit of analysis columns to populate the full universe of cases.
