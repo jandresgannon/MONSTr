@@ -1,0 +1,439 @@
+---
+title: '03 Data Prep - Parent-Child'
+author:
+  - J Andrés Gannon
+  - Kerry Chavez
+format:
+  html:
+    title-block-banner: true
+    toc: true
+    toc-location: right
+    html-math-method: katex
+    css: styles.css
+    citations-hover: true
+    footnotes-hover: true
+    code-tools: true
+    code-fold: true
+    code-summary: "Show the code"
+    code-overflow: wrap
+    code-copy: true
+editor: visual
+execute:
+  echo: false
+  warning: false
+  cache: true
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+bibliography: ../paper/MONSTr.bib
+---
+
+```{r knitr_options, echo = FALSE, warning = FALSE, cache = FALSE}
+library(knitr)
+library(kableExtra)
+library(magrittr)
+library(ggplot2)
+```
+
+This document processes and cleans the parent-child values in the dataset to create clean and consistent nestings.
+
+# Load and prep data
+
+We first load the original parent-child relationship data that includes duplicates for entries that have more than one parent identified by wikipedia under the "part of" variable.
+
+```{r}
+read.csv(paste0(here::here(),"/data/raw/03_newdata_childof.csv")) %>%
+  dplyr::select(wikidata_id, childof_id, realparent) %>%
+  dplyr::filter(realparent == 1 |
+                  is.na(realparent)) %>%
+  dplyr::distinct() %>%
+  dplyr::select(-realparent) %>% 
+  dplyr::filter(!childof_id == "NA") %>%
+  collapsibleTree::collapsibleTree(hierarchy = c("childof_id", "wikidata_id"), 
+                                   height = 10000, width = 1000, 
+                                   collapse = FALSE, zoomable = FALSE)
+
+# Make tree as df
+df <- read.csv(paste0(here::here(),"/data/raw/03_newdata_childof.csv")) %>%
+  dplyr::filter(realparent == 1 |
+                  is.na(realparent)) %>%
+  dplyr::distinct() %>%
+  dplyr::select(-coder, -realparent, -notes) %>%
+  dplyr::mutate(wikidata_id = tidyr::replace_na(wikidata_id, "NA")) %>%
+  tidyr::unite(child,
+               c('wikidata_name', 'wikidata_id'),
+               sep = "_",
+               remove = TRUE) %>%
+  tidyr::unite(parent,
+               c('childof_name', 'childof_id'),
+               sep = "_",
+               remove = TRUE) %>%
+  dplyr::mutate(parent = dplyr::recode(parent, "NA_NA" = "intervention")) %>%
+  dplyr::select(parent, child)
+
+# Create trees
+tree <- data.tree::FromDataFrameNetwork(df)
+levels <- data.tree::ToDataFrameTypeCol(tree)
+write.csv(levels, paste0(here::here(), "/data/aux/","tree.csv"))
+```
+
+# Operation child
+
+We want to avoid double-counting interventions, which means we don't want to include any intervention that nests other interventions within it.
+
+Since we are interested in operations-level analysis that falls between military strategy and military tactics, we can also identify all the nodes that are at the operation level. We do this by having both authors independently code the operation-level observation in each branch of the tree. Coder disagreements were resolved by unanimity after reading through the cases.
+
+```{r}
+child_oplevel <- read.csv(paste0(here::here(), "/data/aux/", "tree_ops.csv")) %>%
+  dplyr::rename(operation_level = row_operation) %>%
+  dplyr::filter(!is.na(operation_level) &
+                  !operation_level == "") %>%
+  dplyr::distinct() %>%
+  tidyr::separate(operation_level, into = c("wikidata_name", "wikidata_id"),
+                  sep = "_") %>%
+  dplyr::select(wikidata_name, wikidata_id)
+```
+
+## War Parent
+
+```{r}
+# Create war parents
+levels <- read.csv(paste0(here::here(), "/data/aux/", "tree_ops.csv")) %>%
+  dplyr::rename(child = row_operation) %>%
+  dplyr::mutate(parent = ifelse(level_2 %in% c("Gulf War_Q37643",
+                                               "Libyan Crisis_Q18702324",
+                                               "Yemeni Crisis_Q15946570"),
+                                level_2, NA),
+                parent = ifelse(is.na(level_3) | is.na(level_4),
+                                level_2, parent),
+                parent = ifelse(level_3 %in% c("Syrian Civil War_Q178810",
+                                               "Somali Civil War_Q243620",
+                                               "War in Afghanistan_Q182865",
+                                               "War in North-West Pakistan_Q179275",
+                                               "Bosnian War_Q181533",
+                                               "Kosovo War_Q190029"),
+                                level_3, parent),
+                parent = ifelse(level_4 %in% c("Operation Enduring Freedom – Horn of Africa_Q1195810",
+                                               "Operation Enduring Freedom – Philippines_Q2631285",
+                                               "Operation Enduring Freedom – Trans Sahara_Q2602154",
+                                               "2019–2021 Persian Gulf crisis_Q65920364"),
+                                level_4, parent),
+                parent = ifelse(level_5 %in% c("American-led intervention in Iraq (2014–present)_Q18159629",
+                                               "Iraq conflict (2003–present)_Q47015896"),
+                                level_5, parent))
+
+levels <- levels %>%
+  dplyr::relocate(child, parent)
+
+levels_merge <- levels %>%
+  dplyr::filter(!is.na(child) &
+                  !child == "") %>%
+  tidyr::separate(child, into = c("wikidata_name", "wikidata_id"), sep = "_") %>%
+  tidyr::separate(parent, into = c("parent_name", "parent_id"), sep = "_") %>%
+  dplyr::select(wikidata_id, parent_id) %>%
+  dplyr::distinct()
+```
+
+## Existing dataset parent
+
+```{r}
+# Load Qcode matches for existing intervention dataset observations. For cases where there are multiple matches, just convert list column to string values
+prior <- read.csv(paste0(here::here(), "/data/raw/", "01b_interventions_priordata_postcoding.csv")) %>%
+  dplyr::select(Intervention, dataset, wikidata_id) %>%
+  dplyr::filter(!is.na(wikidata_id)) %>%
+  tidyr::pivot_wider(id_cols = wikidata_id,
+                     names_from = dataset,
+                     values_from = Intervention) %>%
+  dplyr::filter(!wikidata_id == "") %>%
+  dplyr::mutate(icb = as.character(icb),
+                imi = as.character(imi),
+                mids = as.character(mids),
+                mip = as.character(mip),
+                mips = as.character(mips),
+                prio = as.character(prio),
+                rand = as.character(rand))
+prior[prior == "NULL"] <- NA
+
+# Clean df to be just qcode values we'll use for matching
+levels_prior <- read.csv(paste0(here::here(), "/data/aux/", "tree_ops.csv")) %>%
+  dplyr::rename(child = row_operation) %>%
+  dplyr::mutate(child = stringr::str_remove(child, ".*_"),
+                level2 = stringr::str_remove(level_2, ".*_"),
+                level3 = stringr::str_remove(level_3, ".*_"),
+                level4 = stringr::str_remove(level_4, ".*_"),
+                level5 = stringr::str_remove(level_5, ".*_"),
+                level6 = stringr::str_remove(level_6, ".*_"),
+                level7 = stringr::str_remove(level_7, ".*_"),
+                level8 = stringr::str_remove(level_8, ".*_"),
+                level9 = stringr::str_remove(level_9, ".*_")) %>%
+  dplyr::select(!dplyr::starts_with("level_")) %>%
+  dplyr::filter(!child == "") %>%
+  dplyr::distinct()
+
+# Merge at the child level. We'll ascend the parent tree replacing parent_"priordatasetname" whenever it exists. That way the parent level for each observation is the most aggregate observation from each existing dataset
+levels_prior <- dplyr::left_join(levels_prior,
+                                 prior,
+                                 by = c("child" = "wikidata_id")) %>%
+  dplyr::rename(parent_icb = icb,
+                parent_imi = imi,
+                parent_mids = mids,
+                parent_mip = mip,
+                parent_mips = mips,
+                parent_prio = prio,
+                parent_rand = rand)
+
+levels_prior <- dplyr::left_join(levels_prior,
+                                 prior,
+                                 by = c("level9" = "wikidata_id")) %>%
+  dplyr::mutate(parent_icb = ifelse(!is.na(icb),
+                                    icb,
+                                    parent_icb),
+                parent_imi = ifelse(!is.na(imi),
+                                    imi,
+                                    parent_imi),
+                parent_mids = ifelse(!is.na(mids),
+                                     mids,
+                                     parent_mids),
+                parent_mip = ifelse(!is.na(mip),
+                                    mip,
+                                    parent_mip),
+                parent_mips = ifelse(!is.na(mips),
+                                     mips,
+                                     parent_mips),
+                parent_prio = ifelse(!is.na(prio),
+                                     prio,
+                                     parent_prio),
+                parent_rand = ifelse(!is.na(rand),
+                                     rand,
+                                     parent_rand)) %>%
+  dplyr::select(child, dplyr::starts_with("level"), dplyr::starts_with("parent_"))
+
+levels_prior <- dplyr::left_join(levels_prior,
+                                 prior,
+                                 by = c("level8" = "wikidata_id")) %>%
+  dplyr::mutate(parent_icb = ifelse(!is.na(icb),
+                                    icb,
+                                    parent_icb),
+                parent_imi = ifelse(!is.na(imi),
+                                    imi,
+                                    parent_imi),
+                parent_mids = ifelse(!is.na(mids),
+                                     mids,
+                                     parent_mids),
+                parent_mip = ifelse(!is.na(mip),
+                                    mip,
+                                    parent_mip),
+                parent_mips = ifelse(!is.na(mips),
+                                     mips,
+                                     parent_mips),
+                parent_prio = ifelse(!is.na(prio),
+                                     prio,
+                                     parent_prio),
+                parent_rand = ifelse(!is.na(rand),
+                                     rand,
+                                     parent_rand)) %>%
+  dplyr::select(child, dplyr::starts_with("level"), dplyr::starts_with("parent_"))
+
+levels_prior <- dplyr::left_join(levels_prior,
+                                 prior,
+                                 by = c("level7" = "wikidata_id")) %>%
+  dplyr::mutate(parent_icb = ifelse(!is.na(icb),
+                                    icb,
+                                    parent_icb),
+                parent_imi = ifelse(!is.na(imi),
+                                    imi,
+                                    parent_imi),
+                parent_mids = ifelse(!is.na(mids),
+                                     mids,
+                                     parent_mids),
+                parent_mip = ifelse(!is.na(mip),
+                                    mip,
+                                    parent_mip),
+                parent_mips = ifelse(!is.na(mips),
+                                     mips,
+                                     parent_mips),
+                parent_prio = ifelse(!is.na(prio),
+                                     prio,
+                                     parent_prio),
+                parent_rand = ifelse(!is.na(rand),
+                                     rand,
+                                     parent_rand)) %>%
+  dplyr::select(child, dplyr::starts_with("level"), dplyr::starts_with("parent_"))
+
+levels_prior <- dplyr::left_join(levels_prior,
+                                 prior,
+                                 by = c("level6" = "wikidata_id")) %>%
+  dplyr::mutate(parent_icb = ifelse(!is.na(icb),
+                                    icb,
+                                    parent_icb),
+                parent_imi = ifelse(!is.na(imi),
+                                    imi,
+                                    parent_imi),
+                parent_mids = ifelse(!is.na(mids),
+                                     mids,
+                                     parent_mids),
+                parent_mip = ifelse(!is.na(mip),
+                                    mip,
+                                    parent_mip),
+                parent_mips = ifelse(!is.na(mips),
+                                     mips,
+                                     parent_mips),
+                parent_prio = ifelse(!is.na(prio),
+                                     prio,
+                                     parent_prio),
+                parent_rand = ifelse(!is.na(rand),
+                                     rand,
+                                     parent_rand)) %>%
+  dplyr::select(child, dplyr::starts_with("level"), dplyr::starts_with("parent_"))
+
+levels_prior <- dplyr::left_join(levels_prior,
+                                 prior,
+                                 by = c("level5" = "wikidata_id")) %>%
+  dplyr::mutate(parent_icb = ifelse(!is.na(icb),
+                                    icb,
+                                    parent_icb),
+                parent_imi = ifelse(!is.na(imi),
+                                    imi,
+                                    parent_imi),
+                parent_mids = ifelse(!is.na(mids),
+                                     mids,
+                                     parent_mids),
+                parent_mip = ifelse(!is.na(mip),
+                                    mip,
+                                    parent_mip),
+                parent_mips = ifelse(!is.na(mips),
+                                     mips,
+                                     parent_mips),
+                parent_prio = ifelse(!is.na(prio),
+                                     prio,
+                                     parent_prio),
+                parent_rand = ifelse(!is.na(rand),
+                                     rand,
+                                     parent_rand)) %>%
+  dplyr::select(child, dplyr::starts_with("level"), dplyr::starts_with("parent_"))
+
+levels_prior <- dplyr::left_join(levels_prior,
+                                 prior,
+                                 by = c("level4" = "wikidata_id")) %>%
+  dplyr::mutate(parent_icb = ifelse(!is.na(icb),
+                                    icb,
+                                    parent_icb),
+                parent_imi = ifelse(!is.na(imi),
+                                    imi,
+                                    parent_imi),
+                parent_mids = ifelse(!is.na(mids),
+                                     mids,
+                                     parent_mids),
+                parent_mip = ifelse(!is.na(mip),
+                                    mip,
+                                    parent_mip),
+                parent_mips = ifelse(!is.na(mips),
+                                     mips,
+                                     parent_mips),
+                parent_prio = ifelse(!is.na(prio),
+                                     prio,
+                                     parent_prio),
+                parent_rand = ifelse(!is.na(rand),
+                                     rand,
+                                     parent_rand)) %>%
+  dplyr::select(child, dplyr::starts_with("level"), dplyr::starts_with("parent_"))
+
+levels_prior <- dplyr::left_join(levels_prior,
+                                 prior,
+                                 by = c("level3" = "wikidata_id")) %>%
+  dplyr::mutate(parent_icb = ifelse(!is.na(icb),
+                                    icb,
+                                    parent_icb),
+                parent_imi = ifelse(!is.na(imi),
+                                    imi,
+                                    parent_imi),
+                parent_mids = ifelse(!is.na(mids),
+                                     mids,
+                                     parent_mids),
+                parent_mip = ifelse(!is.na(mip),
+                                    mip,
+                                    parent_mip),
+                parent_mips = ifelse(!is.na(mips),
+                                     mips,
+                                     parent_mips),
+                parent_prio = ifelse(!is.na(prio),
+                                     prio,
+                                     parent_prio),
+                parent_rand = ifelse(!is.na(rand),
+                                     rand,
+                                     parent_rand)) %>%
+  dplyr::select(child, dplyr::starts_with("level"), dplyr::starts_with("parent_"))
+
+levels_prior <- dplyr::left_join(levels_prior,
+                                 prior,
+                                 by = c("level2" = "wikidata_id")) %>%
+  dplyr::mutate(parent_icb = ifelse(is.na(parent_icb) &
+                                            !is.na(icb),
+                                    icb,
+                                    parent_icb),
+                parent_imi = ifelse(is.na(parent_imi) &
+                                      !is.na(imi),
+                                    imi,
+                                    parent_imi),
+                parent_mids = ifelse(is.na(parent_mids) &
+                                       !is.na(mids),
+                                     mids,
+                                     parent_mids),
+                parent_mip = ifelse(is.na(parent_mip) &
+                                      !is.na(mip),
+                                    mip,
+                                    parent_mip),
+                parent_mips = ifelse(is.na(parent_mips) &
+                                       !is.na(mips),
+                                     mips,
+                                     parent_mips),
+                parent_prio = ifelse(is.na(parent_prio) &
+                                       !is.na(prio),
+                                     prio,
+                                     parent_prio),
+                parent_rand = ifelse(is.na(parent_rand) &
+                                       !is.na(rand),
+                                     rand,
+                                     parent_rand)) %>%
+  dplyr::select(child, dplyr::starts_with("level"), dplyr::starts_with("parent_"))
+
+# Clean it up
+levels_prior <- levels_prior %>%
+  dplyr::select(-parent_prio) %>%
+  dplyr::select(child, dplyr::starts_with("parent_")) %>%
+  dplyr::filter(!is.na(child)) %>%
+  dplyr::distinct()
+```
+
+## Merging parents to operation-children
+
+We create the final version of the nested data to merge with the key covariates. This includes child-nodes at the operation level, the war parent, and the parents from existing datasets. We fix some edge cases here.
+
+```{r}
+# Merge operation level children with all parents
+child_oplevel <- dplyr::left_join(child_oplevel, levels_merge)
+
+child_oplevel <- dplyr::left_join(child_oplevel, levels_prior,
+                                  by = c("wikidata_id" = "child"))
+
+child_oplevel <- child_oplevel %>%
+  dplyr::distinct()
+
+# Put parent names back in
+df_parent <- read.csv(paste0(here::here(),"/data/raw/01d_interventions_newdata_list.csv")) %>%
+  dplyr::select(-notes) %>%
+  dplyr::rename(parent_name = wikidata_name,
+                parent_id = wikidata_id) %>%
+  dplyr::distinct()
+
+child_oplevel <- dplyr::left_join(child_oplevel, df_parent) %>%
+  dplyr::select(wikidata_name, wikidata_id, parent_name, dplyr::starts_with("parent"))
+```
+
+# Final child selection with full parent list
+
+The dataframe now represents a correct nesting of the US interventions identified by prior datasets (ICB, IMI, MIPS, MIDS, and RAND). Although it initially appeared that they had vastly different coverage of US interventions, much of those differences can be attributed to inconsistencies in the unit of analysis between and within datasets as well as the last year of coverage which is simply a function of publication time.
+
+We save a version of the data that includes the full parent nesting as well as all the parents as identified in current datasets. This dataframe is agnostic as to the final unit of analysis and just lists each unique child as the unit of analysis.
+
+```{r}
+write.csv(child_oplevel, paste0(here::here(), "/data/", "03_interventions_newdata_childof_operations.csv"))
+```

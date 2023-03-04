@@ -1,0 +1,370 @@
+---
+title: '02a Data Prep - Wikipedia (DBpedia)'
+author:
+  - J Andrés Gannon
+  - Kerry Chavez
+format:
+  html:
+    title-block-banner: true
+    toc: true
+    toc-location: right
+    html-math-method: katex
+    css: styles.css
+    citations-hover: true
+    footnotes-hover: true
+    code-tools: true
+    code-fold: true
+    code-summary: "Show the code"
+    code-overflow: wrap
+    code-copy: true
+editor: visual
+execute:
+  echo: false
+  warning: false
+  cache: true
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+bibliography: ../paper/MONSTr.bib
+---
+
+```{r knitr_options, echo = FALSE, warning = FALSE, cache = FALSE}
+library(knitr)
+library(kableExtra)
+library(magrittr)
+library(ggplot2)
+```
+
+This document processes and cleans data manually entered from dbpedia using the wikipedia infoboxes.
+
+# Load Data
+
+We do some manual cleaning like dropping observations without a wikidata ID, those flagged as not falling under our definition of a military intervention, and reformatting dates
+
+```{r}
+# Load
+df <- read.csv(paste0(here::here(), "/data/raw", "/02a_newdata_dbpedia.csv"))
+
+# Clean
+df <- df %>%
+  dplyr::filter(!is.na(wikidata_id)) %>%
+  dplyr::filter(potential_drop == 0) %>%
+  dplyr::mutate(start_date = as.Date(start_date, "%Y-%m-%d"),
+                end_date = as.Date(end_date, "%Y-%m-%d"))
+
+
+```
+
+# New variables
+
+We create some new variables of interest using the data from dbpedia like operation duration, location coordinates, belligerents, military means, and casualties.
+
+## Duration
+
+```{r}
+df <- df %>%
+  dplyr::mutate(duration = difftime(df$end_date,
+                                    df$start_date,
+                                    units = c("days")))
+
+df %>%
+    dplyr::select(wikidata_name, duration) %>%
+    dplyr::filter(wikidata_name != 'Iraqi–Kurdish conflict') %>%
+    ggplot(aes(x = duration)) + 
+    geom_histogram() + 
+    labs(title = "Duration of US Interventions (1991-2020)", x = "Duration (Days)", y = "Number of Interventions", caption = "Iraqi-Kurdish conflict outlier excluded") +
+    theme_bw()
+```
+
+## Location
+
+Some operation provide the precise lat-lon coordinates while others provide a city or village name. For the latter, we can extract the coordinates that correspond to the named location using the Google Cloud API and ggmap.
+
+```{r}
+locations <- df %>% dplyr::select(location_name) %>%
+  dplyr::mutate(location_name = strsplit(as.character(location_name), ";")) %>%
+  tidyr::unnest(location_name) %>%
+  na.omit() %>%
+  dplyr::mutate(location_name = stringr::str_trim(location_name)) %>%
+  dplyr::distinct()
+```
+
+Google Cloud's API has a daily download limit linked to each user. For privacy, our own Google Cloud is not linked here. Instead, we provide the code chunk where those replicating this script can input their own Cloud ID key to get the same file we do.
+
+```{r, eval = FALSE}
+library(ggmap)
+mykey <- # Insert Google Cloud API key after setting up an account through ggmap
+
+register_google(key = mykey)
+
+locations <- ggmap::mutate_geocode(locations, location_name, key = mykey)
+
+write.csv(locations, paste0(here::here(), "/data/aux/","locations.csv"))
+```
+
+```{r}
+locations <- read.csv(paste0(here::here(), "/data/aux/","locations.csv")) %>%
+  dplyr::select(-X)
+
+# Split
+df <- df %>%
+  tidyr::separate(location_latlong,
+                  c('lat', 'lon'),
+                  sep = " ",
+                  remove = TRUE) %>%
+  dplyr::mutate(lat = parzer::parse_lat(lat),
+                lon = parzer::parse_lon(lon))
+
+# Rename in locations to prevent merge overwrite
+df <- dplyr::left_join(df, locations, by = "location_name")
+
+df <- df %>% dplyr::mutate(lat = dplyr::coalesce(lat.x, lat.y)) %>%
+  dplyr::mutate(lon = dplyr::coalesce(lon.x, lon.y)) %>%
+  dplyr::select(-c('lat.x', 'lat.y', 'lon.x', 'lon.y'))
+```
+
+We can now visualize the location of each US intervention from 1991-2018 that exists in wikipedia. The pop up boxes display the name of the intervention as well as its start and end dates. There are still some errors to parse, but it looks largely right.
+
+```{r}
+df_sf <- df %>% dplyr::filter(!is.na(lat)) %>%
+  dplyr::filter(!is.na(lon))
+
+## New column for means used
+df_sf$means_aerialbombinglab[df_sf$means_aerialbombing == 1] <- "aerial bombing"
+df_sf$means_airtoairlab[df_sf$means_airtoair == 1] <- "air to air"
+df_sf$means_closeairsupportlab[df_sf$means_closeairsupport == 1] <- "close air support"
+df_sf$means_cruisemissileslab[df_sf$means_cruisemissiles == 1] <- "cruise missiles"
+df_sf$means_droneslab[df_sf$means_drones == 1] <- "drone strikes"
+df_sf$means_groundtroopslab[df_sf$means_groundtroops == 1] <- "ground troops"
+df_sf$means_paramilitarylab[df_sf$means_paramilitary == 1] <- "paramilitary"
+
+df_sf$meanslab <- paste0(df_sf$means_aerialbombinglab, ", ", 
+                         df_sf$means_airtoairlab, ", ", 
+                         df_sf$means_closeairsupportlab, ", ", 
+                         df_sf$means_cruisemissileslab, ", ", 
+                         df_sf$means_droneslab, ", ", 
+                         df_sf$means_groundtroopslab, ", ", 
+                         df_sf$means_paramilitarylab)
+
+# Delete NA and ", ," and padding
+df_sf$meanslab <- gsub("NA, ", "", df_sf$meanslab)
+df_sf$meanslab <- gsub(", NA", "", df_sf$meanslab)
+
+# Create pop up label
+## Pop up formatting
+sep <- "<br>"
+close_sep <- "</br>"
+str_open <- "<strong>"
+str_close <- "</strong>"
+
+## Create label column
+df_sf$label <- paste0(sep, str_open, "Intervention: ", str_close, df_sf$wikidata_name, close_sep, 
+                      sep, str_open, "Dates: ", str_close, df_sf$start_date, " to ", df_sf$end_date, close_sep,
+                      sep, str_open, "Location: ", str_close, df_sf$location_name, close_sep,
+                      sep, str_open, "Target: ", str_close, df_sf$belligerent_sideB, close_sep,
+                      sep, str_open, "Means: ", str_close, df_sf$meanslab, close_sep,
+                      sep, str_open, "Result: ", str_close, df_sf$result, close_sep)
+
+# Coerce to sf object
+df_sf <- sf::st_as_sf(df_sf, coords = c("lon", "lat"))
+
+# Calculate center for view
+center_lon <- mean(df$lon, na.rm = TRUE)
+center_lat <- mean(df$lat, na.rm = TRUE)
+
+# Plot with leaflet
+leaflet::leaflet() %>%
+  leaflet::addTiles() %>%
+  leaflet::addCircleMarkers(data = df_sf, popup = df_sf$label, clusterOptions = leaflet::markerClusterOptions()) %>%
+  leaflet::setView(center_lon, center_lat, zoom = 3)
+```
+
+## Belligerents
+
+We want to confirm the US appears in these cases. But it has multiple string values. Can gather by semi-colon delimiters
+
+```{r}
+# sideA
+df$belligerent_sideA <- stringi::stri_replace_all_fixed(df$belligerent_sideA, "(", ";")
+df$belligerent_sideA <- stringi::stri_replace_all_fixed(df$belligerent_sideA, ")", "")
+
+df <- df %>% 
+  dplyr::mutate(belligerent_sideA = strsplit(as.character(belligerent_sideA), ";")) %>%
+  tidyr::unnest(belligerent_sideA) %>%
+  dplyr::mutate(belligerent_sideA = strsplit(as.character(belligerent_sideA), ",")) %>%
+  tidyr::unnest(belligerent_sideA)
+
+df$belligerent_sideA <- stringr::str_trim(df$belligerent_sideA)
+
+sidea <- length(unique(df$belligerent_sideA))
+
+# sideB
+df$belligerent_sideB <- stringi::stri_replace_all_fixed(df$belligerent_sideB, "(", ";")
+df$belligerent_sideB <- stringi::stri_replace_all_fixed(df$belligerent_sideB, ")", "")
+
+df <- df %>% 
+  dplyr::mutate(belligerent_sideB = strsplit(as.character(belligerent_sideB), ";")) %>%
+  tidyr::unnest(belligerent_sideB) %>%
+  dplyr::mutate(belligerent_sideB = strsplit(as.character(belligerent_sideB), ",")) %>%
+  tidyr::unnest(belligerent_sideB)
+
+df$belligerent_sideB <- stringr::str_trim(df$belligerent_sideB)
+
+sideb <- length(unique(df$belligerent_sideB))
+```
+
+There are `r sidea` participants that have fought alongside the US and `r sideb` that have been on the opposing side of the US.
+
+Combine all belligerents into a single list to see which we can match with ccodes and which we already have matched from wikidata. Note that the countrycode matching needs to be cleaned since it's a fuzzy string matcher, so "Coalition Forces in Iraq" is given the country code for Iraq, which is incorrect.
+
+```{r}
+# Combine both sides into a single df
+sidea <- as.data.frame(unique(df$belligerent_sideA)) %>%
+  dplyr::rename(belligerent = "unique(df$belligerent_sideA)")
+sideb <- as.data.frame(unique(df$belligerent_sideB)) %>%
+    dplyr::rename(belligerent = "unique(df$belligerent_sideB)")
+
+belligerent <- dplyr::full_join(sidea, sideb) %>%
+  dplyr::distinct()
+
+# Match with ccodes
+belligerent$ccode <- countrycode::countrycode(belligerent$belligerent, 'country.name', 'cown')
+belligerent$cname <- countrycode::countrycode(belligerent$ccode, 'cown', 'country.name')
+
+bellig_sheet <- read.csv(paste0(here::here(), "/data/aux/","belligerent_list.csv"))
+
+belligerent <- bellig_sheet %>% dplyr::select(belligerent)
+
+extra <- dplyr::anti_join(bellig_sheet, belligerent)
+extra <- nrow(extra)
+
+missing <- dplyr::anti_join(belligerent, bellig_sheet)
+missing <- nrow(missing)
+```
+
+There are `r extra` entities in the belligerent list that are not in the dbpedia sheet and `r missing` entities in the dbpedia sheet that are not in the belligerent list.
+
+## Means
+
+Prep the means data by subsetting to just the DV variables and renaming them for easier human readings.
+
+::: panel-tabset
+## Count of Means
+
+```{r}
+dv <- df %>% 
+  dplyr::select(dplyr::starts_with("means_"))
+dv <- as.data.frame(sapply(dv, as.numeric))
+dv[is.na(dv)] <- 0
+
+dv <- dv %>% 
+  dplyr::rename("Aerial bombing" = means_aerialbombing,
+                "Air-to-air" = means_airtoair,
+                "Close Air Support" = means_closeairsupport,
+                "Cruise missiles" = means_cruisemissiles,
+                "Drones" = means_drones,
+                "Ground troops" = means_groundtroops,
+                "Paramilitary" = means_paramilitary)
+
+dv %>%
+  dplyr::mutate(id = dplyr::row_number()) %>%
+  tidyr::gather(id, means) %>%
+  dplyr::count(id, means) %>%
+  dplyr::filter(means == 1) %>%
+  dplyr::select(-means) %>%
+  ggplot(aes(x = id,
+             y = n)) + 
+  geom_bar(stat = "identity") +
+  labs(title = "Means of US Interventions (1991-2019)",
+       x = "Means",
+       y = "Event Count") +
+  geom_text(aes(label = n),
+            vjust = -0.5,
+            size = 6) +
+  theme_bw() +
+  lims(y = c(0, 250)) +
+  scale_x_discrete(labels = c("means_aerialbombing" = "Aerial bombing",
+                              "means_airtoair" = "Air-to-air",
+                              "means_closeairsupport" = "Close Air Support",
+                              "means_cruisemissiles" = "Cruise missiles",
+                              "means_drones" = "Drones",
+                              "means_groundtroops" = "Ground troops",
+                              "means_paramilitary" = "Paramilitary")) +
+  theme(plot.title = element_text(),
+        panel.grid = element_blank(),
+        text = element_text(size = 16),
+        axis.text.x = element_text(angle = 30,
+                                   hjust = 1,
+                                   vjust = 1))
+```
+
+## Combinations of Means
+
+```{r}
+upsetjs::upsetjs() %>%
+  upsetjs::fromDataFrame(dv) %>%
+  upsetjs::interactiveChart()
+```
+:::
+
+## Casualties
+
+Compare casualties counts by side and specific to the US when that information is available.
+
+::: panel-tabset
+## US and Allies
+
+```{r}
+df %>%
+  dplyr::select(wikidata_id, casualties_sideA) %>%
+  dplyr::mutate(casualties_sideA = as.numeric(casualties_sideA)) %>%
+  ggplot(aes(x = casualties_sideA)) + 
+  geom_histogram() + 
+  labs(title = "Casualties during US Interventions - US and Allies (1991-2020)", x = "Number of Casualties", y = "Number of Interventions") +
+  theme_bw()
+```
+
+## Adversary
+
+```{r}
+df %>%
+    dplyr::select(wikidata_id, casualties_sideB) %>%
+    dplyr::mutate(casualties_sideB = as.numeric(casualties_sideB)) %>%
+    ggplot(aes(x = casualties_sideB)) + 
+    geom_histogram() + 
+    labs(title = "Casualties during US Interventions - US Adversaries (1991-2020)", x = "Number of Casualties", y = "Number of Interventions") +
+    theme_bw()
+```
+
+## Civilians
+
+```{r}
+df %>%
+    dplyr::select(wikidata_id, casualties_civilian) %>%
+    dplyr::mutate(casualties_civilian = as.numeric(casualties_civilian)) %>%
+    ggplot(aes(x = casualties_civilian)) + 
+    geom_histogram() + 
+    labs(title = "Casualties during US Interventions - Civilians (1991-2020)", x = "Number of Casualties", y = "Number of Interventions") +
+    theme_bw()
+```
+
+## US
+
+```{r}
+df %>%
+    dplyr::select(wikidata_id, casualties_us) %>%
+    dplyr::mutate(casualties_us = as.numeric(casualties_us)) %>%
+    ggplot(aes(x = casualties_us)) + 
+    geom_histogram() + 
+    labs(title = "Casualties during US Interventions - US (1991-2020)", x = "Number of Casualties", y = "Number of Interventions") +
+    theme_bw()
+```
+:::
+
+# Save data
+
+We save the final dataframe of the variables identified from dbpedia.
+
+```{r}
+write.csv(df, paste0(here::here(), "/data/","02a_interventions_newdata_dbpedia.csv"))
+
+sessionInfo()
+```

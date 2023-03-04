@@ -1,0 +1,611 @@
+---
+title: "06 Figures"
+author:
+  - J Andrés Gannon
+  - Kerry Chavez
+format:
+  html:
+    title-block-banner: true
+    toc: true
+    toc-location: right
+    html-math-method: katex
+    css: styles.css
+    citations-hover: true
+    footnotes-hover: true
+    code-tools: true
+    code-fold: true
+    code-summary: "Show the code"
+    code-overflow: wrap
+    code-copy: true
+editor: visual
+execute:
+  echo: false
+  warning: false
+  cache: true
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+---
+
+# Set up
+
+```{r}
+library(magrittr)
+library(tidyverse)
+library(ggplot2)
+```
+
+Load the cleaned intervention data that only includes youngest children
+
+```{r}
+# New data
+df_interv <- read.csv(paste0(here::here(), "/data/","MONSTr.csv"))
+
+# Prior data
+icb <- read.csv(paste0(here::here(),"/inst/extdata/icb2v12.csv")) %>%
+  dplyr::filter(yrtrig >= 1989 &
+                  actor == "USA")
+
+imi <- read.csv(paste0(here::here(),"/inst/extdata/IMI/IMI_dataset.csv")) %>%
+  dplyr::filter(start >= 19890101 &
+                  intervener == 2)
+imi$start <- gsub('.{4}$', '', imi$start)
+
+mids <- read.csv(paste0(here::here(),"/inst/extdata/MIDs/MIDs_dispute-participants.csv")) %>%
+  dplyr::filter(styear >= 1989 &
+                  ccode == 2)
+
+mips <- read.csv(paste0(here::here(),"/inst/extdata/MIPS/MIPS_dataset.csv")) %>%
+  dplyr::filter(styr >= 1989 &
+                  MP == 2)
+
+mip <- readstata13::read.dta13(paste0(here::here(),"/inst/extdata/MIP/MIPDataKushiToft.dta")) %>%
+  dplyr::filter(styear >= 1989 &
+                  RemoveCase == 0)
+  
+prio <- read.csv(paste0(here::here(),"/inst/extdata/PRIO/UCDP-PRIO_armed_conflict_dataset.csv")) %>%
+  dplyr::filter(year >= 1989 &
+                  side_a_id == 3) # PRIO does not use the GW identifier. It is confirmed that this refers to the USA
+
+rand <- read.csv(paste0(here::here(),"/inst/extdata/rand_interventionlist.csv")) %>%
+  dplyr::filter(incident_start_year >= 1989)
+
+allen_17 <- readstata13::read.dta13(paste0(here::here(), "/inst/extdata/AllenMtzMachainAerialBombingData2016CMPS.dta")) %>%
+  dplyr::filter(year >= 1989,
+                ccode1 == 2)
+
+horowitz_01 <- foreign::read.dta(paste0(here::here(), "/inst/extdata/jcr01.dta")) %>%
+  dplyr::filter(attacker %in% c('United States', 'Allies', 'U.S./Britain', 'NATO', 'US')) %>%
+  dplyr::mutate(date = dplyr::recode(date,
+                                     '1944-1945' = "1944",
+                                     '1942-1944' = "1942",
+                                     'Aug. 1945' = "1945",
+                                     '1965-1968' = "1965",
+                                     '1950-1951' = "1950")) %>%
+  dplyr::mutate(date = as.numeric(date)) %>%
+  dplyr::filter(date >= 1989)
+```
+
+# Sample table
+
+Sample table showing a sample of operations and some relevant covariates.
+
+```{r}
+df_interv %>%
+  dplyr::filter(parent_name == "Iraq conflict (2003–present)") %>%
+  dplyr::slice_sample(n = 8) %>%
+  dplyr::select(wikidata_name,
+                means_aerialbombing, means_closeairsupport, means_groundtroops, means_paramilitary,
+                lat, lon,
+                start_date, end_date, duration, daysinto_parent,
+                casualties_sideA, casualties_sideB, casualties_civilian) %>%
+  dplyr::rename(Operation = wikidata_name,
+                'Aerial bombing' = means_aerialbombing,
+                'CAS' = means_closeairsupport,
+                'Ground troops' = means_groundtroops,
+                'Paramilitary' = means_paramilitary,
+                Lat = lat,
+                Lon = lon,
+                Start = start_date,
+                End = end_date,
+                Duration = duration,
+                'Days into war' = daysinto_parent,
+                'Side A' = casualties_sideA,
+                'Side B' = casualties_sideB,
+                'Civilian' = casualties_civilian) %>%
+  kable(caption = "Sample of Iraq War (2003) operations",
+        label = "tbl:comparison-sample",
+        format = "latex") %>%
+  kable_classic() %>%
+  row_spec(0, bold = TRUE) %>%
+  add_header_above(c("", "Means" = 4, "Location" = 2, "Time" = 4, "Casualties" = 3)) %>%
+  kable_styling(latex_options = "scale_down") %>%
+  save_kable(file = paste0(here::here(), "/paper/figures/","sample.tex"))
+```
+
+# Nested dependencies
+
+```{r}
+dependency <- read.csv(paste0(here::here(), "/data/raw/","03_newdata_childof.csv")) %>%
+  dplyr::select(wikidata_name, childof_name, realparent) %>%
+  dplyr::filter(realparent == 1 |
+                  is.na(realparent)) %>%
+  dplyr::distinct() %>%
+  dplyr::select(-realparent) %>%
+  dplyr::mutate(childof_name = dplyr::if_else(childof_name == "NA", "intervention", childof_name)) %>%
+  dplyr::rename(child = wikidata_name,
+                parent = childof_name) %>%
+  dplyr::select(parent, child) %>%
+  dplyr::mutate_all( ~ stringr::str_replace_all(., " ", "_")) %>%
+  na.omit()
+
+# Testing
+library(igraph)
+tree <- igraph::graph_from_edgelist(as.matrix(dependency))
+
+library(ggraph)
+ggraph(tree, layout = 'tree') +
+  geom_edge_diagonal(edge_width = 0.05,
+                 color = 'steelblue') +
+  geom_node_point(size = 0.05) +
+  coord_flip() +
+  scale_y_reverse() +
+  theme_void()
+
+ggsave(height = 10, paste0(here::here(), "/paper/figures/","fig-dendrogram-1.png"))
+```
+
+# Nested Gulf War
+
+```{r}
+# fig height 4, width 6
+
+dependency <- read.csv(paste0(here::here(), "/data/raw/","03_newdata_childof.csv")) %>%
+  dplyr::select(wikidata_name, childof_name, realparent) %>%
+  dplyr::filter(realparent == 1 |
+                  is.na(realparent)) %>%
+  dplyr::distinct() %>%
+  dplyr::select(-realparent) %>%
+  dplyr::mutate(childof_name = dplyr::if_else(childof_name == "NA", "intervention", childof_name)) %>%
+  dplyr::rename(child = wikidata_name,
+                parent = childof_name) %>%
+  dplyr::select(parent, child) %>%
+  dplyr::mutate_all( ~ stringr::str_replace_all(., " ", "_")) %>%
+  na.omit() %>%
+    dplyr::filter(parent %in% c("Gulf_War",
+                              "Gulf_War_air_campaign",
+                              "Iraqi_no-fly_zones",
+                              "Liberation_of_Kuwait_campaign",
+                              "Lead-up_to_the_Iraq_War",
+                              "Operation_Southern_Watch")) %>%
+  dplyr::filter(!child %in% c("Operation_Desert_Shield",
+                              "Operation_Instant_Thunder",
+                              "Operation_Desert_Thunder",
+                              "Kurdistan_Islamist_Conflict",
+                              "Defense_of_Saudi_Arabian_country",
+                              "Battle_of_Bubiyan",
+                              "Battle_for_Jalibah_Airfield",
+                              "Battle_of_Al_Busayyah",
+                              "Battle_of_Medina_Ridge",
+                              "Battle_of_Phase_Line_Bullet",
+                              "Battle_of_Rumaila",
+                              "Iraqi_Kurdish_Civil_War"))
+
+# Defense of Saudi Arabian country for the period 2 August 1990, through 16 January 1991.
+# Liberation and Defense of Kuwait for the period 17 January 1991, through 11 April 1991.
+# Southwest Asia Cease-Fire for the period 12 April 1991, through 30 November 1995, including Operation Provide Comfort.
+
+# Phylo tree
+library(ggtree)
+tree <- dependency %>%
+  treeio::as.phylo() %>%
+  ggtree::ggtree(color = "black",
+                 linetype = 1,
+                 layout = "roundrect") +
+  geom_tiplab(size = 3) +
+  geom_nodelab(geom = "label",
+               size = 3) +
+  xlim(-0.1, 4.5)
+
+tree$data$label <- stringr::str_replace_all(tree$data$label, "_", " ")
+
+# Heatmap of the above child nodes
+heat <- dependency %>%
+  dplyr::filter(child %in% c("1993_cruise_missile_strikes_on_Iraq",
+                             "Amiriyah_shelter_bombing",
+                             "Attack_on_Ras_Tanura",
+                             "Battle_of_73_Easting",
+                             "Battle_of_Ad-Dawrah",
+                             "Battle_of_Khafji",
+                             "Battle_of_Kuwait_International_Airport",
+                             "Battle_of_Norfolk",
+                             "Battle_of_Qurah_and_Umm_al_Maradim",
+                             "Battle_of_Wadi_Al-Batin",
+                             "Bombing_of_Iraq",
+                             "Cruise_missile_strikes_on_Iraq",
+                             "January_1993_airstrikes_on_Iraq",
+                             "Package_Q_Strike",
+                             "Operation_Desert_Spring",
+                             "Operation_Northern_Watch",
+                             "Operation_Provide_Comfort",
+                             "Operation_Senior_Surprise",
+                             "Operation_Southern_Focus",
+                             "Operation_Vigilant_Sentinel",
+                             "Operation_Vigilant_Warrior",
+                             "Samurra_Air_Battle"))
+
+df_interv_heat <- df_interv %>%
+  dplyr::select(wikidata_name, dplyr::starts_with("means_")) %>%
+  dplyr::mutate_all( ~ stringr::str_replace_all(., " ", "_"))
+
+heat <- dplyr::left_join(heat, df_interv_heat, by = c("child" = "wikidata_name")) %>%
+  dplyr::select(child, dplyr::starts_with("means_"))  %>%
+  tidyr::pivot_longer(cols = dplyr::starts_with("means_"),
+                      names_to = "means",
+                      values_to = "used") %>%
+  dplyr::mutate(means = stringr::str_remove(means, "means_"),
+                used = as.numeric(used))
+
+heat <- heat %>%
+  dplyr::mutate(child = stringr::str_replace_all(child, "_", " ")) %>%
+  dplyr::mutate(child = as.factor(child)) %>%
+  dplyr::mutate(child = forcats::fct_relevel(child, 
+                                             "Amiriyah shelter bombing",
+                                             "Attack on Ras Tanura",
+                                             "Package Q Strike",
+                                             "Samurra Air Battle",
+                                             "Battle of 73 Easting",
+                                             "Battle of Ad-Dawrah",
+                                             "Battle of Khafji",
+                                             "Battle of Kuwait International Airport",
+                                             "Battle of Norfolk",
+                                             "Battle of Qurah and Umm al Maradim",
+                                             "Battle of Wadi Al-Batin",
+                                             "Operation Senior Surprise",
+                                             "Cruise missile strikes on Iraq",
+                                             "Operation Vigilant Sentinel",
+                                             "Operation Desert Spring",
+                                             "Operation Northern Watch",
+                                             "Operation Provide Comfort",
+                                             "1993 cruise missile strikes on Iraq",
+                                             "Bombing of Iraq",
+                                             "January 1993 airstrikes on Iraq",
+                                             "Operation Southern Focus",
+                                             "Operation Vigilant Warrior"))
+
+hmap <- ggplot2::ggplot(heat,
+                  aes(y = child, x = means, fill = used)) +
+  geom_tile(color = "white",
+            lwd = 0.3) +
+  scale_fill_gradient(low = "white", high = "red") +
+  theme(legend.position = "none",
+        axis.text.y = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.x = element_text(angle = 90,
+                                   vjust = -1),
+        axis.title.x = element_blank(),
+        panel.border = element_rect(color = "black", fill = NA, size = 1)) +
+  coord_fixed() +
+  scale_x_discrete(position = "top",
+                   limits = c("drones",
+                              "cruisemissiles",
+                              "airtoair",
+                              "aerialbombing",
+                              "closeairsupport",
+                              "groundtroops",
+                              "paramilitary"),
+                   labels = c("Drones",
+                              "Cruise Missiles",
+                              "Air-to-Air",
+                              "Aerial Bombing",
+                              "Close Air Support",
+                              "Ground Troops",
+                              "Paramilitary"))
+
+cowplot::plot_grid(tree, hmap, align = "h", rel_widths = c(4.7, 1)) %>%
+  cowplot::save_plot(filename = paste0(here::here(), "/paper/figures/","fig-nested-1.png"))
+```
+
+# Map
+
+```{r}
+df_sf <- read.csv(paste0(here::here(), "/data/","MONSTr.csv")) %>%
+  dplyr::filter(!is.na(lat) & !is.na(lon)) %>%
+  sf::st_as_sf(coords = c("lon", "lat"))
+
+# Calculate center for view
+WorldData <- rworldmap::getMap(resolution = "high") %>%
+  sf::st_as_sf()
+
+theme_map <- function(base_size = 9, base_family = "") {
+  theme_bw(base_size = base_size, base_family = base_family) %+replace%
+    theme(axis.line = element_blank(),
+          axis.text = element_blank(),
+          axis.ticks = element_blank(),
+          axis.title = element_blank(),
+          panel.background = element_blank(),
+          panel.border = element_blank(),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0, "lines"),
+          plot.background = element_blank(),
+          legend.justification = c(0, 0)#,
+          #legend.position = c(1,1)
+    )
+  }
+
+df_map <- df_interv %>%
+  dplyr::filter(!is.na(urban_binary)) %>%
+  dplyr::mutate(means_ground = ifelse(means_groundtroops == 1 |
+                                        means_paramilitary == 1, 1, 0),
+                means_air = ifelse(means_aerialbombing == 1 |
+                                     means_airtoair == 1 |
+                                     means_drones == 1 |
+                                     means_closeairsupport == 1 |
+                                     means_cruisemissiles == 1, 1, 0),
+                means_factor = ifelse(means_ground == 1 &
+                                        means_air == 0, "Ground", NA),
+                means_factor = ifelse(means_air == 1 &
+                                        means_ground == 0, "Air", means_factor),
+                means_factor = ifelse(means_ground == 1 &
+                                        means_air == 1, "Mixed", means_factor),
+                urban_binary = ifelse(urban_binary == 1, "Urban Target", "Non-urban Target")) %>%
+  dplyr::filter(!is.na(means_factor))
+
+ggplot(data = WorldData) +
+  geom_sf(fill = "antiquewhite1",
+          size = 0.25) +
+  coord_sf(xlim = c(35, 75), ylim = c(28, 39), expand = FALSE) +
+  geom_sf_text(data = WorldData[WorldData$SOVEREIGNT %in% c("Afghanistan", "Pakistan", "Iraq", "Syria", "Kuwait"), ],
+               aes(label = NAME),
+               size = 2.5) +
+  geom_point(data = df_map,
+             aes(x = lon, y = lat,
+                 color = means_factor),
+             size = 0.8) +
+  facet_wrap(~ urban_binary,
+             ncol = 1) +
+  scale_color_manual(values = c("#7570b3", "#1b9e77", "#d95f02")) +
+  xlab("") + ylab("") + labs(color = "Military Means") +
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = "dashed", size = 0.25),
+        panel.background = element_rect(fill = "aliceblue"),
+        legend.position = "bottom",
+        axis.text = element_text(size = 5),
+        strip.background = element_rect(fill = "white"),
+        strip.text = element_text(hjust = 0),
+        plot.margin = margin(0, 0, 0, 0, "cm")) +
+  guides(color = guide_legend(override.aes = list(size = 4)))
+
+ggsave(height = 5, width = 6, paste0(here::here(), "/paper/figures/","fig-map-1.png"))
+```
+
+# Network plot
+
+```{r}
+# load
+counts <- read.csv(paste0(here::here(), "/data/raw/","02a_newdata_dbpedia.csv"))
+
+parents <- read.csv(paste0(here::here(), "/data/","MONSTr.csv")) %>%
+  dplyr::select(wikidata_id, parent_id, parent_name)
+
+# Gulf War
+## New df of node attributes
+nodes <- dplyr::left_join(counts, parents) %>%
+  dplyr::filter(parent_name == "Gulf War") %>%
+  dplyr::select(wikidata_name, belligerent_sideA) %>%
+  dplyr::count(belligerent_sideA)
+
+qcodes <- read.csv(paste0(here::here(), "/data/aux/","belligerent_list.csv")) %>%
+  dplyr::filter(is.na(ccode_wrong)) %>%
+  dplyr::select(belligerent, ccode, cname, Qcode) %>%
+  dplyr::rename(belligerent2 = belligerent,
+                ccode2 = ccode,
+                cname2 = cname,
+                qcode2 = Qcode)
+
+nodes <- dplyr::left_join(nodes, qcodes,
+                          by = c("belligerent_sideA" = "belligerent2")) %>%
+  dplyr::mutate(sideA_nonstate = dplyr::if_else(is.na(ccode2), 1, 0),
+                label = dplyr::if_else(is.na(cname2), belligerent_sideA, cname2)) %>%
+  dplyr::select(label, belligerent_sideA, n, sideA_nonstate) %>%
+  dplyr::filter(!label %in% c("US-led coalition"))
+
+## Prep adjacency matrix
+actors <- dplyr::left_join(counts, parents) %>%
+  dplyr::filter(parent_name == "Gulf War") %>%
+  dplyr::select(wikidata_name, wikidata_id, belligerent_sideA) %>%
+  dplyr::distinct()
+
+net_actor <- dplyr::left_join(actors, nodes) %>%
+  dplyr::select(wikidata_name, label) %>%
+  dplyr::filter(!label %in% c("US-led coalition"),
+                !is.na(label))
+
+## Prep network
+library(igraph)
+
+network_gulf <- as.matrix(reshape2::dcast(wikidata_name ~ label, data = net_actor, length)[,-1]>0 )
+network_gulf <- t(network_gulf) %*% network_gulf
+network_gulf <- igraph::graph_from_adjacency_matrix(network_gulf,
+                                               mode = "undirected",
+                                               weighted = TRUE,
+                                               diag = FALSE)
+
+## Set node colors for state vs non-state
+library(RColorBrewer)
+colrs  <- RColorBrewer::brewer.pal(3, "Dark2") 
+network_gulf <- set_vertex_attr(network_gulf, "type", nodes$label, nodes$sideA_nonstate)
+V(network_gulf)["United States"]$type <- "center"
+my_color_gulf <- colrs[as.numeric(as.factor(V(network_gulf)$type))]
+
+deg <- degree(network_gulf, mode = "all")
+E(network_gulf)$width <- E(network_gulf)$weight
+
+## Visualize network
+l <- layout_with_graphopt(network_gulf,
+                          charge = 5)
+
+# Afghanistan war
+## New df of node attributes
+nodes <- dplyr::left_join(counts, parents) %>%
+  dplyr::filter(parent_name == "War in Afghanistan") %>%
+  dplyr::select(wikidata_name, belligerent_sideA) %>%
+  dplyr::count(belligerent_sideA)
+
+qcodes <- read.csv(paste0(here::here(), "/data/aux/","belligerent_list.csv")) %>%
+  dplyr::filter(is.na(ccode_wrong)) %>%
+  dplyr::select(belligerent, ccode, cname, Qcode) %>%
+  dplyr::rename(belligerent2 = belligerent,
+                ccode2 = ccode,
+                cname2 = cname,
+                qcode2 = Qcode)
+
+nodes <- dplyr::left_join(nodes, qcodes,
+                          by = c("belligerent_sideA" = "belligerent2")) %>%
+  dplyr::mutate(sideA_nonstate = dplyr::if_else(is.na(ccode2), 1, 0),
+                label = dplyr::if_else(is.na(cname2), belligerent_sideA, cname2)) %>%
+  dplyr::select(label, belligerent_sideA, n, sideA_nonstate) %>%
+  dplyr::filter(!label %in% c("Coalition forces",
+                              "International Security Assistance Force",
+                              "ISAF",
+                              "NATO",
+                              "Resolute Support Mission"))
+
+## Prep adjacency matrix
+actors <- dplyr::left_join(counts, parents) %>%
+  dplyr::filter(parent_name == "War in Afghanistan") %>%
+  dplyr::select(wikidata_name, wikidata_id, belligerent_sideA) %>%
+  dplyr::distinct()
+
+net_actor <- dplyr::left_join(actors, nodes) %>%
+  dplyr::select(wikidata_name, label) %>%
+  dplyr::filter(!label %in% c("Coalition forces",
+                              "International Security Assistance Force",
+                              "ISAF",
+                              "NATO",
+                              "Resolute Support Mission"),
+                !is.na(label))
+
+## Prep network
+library(igraph)
+
+network_isaf <- as.matrix(reshape2::dcast(wikidata_name ~ label, data = net_actor, length)[,-1]>0 )
+network_isaf <- t(network_isaf) %*% network_isaf
+network_isaf <- igraph::graph_from_adjacency_matrix(network_isaf,
+                                               mode = "undirected",
+                                               weighted = TRUE,
+                                               diag = FALSE)
+
+# Set node colors for state vs non-state
+library(RColorBrewer)
+colrs  <- RColorBrewer::brewer.pal(3, "Dark2") 
+network_isaf <- set_vertex_attr(network_isaf, "type", nodes$label, nodes$sideA_nonstate)
+V(network_isaf)["United States"]$type <- "center"
+my_color_isaf <- colrs[as.numeric(as.factor(V(network_isaf)$type))]
+ 
+deg <- degree(network_isaf, mode = "all")
+E(network_isaf)$width <- E(network_isaf)$weight/3
+
+# Visualize network
+l <- layout_with_graphopt(network_isaf,
+                          charge = 5)
+
+# Syrian War
+## Prep
+nodes <- dplyr::left_join(counts, parents) %>%
+  dplyr::filter(parent_name == "Syrian Civil War") %>%
+  dplyr::select(wikidata_name, belligerent_sideA) %>%
+  dplyr::count(belligerent_sideA)
+
+qcodes <- read.csv(paste0(here::here(), "/data/aux/","belligerent_list.csv")) %>%
+  dplyr::filter(is.na(ccode_wrong)) %>%
+  dplyr::select(belligerent, ccode, cname, Qcode) %>%
+  dplyr::rename(belligerent2 = belligerent,
+                ccode2 = ccode,
+                cname2 = cname,
+                qcode2 = Qcode)
+
+sort(unique(nodes$label))
+
+nodes <- dplyr::left_join(nodes, qcodes,
+                          by = c("belligerent_sideA" = "belligerent2")) %>%
+  dplyr::mutate(sideA_nonstate = dplyr::if_else(is.na(ccode2), 1, 0),
+                label = dplyr::if_else(is.na(cname2), belligerent_sideA, cname2)) %>%
+  dplyr::select(label, belligerent_sideA, n, sideA_nonstate) %>%
+  dplyr::filter(!label %in% c("CJTF-OIR",
+                              "Islamic State of Iraq and the Levant"))
+
+# Prep adjacency matrix
+actors <- dplyr::left_join(counts, parents) %>%
+  dplyr::filter(parent_name == "Syrian Civil War") %>%
+  dplyr::select(wikidata_name, wikidata_id, belligerent_sideA) %>%
+  dplyr::distinct()
+
+net_actor <- dplyr::left_join(actors, nodes) %>%
+  dplyr::select(wikidata_name, label) %>%
+  dplyr::filter(!label %in% c("CJTF-OIR",
+                              "Islamic State of Iraq and the Levant"),
+                !is.na(label))
+
+# Prep network
+library(igraph)
+
+network_syria <- as.matrix(reshape2::dcast(wikidata_name ~ label, data = net_actor, length)[,-1]>0 )
+network_syria <- t(network_syria) %*% network_syria
+network_syria <- igraph::graph_from_adjacency_matrix(network_syria,
+                                               mode = "undirected",
+                                               weighted = TRUE,
+                                               diag = FALSE)
+
+# Set node colors for state vs non-state
+library(RColorBrewer)
+colrs  <- RColorBrewer::brewer.pal(3, "Dark2") 
+network_syria <- set_vertex_attr(network_syria, "type", nodes$label, nodes$sideA_nonstate)
+V(network_syria)["United States"]$type <- "center"
+my_color_syria <- colrs[as.numeric(as.factor(V(network_syria)$type))]
+
+deg <- degree(network_syria, mode = "all")
+E(network_syria)$width <- E(network_syria)$weight
+
+# Combine all plots
+## Fix color matches by switching orange to purple for ISAF
+my_color_gulf[my_color_gulf == "#D95F02"] <- "#7570B3"
+
+par(mfrow = c(2, 2),
+    mar = c(1, 0, 1, 0))
+
+l <- layout_with_gem(network_gulf)
+n_gulf <- plot(network_gulf,
+               edge.color = "gray",
+               vertex.shape = "none",
+               vertex.label.cex = 0.7,
+               vertex.label.color = my_color_gulf,
+               layout = l,
+               main = "Gulf War (1991)",
+               asp = 0)
+
+l <- layout_with_gem(network_isaf)
+n_isaf <- plot(network_isaf,
+               edge.color = "gray",
+               vertex.shape = "none",
+               vertex.label.cex = 0.7,
+               vertex.label.color = my_color_isaf,
+               layout = l,
+               main = "War in Afghanistan (2001)",
+               asp = 0)
+
+l <- layout_with_gem(network_syria)
+n_syria <- plot(network_syria,
+                edge.color = "gray",
+                vertex.shape = "none",
+                vertex.label.cex = 0.7,
+                vertex.label.color = my_color_syria,
+                layout = l,
+                main = "Syrian Civil War (2015)",
+                asp = 0)
+
+legend(x = 2.1, y = 0.6,
+       c("State ally","Non-state ally", "US"),
+       xpd = NA,
+       pch = 21,
+       col = "#777777",
+       pt.bg = colrs, pt.cex = 2, cex = .8, bty = "n", ncol = 1)
+```

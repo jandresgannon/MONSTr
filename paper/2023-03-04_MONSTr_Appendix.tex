@@ -1,0 +1,422 @@
+\documentclass[fleqn,12pt]{article}
+
+\usepackage{setspace,url,fullpage,latexsym,amsmath,amsthm,amssymb,pifont,graphicx,appendix,float,rotating,caption,subcaption,multirow,longtable,colortbl,natbib,graphics,graphicx,enumitem,pdflscape,epstopdf,verbatim,longtable}
+
+\setcitestyle{aysep={},yysep={;}}
+\bibliographystyle{apsr}
+
+
+\usepackage{lipsum}
+\usepackage{filecontents}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{cleveref}
+\usepackage{pdflscape}
+\usepackage{afterpage}
+\usepackage{capt-of}
+\usepackage{soul}
+\hypersetup{
+	backref =       true,
+	pagebackref  =  true,
+	colorlinks =    true,
+	linkcolor =     blue,
+	anchorcolor =   [rgb]{0.0,0.9,0.9},
+	citecolor =     blue,
+	filecolor =     [rgb]{0.0,0.1,0.7},
+	urlcolor =      [rgb]{0.0,0.0,0.7},
+}
+
+% Packages for regression table
+\usepackage{booktabs}
+\usepackage{siunitx}
+\newcolumntype{d}{S[
+    input-open-uncertainty=,
+    input-close-uncertainty=,
+    parse-numbers = false,
+    table-align-text-pre=false,
+    table-align-text-post=false
+ ]}
+
+\doublespacing
+\setlist{nosep,after=\vspace{\baselineskip}}
+
+\title{\singlespacing Supplemental Appendix for \textit{A Wiki-based Dataset of Military Operations with Novel Strategic Technologies (MONSTr)}}
+\author{Authorship Anonymized}
+\vspace{.1cm}
+\date{}
+
+\usepackage{helvet}
+\usepackage{titlesec}
+
+\titleformat{\subsubsection}
+{\normalfont\fontsize{12}{17}\bfseries\slshape}
+{\thesubsection}
+{1em}
+{}
+
+\begin{document}
+\maketitle
+
+\doublespacing
+\renewcommand\thetable{A\arabic{table}}
+\renewcommand\thefigure{A\arabic{figure}}
+\thispagestyle{empty}
+
+This appendix accompanies the paper ``A Wiki-based Dataset of Military Operations with Novel Strategic Technologies (MONSTr)". It provides supplemental information concerning the dataset criteria and covariates, its relationship to other datasets, validation, coding, and descriptive statistics for data used in the demo model.
+
+\tableofcontents
+
+\newpage
+\section{Comparison of Dataset Definitions and Scope}
+
+         \begin{table}[H]
+		\begin{center}
+			\caption{Definitional Boundaries Across Datasets Capturing Military Interventions} 
+			\label{tableA1}
+			\footnotesize
+			\begin{tabular}{lccccc}
+				\hline \hline
+				\noalign{\vskip 0.15cm}
+				\textbf{Dataset} $\rightarrow$ & \textit{MONSTr} & \textit{MIPS} & \textit{IMI} & \textit{MIP} & \textit{RAND} \\
+				\textbf{Criterion} $\downarrow$ & & & & & \\
+				\noalign{\vskip 0.15cm}
+				\hline
+				\noalign{\vskip 0.15cm}
+				\textit{Political} & \checkmark & \checkmark & \checkmark & \ding{53} & \ding{53} \\
+				\noalign{\vskip 0.15cm}
+				\hline
+				\noalign{\vskip 0.15cm}
+				\textit{Size Threshold} & none & 500 & none & none & 1000 \\
+				\noalign{\vskip 0.15cm}
+				\hline
+				\noalign{\vskip 0.15cm}
+				\textit{Target} & any foreign & any foreign & any foreign & state actor & any foreign \\
+				\noalign{\vskip 0.15cm}
+				\hline
+				\noalign{\vskip 0.15cm}
+				\textit{Threats} & \ding{53} & \ding{53} & \ding{53} & \checkmark & \checkmark \\
+				\noalign{\vskip 0.15cm}
+				\hline
+				\noalign{\vskip 0.15cm}
+				\textit{Training Exercises} & \ding{53} & \ding{53} & \ding{53} & \checkmark & \checkmark \\
+				\noalign{\vskip 0.15cm}
+				\hline
+				\noalign{\vskip 0.15cm}
+				\textit{Troop Movement / Mobilization} & \ding{53} & \ding{53} & \ding{53} & \checkmark & \checkmark \\
+				\noalign{\vskip 0.15cm}
+				\hline
+				\noalign{\vskip 0.15cm}
+				\textit{Diplomatic Cover / Evacuation} & \ding{53} & \ding{53} & \checkmark & \checkmark & \checkmark \\
+				\noalign{\vskip 0.15cm}
+				\hline
+				\noalign{\vskip 0.15cm}
+				\textit{Humanitarian Force} & \ding{53} & \ding{53} & \checkmark & \checkmark & \checkmark \\
+				\noalign{\vskip 0.15cm}
+				\hline
+				\noalign{\vskip 0.15cm}
+				\textit{Unintentional Contingencies} & \ding{53} & \ding{53} & \ding{53} & \checkmark & \checkmark \\
+				\noalign{\vskip 0.15cm}
+				\hline
+				\noalign{\vskip 0.15cm}
+				\textit{Airspace Violations} & \ding{53} & \ding{53} & \ding{53} & \checkmark & \checkmark \\
+				\noalign{\vskip 0.15cm}
+				\hline
+				\noalign{\vskip 0.15cm}
+				\textit{Sanctions Enforcement} & \ding{53} & \ding{53} & \ding{53} & \checkmark & \checkmark \\
+				\noalign{\vskip 0.15cm}
+				\hline
+				\noalign{\vskip 0.15cm}
+				\textit{Irregular Troops} & * & \ding{53} & \ding{53} & \checkmark & \checkmark \\
+				\noalign{\vskip 0.15cm}
+				\hline \hline
+                    \multicolumn{6}{l}
+    
+                {\parbox[b][.5in][c]{6.2in}{\scriptsize{\textbf{Note}: MONSTr features operations nested within interventions. This table demonstrates our scoping conditions for how we identify military interventions within which to collect component cases at the level of our unit of analysis.}}}
+			\end{tabular}
+		\end{center}
+	\end{table}
+\setstretch{2.0}
+
+\section{Validation checks}
+To verify Wikipedia's codings of the variables, we performed manual validation checks on a random 6\% sample of the observations in the data prior to our work identifying operations. Since accuracy about Wikipedia's coverage of operations and higher aggregation interventions is of interest, we found value in checking both. Consequently, the sample was drawn from all Wikipedia pages on US military activities, not just the observations later culled and used in the statistical model.
+
+The authors consulted with personnel from all four of the major military services to identify reputable government sources that could contain information on military operations. For each observation, the following list of government sources was searched for a match based on the name of the military operation:\footnote{The date was also included in searches where necessary to produce accurate search results, especially given that Wikipedia naming conventions sometimes differ from the military's. For example, the observation that Wikipedia identifies as the ``Second Battle of Fallujah" is not known as the ``Second" in official records, so dates are used to ensure the correct match.} \\
+
+\begin{itemize}
+    \item Air Force Historical Research Agency
+    \item Air Force Public Affairs Office
+    \item Army Asymmetric Working Group
+    \item Army Center for Military History
+    \item Army Contemporary Operations Study Team
+    \item Army Combined Arms Center
+    \item Center for Army Lessons Learned
+    \item Marines Battle Study Packages
+\end{itemize}
+
+Once a match was located in a government source, variables were verified for the start and end date, location (either geo-coordinates or city/town name,  government sources primarily providing the latter), belligerents (both allied partners and adversaries) and the military means used. In cases where none of the selected government or military sources contained information about an operation, reputable think tank sources or news outlets were used. To avoid circularity in validation, we were mindful to select news outlets that were not themselves cited in the Wikipedia article, although that was not possible in a few instances. Two Freedom of Information Act (FOIA) requests were also filed for After Action Reports (AAR), Battle Damage Assessments (BDA), and ship deck logs for dates and ships where known missile attacks occurred but little open source evidence existed. CENTCOM FOIA \#18-0027 was returned without any information, as it was all deemed classified. AFRICOM FOIA \#2017-78 was returned with partially redacted information on cruise missile targets from select naval vessels that validated some of the data on Wikipedia.
+
+The random sample chosen for validation, verification sources used for each case, and data evaluations are provided in full below. 
+
+\vspace{0.3cm}
+\noindent
+\textbf{Observation:} Deir ez-Zor Governorate clashes (April 2018)
+\begin{itemize}
+    \item \textit{Verification source:} \href{https://reliefweb.int/report/syrian-arab-republic/informal-site-and-settlement-profiles-deir-ez-zor-governorate-syria-september-2022}{REACH NGO}, \href{https://www.reuters.com/article/us-mideast-crisis-syria-euphrates/syrian-army-says-captured-villages-from-u-s-backed-forces-idUSKBN1I00EX}{Reuters}
+    \item \textit{Evaluation:} exact matches
+\end{itemize}
+
+\noindent
+\textbf{Observation:} Insurgency in Khyber Pakhtunkhwa
+\begin{itemize}
+    \item \textit{Verification source:} \href{https://crsreports.congress.gov/product/pdf/IF/IF11934}{Congressional Research Service (CRS)}, \href{https://www.reuters.com/article/us-pakistan-militants-alliance-idUSKBN0M81WF20150312}{Reuters}
+    \item \textit{Evaluation:} exact matches
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} Second Battle of Fallujah
+\begin{itemize}
+    \item \textit{Verification source:} \href{https://www.usmcu.edu/Portals/218/FALLUJAH.pdf}{Marines Battle Study Packages}
+    \item \textit{Evaluation:} exact matches
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} Banja Luka incident
+\begin{itemize}
+    \item \textit{Verification source:} \href{https://www.afhra.af.mil/Portals/16/documents/Airmen-at-War/Haulman-MannedAircraftLossesYugoslavia1994-1999.pdf?ver=2016-08-22-131404-383}{Air Force Historical Research Agency}
+    \item \textit{Evaluation:} exact matches
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} Battle of Samarra (2004)
+\begin{itemize}
+    \item \textit{Verification source:} \href{https://www.armyupress.army.mil/Portals/7/combat-studies-institute/csi-books/BetweenTheRivers_McGrath.pdf}{Army Combined Arms Center}
+    \item \textit{Evaluation:} exact matches
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} Battle of Hit (2016)\footnote{Also known as Operation Desert Lynx}
+\begin{itemize}
+    \item \textit{Verification source:} \href{https://www.inherentresolve.mil/NEWSROOM/Article/776143/oir-spokesman-attacks-in-baghdad-show-isil-reverting-to-terrorist-roots/}{Combined Joint Fast Force - Operation Inherent Resolve (CJTF-OIR)}, \href{https://media.defense.gov/2016/Jun/07/2001550104/-1/-1/0/160515-O-ZZ999-001.JPG}{Department Of Defense News}
+    \item \textit{Evaluation:} Exact matches from DOD News. Only dates and means verifiable from CFTF-OIR source.
+\end{itemize}
+
+\noindent
+\textbf{Observation:} Battle of Khasham
+\begin{itemize}
+    \item \textit{Verification source:} \href{https://www.armed-services.senate.gov/imo/media/doc/22-12_03-15-2022.pdf}{CENTCOM Senate Committee Hearing}
+    \item \textit{Evaluation:} exact matches
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} Battle of Basra (2008)
+\begin{itemize}
+    \item \textit{Verification source:} \href{{https://history.army.mil/html/books/059/59-3-1/CMH_59-3-1.pdf}}{Army Center for Military History}, \href{https://www.understandingwar.org/report/battle-basra}{Institute for the Study of Warfare}
+    \item \textit{Evaluation:} exact matches
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} Mosul offensive (2015)
+\begin{itemize}
+    \item \textit{Verification source:} \href{https://www.inherentresolve.mil/NEWSROOM/Strike-Releases/}{CJTF-OIR}
+    \item \textit{Evaluation:} exact matches
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} Battle of Suq al Ghazi
+\begin{itemize}
+    \item \textit{Verification source:} \href{https://www.nytimes.com/2014/09/16/world/middleeast/us-airstrikes-hit-targets-near-baghdad-held-by-isis.html?_r=0}{\textit{New York Times}}
+    \item \textit{Evaluation:} exact matches, no government or military record found
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} United States bombing of the Chinese embassy in Belgrade
+\begin{itemize}
+    \item \textit{Verification source:} \href{https://1997-2001.state.gov/policy_remarks/1999/990617_pickering_emb.html}{US State Department Public Statement}
+    \item \textit{Evaluation:} Belligerent unclear since event was an accident / GPS targeting mistake (Wiki describes the target as ``disputed"). Sources confirm Wiki's target coordinates.
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} Night raid on Narang
+\begin{itemize}
+    \item \textit{Verification source:} \href{https://civiliansinconflict.org/wp-content/uploads/2021/10/In-Search-of-Answers-Report_Amended.pdf}{Center for Civilians in Conflict}, \href{https://www.nytimes.com/2009/12/31/world/asia/31afghan.html}{\textit{New York Times}}
+    \item \textit{Evaluation:} exact matches, no government or military record found
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} Operation Iron Saber
+\begin{itemize}
+    \item \textit{Verification source:} \href{https://www.armyupress.army.mil/Portals/7/military-review/Archives/English/MilitaryReview_20100930ER_art016.pdf}{Army War College (AWC) Monograph}, \href{https://www.washingtontimes.com/news/2004/jun/22/20040622-113720-3352r/}{\textit{Washington Times}}
+    \item \textit{Evaluation:} Wiki end date earlier than end date provided by media sources
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} Battle of Fallujah (2016)\footnote{Code-named Operation Breaking Terrorism}
+\begin{itemize}
+    \item \textit{Verification source:} \href{https://crsreports.congress.gov/product/pdf/R/R45025/4}{CRS}, \href{https://www.usip.org/iraq-timeline-2003-war}{US Institute for Peace}
+    \item \textit{Evaluation:} exact matches
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} Battle of Samawah (2003)
+\begin{itemize}
+    \item \textit{Verification source:} \href{https://apps.dtic.mil/sti/pdfs/AD1066345.pdf}{AWC monograph}
+    \item \textit{Evaluation:} exact matches
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} Battle of Abu Ghraib
+\begin{itemize}
+    \item \textit{Verification source:} \href{https://www.af.mil/News/Article-Display/Article/134452/air-force-medics-treat-patients-at-abu-ghraib/}{Air Force Public Affairs Office}
+    \item \textit{Evaluation:} exact matches
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} Operation Hammer Down
+\begin{itemize}
+    \item \textbf{Verification source:} \href{http://cacti35th.com/active/HammerDown.pdf}{Army Combined Arms Center}
+    \item \textbf{Evaluation:} exact matches
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} Operation Freedom's Sentinel
+\begin{itemize}
+    \item \textit{Verification source:} \href{https://dcas.dmdc.osd.mil/dcas/app/conflictCasualties/ofs}{Defense Manpower Data Center's Defense Casualty Analysis System}
+    \item \textit{Evaluation:} exact matches
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} Fall of Mazar-i-Sharif
+\begin{itemize}
+    \item \textit{Verification source:} \href{https://history.army.mil/html/bookshelves/resmat/GWOT/DifferentKindofWar.pdf}{Army Contemporary Operations Study Team}
+    \item \textit{Evaluation:} belligerent described by gov source as Taliban and al-Qaeda, described by Wiki as just al-Qaeda
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} Operation Dragon Strike
+\begin{itemize}
+    \item \textit{Verification source:} \href{https://www.marines.mil/Portals/1/Publications/War,\%20Will,\%20and\%20Warlords.pdf}{Marine Corps University Press}, \href{https://www.understandingwar.org/sites/default/files/Afghanistan\%20Report\%207_15Dec.pdf}{Institute for the Study of Warfare}
+    \item \textbf{Evaluation:} end date could not be verified - not described in external sources
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} Battle of Mosul (2016-2017)\footnote{Code-named Operation Eagle Strike}
+\begin{itemize}
+    \item \textit{Verification source:} \href{https://usacac.army.mil/sites/default/files/publications/CALL\%20Insider\%20MAR-APR17.pdf}{Center for Army Lessons Learned}
+    \item \textit{Evaluation:} exact matches
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} Operation Odyssey Dawn (March 19 - April 27, 2011)
+\begin{itemize}
+    \item \textit{Verification source:} AFRICOM FOIA case number 2017-78
+    \item \textit{Evaluation:} exact matches for means used and date, BDA column with target information redacted
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} Operation Iraqi Freedom (March 21, 2003)
+\begin{itemize}
+    \item \textit{Verification source:} USS O'Kane (DDG 77) deck log
+    \item \textit{Evaluation:} exact matches for means used and date, target information not provided
+\end{itemize}
+
+\vspace{-.3cm}
+\noindent
+\textbf{Observation:} Operation Inherent Resolve (April 7, 2017)
+\begin{itemize}
+    \item \textit{Verification source:} AFRICOM FOIA case number 2017-78, USS Porter (DDG 78) deck log
+    \item \textit{Evaluation:} exact matches for means used and date, BDA column with target information redacted
+\end{itemize}
+
+\section{Naval Case Coding Protocols and Comparisons}
+The International Military Intervention dataset (IMI) \citep{pearson_internationalmilitaryintervention_1993,kisangani_internationalmilitaryintervention_2008} and Military Intervention Project (MIP) \citep{kushi_introducingmilitaryintervention_2022} feature interventions coded as naval means. We diverge from coding this domain for cases comprising MONSTr for two reasons. First, some interventions coded as naval are outside our definitional scope as humanitarian or disaster relief events. Second, we code events by the platform deployed to the target, not its origin or launchpoint. Thus, when a cruise missile is launched from a naval vessel, IMI and MIP code it as naval while MONSTr codes it as a ``cruise missile" means. Similarly, when aircraft take off from a naval vessel to perform an aerial bombing mission we code this as an ``aerial bombing" means. We are agnostic about the launch points or service branch of these platforms, instead capturing the administration of means. For transparency, we detail these cases for both datasets.
+
+\subsection*{\textit{IMI naval interventions}}
+IMI contains 19 observations coded as naval means. Of those, ten do not meet our criteria for inclusion in MONSTr as humanitarian or disaster relief operations. They include (as listed in IMI): 
+
+\begin{quote}
+    \textit{US troops give humanitarian relief to Somalia \\
+    Operation Assured Response by US to evacuate 2444 people from Liberia \\
+    US evacuates American citizens from Albania \\
+    US evacuates civilians from Sierra Leone \\
+    US send peacekeepers to Liberia \\
+    US provides tsunami relief to Thailand \\
+    US provides tsunami relief to Indonesia \\
+    US provides tsunami relief to Sri Lanka \\
+    US troops build schools and provide medical aid in Haiti \\
+    US evacuates American citizens from Liberia during civil conflict}
+\end{quote}
+
+Of the remaining nine naval cases, three are coded as naval ``shelling," four as naval ``intimidate," and two as naval ``transportation." All ``shelling" cases are coded in MONSTr as cruise missile means, and additional checks confirm that the nature of naval involvement was solely as the origin of the missile launch. Of the four ``intimidate" cases, three concern Operations Desert Storm and Desert Shield, where the naval intimidation involved repositioning vessels that were later used to launch cruise missiles or aircraft. Those three are coded in MONSTr as cruise missile and aerial bombing cases. The remaining ``intimidate" case is 
+
+\begin{quote}
+    \textit{US restores democratically elected government in Haiti}
+\end{quote}
+
+\noindent
+which MONSTr codes as ground troops and paramilitary since their conveyance to the theater was the purpose of the vessel's presence. The remaining two ``transport" cases are 
+
+\begin{quote}
+    \textit{US buildup of troops in Kuwait after Iraq's provocation \\
+    US aids in restoring order in Haiti}
+\end{quote}
+
+\noindent
+both of which MONSTr codes as ground troops for the same reason as the last.
+
+\subsection*{\textit{MIP naval interventions}}
+MIP has 33 observations coded as naval means. Twenty-four were determined outside the definitional criteria for inclusion in MONSTr because they were humanitarian or disaster relief operations or militarized events that, in our minds, did not constitute a US military operation (e.g., observations ``Fishing Boats," ``Evacuating U.S. citizens," ``Venezuelan Refugees Humanitarian mission," and ``Detention of U.S. Service members").
+
+The remaining nine populate on Wikipedia and are thus included in MONSTr. MIP does not code the type of naval intervention like IMI does, instead featuring a binary variable indicating presence and a ``MaxNavy" variable corresponding to the number of vessels. Eight of these cases are coded in MONSTr as cruise missiles or bomber aircraft, launched from naval vessels. The sole case in our dataset that does not correspond to an aerial platform launch point from a naval vessel is Operation Uphold Democracy, which is the same 1991 Haitan coup attempt that IMI codes as a naval ``intimidate" and that we code as ground troops.
+
+\section{Descriptive Statistics}
+Table \ref{tab:summary-stats} shows descriptive statistics for the primary new variables created in MONSTr. This table exludes variables drawn from other datasets.
+
+\begin{table}[!htbp] \centering 
+  \caption{Summary Statistics} 
+  \label{tab:summary-stats} 
+\begin{tabular}{@{\extracolsep{5pt}}lccccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+Statistic & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{Mean} & \multicolumn{1}{c}{St. Dev.} & \multicolumn{1}{c}{Min} & \multicolumn{1}{c}{Max} \\ 
+\hline \\[-1.8ex] 
+Drones & 336 & 0.09 & 0.28 & 0 & 1 \\ 
+Air to air & 336 & 0.02 & 0.15 & 0 & 1 \\ 
+Cruise missiles & 336 & 0.04 & 0.20 & 0 & 1 \\ 
+Aerial bombing & 336 & 0.43 & 0.50 & 0 & 1 \\ 
+Close air support & 336 & 0.32 & 0.47 & 0 & 1 \\ 
+Ground troops & 336 & 0.49 & 0.50 & 0 & 1 \\ 
+Paramilitary & 336 & 0.26 & 0.44 & 0 & 1 \\ 
+Duration (days) & 333 & 50.67 & 181.76 & 0 & 2,151 \\ 
+Days into parent (days) & 336 & 1,625.26 & 1,475.81 & $-$4 & 9,596 \\ 
+Ally count & 336 & 1.57 & 2.35 & 0 & 32 \\ 
+Adversary count (state) & 336 & 0.32 & 0.63 & 0 & 5 \\ 
+Adversary count (non-state) & 336 & 1.49 & 2.52 & 0 & 39 \\ 
+\hline \\[-1.8ex] 
+\multicolumn{6}{l}{All military means in the original dataset shown.} \\ 
+\end{tabular} 
+\end{table}
+
+\bibliography{MONSTr.bib}
+
+\end{document}

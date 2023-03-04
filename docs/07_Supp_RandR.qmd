@@ -1,0 +1,200 @@
+---
+title: 'R&R Checks'
+author:
+  - J Andrés Gannon
+  - Kerry Chavez
+format:
+  html:
+    title-block-banner: true
+    toc: true
+    toc-location: right
+    html-math-method: katex
+    css: styles.css
+    citations-hover: true
+    footnotes-hover: true
+    code-tools: true
+    code-fold: true
+    code-summary: "Show the code"
+    code-overflow: wrap
+    code-copy: true
+editor: visual
+execute:
+  echo: false
+  warning: false
+  cache: true
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+bibliography: ../paper/MONSTr.bib
+---
+
+```{r knitr_options, echo = FALSE, warning = FALSE, cache = FALSE}
+library(knitr)
+library(kableExtra)
+library(magrittr)
+library(ggplot2)
+```
+
+This file contains new checks to address questions and concerns raised by the reviewers.
+
+```{r}
+# New data
+ df_interv <- read.csv(paste0(here::here(), "/data/","MONSTr.csv"))
+
+# Prior data
+icb <- read.csv(paste0(here::here(),"/inst/extdata/icb2v12.csv")) %>%
+  dplyr::filter(yrtrig >= 1989 &
+                  actor == "USA")
+
+imi <- read.csv(paste0(here::here(),"/inst/extdata/IMI/IMI_dataset.csv")) %>%
+  dplyr::filter(start >= 19890101 &
+                  intervener == 2)
+imi$start <- gsub('.{4}$', '', imi$start)
+
+mids <- read.csv(paste0(here::here(),"/inst/extdata/MIDs/MIDs_dispute-participants.csv")) %>%
+  dplyr::filter(styear >= 1989 &
+                  ccode == 2)
+
+mips <- read.csv(paste0(here::here(),"/inst/extdata/MIPS/MIPS_dataset.csv")) %>%
+  dplyr::filter(styr >= 1989 &
+                  MP == 2)
+
+mip <- readstata13::read.dta13(paste0(here::here(),"/inst/extdata/MIP/MIPDataKushiToft.dta")) %>%
+  dplyr::filter(styear >= 1989 &
+                  RemoveCase == 0)
+  
+prio <- read.csv(paste0(here::here(),"/inst/extdata/PRIO/UCDP-PRIO_armed_conflict_dataset.csv")) %>%
+  dplyr::filter(year >= 1989 &
+                  side_a_id == 3) # PRIO does not use the GW identifier. It is confirmed that this refers to the USA
+
+rand <- read.csv(paste0(here::here(),"/inst/extdata/rand_interventionlist.csv")) %>%
+  dplyr::filter(incident_start_year >= 1989)
+
+allen_17 <- readstata13::read.dta13(paste0(here::here(), "/inst/extdata/AllenMtzMachainAerialBombingData2016CMPS.dta")) %>%
+  dplyr::filter(year >= 1989,
+                ccode1 == 2)
+
+horowitz_01 <- foreign::read.dta(paste0(here::here(), "/inst/extdata/jcr01.dta")) %>%
+  dplyr::filter(attacker %in% c('United States', 'Allies', 'U.S./Britain', 'NATO', 'US')) %>%
+  dplyr::mutate(date = dplyr::recode(date,
+                                     '1944-1945' = "1944",
+                                     '1942-1944' = "1942",
+                                     'Aug. 1945' = "1945",
+                                     '1965-1968' = "1965",
+                                     '1950-1951' = "1950")) %>%
+  dplyr::mutate(date = as.numeric(date)) %>%
+  dplyr::filter(date >= 1989)
+```
+
+# Coverage of Naval Data
+
+Reviewer 1 noted "The authors note on page 16 that"\[b\]y our definition of intervention, we do not observe any naval interventions within our time scope." I find this statement puzzling. The definition of intervention given on page 5 explicitly includes naval actions. If the data collection procedure somehow did not find any of them, I would like to know why."
+
+First we identify the naval cases in existing datasets that include that as a variable.
+
+```{r}
+# IMI
+imi_naval <- imi %>%
+  dplyr::filter(naval > 0 &
+                  naval < 9) %>%
+  dplyr::select(description, naval, size_naval) %>%
+  dplyr::rename('Intervention' = 'description') %>%
+  dplyr::mutate(naval = dplyr::recode(naval,
+                                      '1' = "evacuation",
+                                      '2' = "transport",
+                                      '4' = "intimidate",
+                                      '5' = "shelling")) %>%
+  dplyr::mutate(dataset = "imi")
+
+# MIP
+mip_naval <- mip %>%
+  dplyr::rename('Intervention' = 'Name',
+                'size_naval' = 'MaxNavy') %>%
+  dplyr::mutate(naval = as.numeric(size_naval),
+                naval = ifelse(naval > 0, 1, 0)) %>%
+  dplyr::filter(naval == 1) %>%
+  dplyr::select(Intervention, naval, size_naval) %>%
+  dplyr::mutate(dataset = "mip")
+
+naval_all <- rbind(imi_naval, mip_naval)
+
+# Match to Qcodes
+qcodes <- read.csv(paste0(here::here(),"/data/raw/01b_interventions_priordata_postcoding.csv")) %>%
+  dplyr::select(Intervention, dataset, wikidata_id, drop)
+
+naval_all <- dplyr::left_join(naval_all, qcodes) %>%
+  dplyr::distinct()
+
+# Match to MONSTr
+interv <- read.csv(paste0(here::here(),"/data/raw/02a_newdata_dbpedia.csv")) %>%
+  dplyr::select(wikidata_id, dplyr::starts_with("means_")) %>%
+  dplyr::mutate(inmonster = 1)
+
+naval_all <- dplyr::left_join(naval_all, interv) %>%
+  dplyr::select(wikidata_id, Intervention, dataset, inmonster, drop, naval, size_naval, dplyr::starts_with("means_"))
+
+# Checks
+naval_all %>%
+  dplyr::filter(dataset == "imi") %>%
+  dplyr::select(inmonster, drop, Intervention, naval, dplyr::starts_with("means_")) %>%
+  DT::datatable()
+
+naval_all %>%
+  dplyr::filter(dataset == "mip") %>%
+  dplyr::select(inmonster, drop, Intervention, naval, dplyr::starts_with("means_")) %>%
+  DT::datatable()
+```
+
+# OIF and OEF
+
+R2 wonders how many of the observations in the models took place within Operations Iraqi Freedom and Enduring Freedom.
+
+```{r}
+df_interv %>%
+  dplyr::count(parent_name) %>%
+  dplyr::arrange(desc(n)) %>%
+  DT::datatable()
+```
+
+# Drones
+
+Reviewer 1 notes that "the data include some drone strikes, but apparently not all of them. If there are more inclusive lists of drone strikes--as I believe there are--it would be useful to know how many of these events wound up in this dataset."
+
+We compare our list of US operations with drone strikes to existing drone data.
+
+```{r}
+# df of BIJ drone coverage
+bij_drone <- readxl::read_excel(paste0(here::here(), "/data/aux/","drone_checks.xlsx"), sheet = "comparison")
+
+bij_sum <- bij_drone %>%
+  dplyr::group_by(Country) %>%
+  dplyr::summarise(BIJ = sum(BIJ, na.rm = TRUE))
+
+bij_drone %>%
+  tidyr::pivot_wider(id_cols = Year,
+                     names_from = Country,
+                     values_from = BIJ) %>%
+  DT::datatable()
+
+# df of MONSTr drones coverage
+df_drone <- df_interv %>%
+  dplyr::filter(means_drones == 1) %>%
+  dplyr::select(wikidata_name, wikidata_id, year, 
+                means_cruisemissiles, means_aerialbombing, means_closeairsupport, means_groundtroops, means_paramilitary) %>%
+  tidyr::unite(operation,
+               c('wikidata_name', 'wikidata_id'),
+               sep = "_",
+               remove = TRUE)
+
+df_drone_check <- readxl::read_excel(paste0(here::here(), "/data/aux/","drone_checks.xlsx"),
+                                sheet = "droneops")
+
+df_drone <- dplyr::full_join(df_drone, df_drone_check)
+
+# coverage comparison
+drone_sum <- df_drone %>%
+  dplyr::count(country) %>%
+  dplyr::rename(Country = country,
+                MONSTr = n)
+
+dplyr::full_join(bij_sum, drone_sum) %>%
+  DT::datatable()
+```

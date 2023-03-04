@@ -1,0 +1,32 @@
+\begin{table}
+
+\caption{Exploratory Models of Determinants of Means of Military Force}
+\label{tbl-results}
+\centering
+\begin{tabular}[t]{lccccc}
+\toprule
+  & Ground & Ground and Air & Air (all) & Air (Piloted) & Air (Unpiloted)\\
+\midrule
+Non-state target & \num{0.144} & \num{-1.188}** & \num{-1.375}* & \num{-0.733} & \num{0.146}\\
+ & (\num{0.839}) & (\num{0.045}) & (\num{0.057}) & (\num{0.178}) & (\num{0.865})\\
+Mountainous target & \num{-0.681} & \num{0.241} & \num{1.007}*** & \num{0.515} & \num{0.310}\\
+ & (\num{0.153}) & (\num{0.494}) & (\num{0.006}) & (\num{0.174}) & (\num{0.669})\\
+Urban target & \num{0.276} & \num{0.153} & \num{-0.153} & \num{0.268} & \num{-0.665}\\
+ & (\num{0.517}) & (\num{0.654}) & (\num{0.662}) & (\num{0.433}) & (\num{0.289})\\
+Duration (log) & \num{0.281}*** & \num{0.239}*** & \num{0.012} & \num{0.134}* & \num{0.035}\\
+ & (\num{0.004}) & (\num{0.002}) & (\num{0.888}) & (\num{0.083}) & (\num{0.765})\\
+Day into Parent (log) & \num{0.164} & \num{0.102} & \num{-0.031} & \num{0.011} & \num{-0.116}\\
+ & (\num{0.280}) & (\num{0.426}) & (\num{0.815}) & (\num{0.923}) & (\num{0.538})\\
+\midrule
+\textit{N} & \num{250} & \num{250} & \num{250} & \num{250} & \num{250}\\
+\textit{R}2 Marg. & \num{0.317} & \num{0.179} & \num{0.317} & \num{0.125} & \num{0.143}\\
+\textit{R}2 Cond. & \num{0.382} &  &  & \num{0.158} & \num{0.490}\\
+AIC & \num{265.1} & \num{320.3} & \num{290.5} & \num{330.3} & \num{186.4}\\
+BIC & \num{314.4} & \num{369.6} & \num{339.8} & \num{379.6} & \num{235.7}\\
+ICC & \num{0.1} &  &  & \num{0.04} & \num{0.4}\\
+RMSE & \num{0.38} & \num{0.45} & \num{0.41} & \num{0.45} & \num{0.28}\\
+\bottomrule
+\multicolumn{6}{l}{\rule{0pt}{1em}All models include president fixed effects and cubic time polynomials.}\\
+\multicolumn{6}{l}{\rule{0pt}{1em}* p $<$ 0.1, ** p $<$ 0.05, *** p $<$ 0.01}\\
+\end{tabular}
+\end{table}

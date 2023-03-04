@@ -1,0 +1,387 @@
+"","location_name","lon","lat"
+"1","Iraqi Kurdistan",44.3871953,36.4103395
+"2","Mindanao",123.3034062,8.49613
+"3","Afghanistan",67.709953,33.93911
+"4","Middle East",42.5509603,29.2985278
+"5","Africa",34.508523,-8.783195
+"6","Central Asia",68.8319005,45.4506875
+"7","South Asia",76.4563087,25.03764
+"8","Somalia",46.199616,5.152149
+"9","Villamor Airbase",121.0192472,14.5163881
+"10","Camp Crame",121.053216,14.6078572
+"11","Fort Bonifacio",121.0503183,14.5408671
+"12","Cavite Naval Base (Philippine Navy)",120.9166217,14.482262
+"13","Sangley Point Air Base (Philippine Air Force)",120.9114075,14.4949765
+"14","Mactan Airbase, Cebu",123.9674377,10.3111121
+"15","Malacañan Palace",120.9946065,14.5946001
+"16","Makati",121.0244452,14.554729
+"17","Manila",120.9842195,14.5995124
+"18","Quezon City",121.0437003,14.6760413
+"19","Metropois",-88.739522,37.1537344
+"20","Camp Aguinaldo",121.065041,14.6061017
+"21","Iraq, Kuwait, Saudi Arabia, and the Persian Gulf",51.6834275,26.7505337
+"22","Iraq",43.679291,33.223191
+"23","Kuwait",47.481766,29.31166
+"24","Saudi Arabia",45.079162,23.885942
+"25","Persian Gulf",51.6834275,26.7505337
+"26","Mosul, Iraq",43.157736,36.3489278
+"27","Basra",47.773797,30.5257657
+"28","Ad-Dawrah",NA,NA
+"29","Baghdad, Iraq",44.3660671,33.315241
+"30","Ras Tanura, Saudi Arabia",49.998236,26.773008
+"31","Persian Gulf, Off the coast of Kuwait",48.2891359,29.4426996
+"32","Khafji, Eastern Province, Saudi Arabia",48.4887224,28.4256618
+"33","Khan Bani Saad, Iraq",44.5411655,33.5701198
+"34","Al-A'amiriya, Baghdad, Iraq",44.2999955,33.2997418
+"35","Kuwait, Iraq, Persian Gulf",51.6834275,26.7505337
+"36","Al Busayyah, Iraq",NA,NA
+"37","Basra, Iraq",47.773797,30.5257657
+"38","Jalibah Southeast Air Base",NA,NA
+"39","Kuwait City Airport",47.9710458,29.2404414
+"40","Muthanna Province, Iraq",45.2993862,29.9133171
+"41","Northern Iraq",44.3871953,36.4103395
+"42","Lake Hammar, Iraq",47.05,30.766667
+"43","Slovenia",14.995463,46.151241
+"44","Croatia",15.2000001,45.1
+"45","Bosnia and Herzegovina",17.679076,43.915886
+"46","Serbia",21.005859,44.016521
+"47","Montenegro",19.37439,42.708678
+"48","Kosovo",20.902977,42.6026359
+"49","Republic of Macedonia",21.745275,41.608635
+"50","Haiti",-72.285215,18.971187
+"51","Port-au-Prince",-72.3074326,18.594395
+"52","Mogadishu, Somalia",45.3181623,2.0469343
+"53","Banja Luka, Bosnia and Herzegovina",17.191,44.7721811
+"54","Iraq-Kuwait border",47.7025402,30.0830204
+"55","Pale, Bosnia and Herzegovinia",18.5711013,43.8118946
+"56","Yugoslavia",-79.4121417,43.6876095
+"57","Albania",20.168331,41.153332
+"58","Khost, Afghanistan",69.9371673,33.3338472
+"59","Khartoum, Sudan",32.5598994,15.5006544
+"60","Yemen",48.516388,15.552727
+"61","Novi Sad",19.8335496,45.2671352
+"62","Federal Republic of Yugoslavia",NA,NA
+"63","Košare, Kosovo, FR Yugoslavia",20.2347409,42.4547226
+"64","Grdelica, Serbia",22.0761631,42.8894456
+"65","Gjakova, Kosovo, FR Yugoslavia",20.4285021,42.3844104
+"66","Belgrade Federal Republic of Yugoslavia",20.4489216,44.786568
+"67","Lužane, Serbia",21.7281043,43.481642
+"68","Belgrade, Serbia, Yugoslavia",20.4521836,44.7881671
+"69","Koriša, Yugoslavia",20.7897275,42.2615528
+"70","Dubrava Prison, Istok, Kosovo",20.5528304,42.7870318
+"71","global",-73.6613652,40.8087324
+"72","Kandahar, Afghanistan",65.7371749,31.628871
+"73","Philippines",121.774017,12.879721
+"74","Georgia",-82.9000751,32.1656221
+"75","Kyrgyzstan",74.766098,41.20438
+"76","Sahara",25.66283,23.4162027
+"77","Mazar-i-Sharif, Balkh Province, Afghanistan",67.1179511,36.6926167
+"78","Kunduz, Afghanistan",68.8680663,36.7285907
+"79","Herat, Afghanistan",62.2040287,34.352865
+"80","Kabul, Afghanistan",69.207486,34.5553494
+"81","Tarinkot, Afghanistan",65.9036295,32.666404
+"82","Qala-i-Jangi, Balkh Province, Afghanistan",66.9846531,36.6674951
+"83","Shawali Kowt, Arghandab River, Afghanistan",65.9036295,32.666404
+"84","Sayyd Alma Kalay, Arghandab River, Afghanistan",65.6775565,31.7113013
+"85","Pachir Aw Agam District, Nangarhar Province, Afghanistan",70.6216794,34.1718313
+"86","Oruzgan Province, Afghanistan",66.1415263,32.9271287
+"87","Shahi Kot Valley, Paktia Province, Afghanistan",69.3831079,33.706199
+"88","Takur Ghar, Afghanistan",69.2144444,33.3427778
+"89","Maghreb",2.4604145,25.6422079
+"90","Sahara desert",25.66283,23.4162027
+"91","Sahel",13.5436913,19.0643174
+"92","Paktia Province, Afghanistan",69.3831079,33.706199
+"93","Khost province, Afghanistan",69.8597406,33.3585079
+"94","Pakita province, Afghanistan",69.3831079,33.706199
+"95","Southern Iraq",46.3624686,31.1042292
+"96","Horn of Africa",41.2808577,9.1303782
+"97","Gulf of Aden",47.922363,12.533115
+"98","Guardafui Channel",52.3376671,11.7216669
+"99","Adi Ghar Mountains, Spin Boldak District, Kandahar Province, Afghanistan",66.3286111,31.3169444
+"100","Helmand Province, Afghanistan",63.9586111,31.3636474
+"101","Lejay, Helmand Province, Afghanistan",63.9586111,31.3636474
+"102","Al Faw, Iraq",48.4675659,29.9811696
+"103","Al Anbar Governorate, Iraq",41.9196471,32.5597614
+"104","Umm Qasr, Iraq",47.9267674,30.0397683
+"105","Nasiriyah, Iraq",46.2569178,31.0510427
+"106","Karbala, Iraq",44.0196987,32.6027147
+"107","Najaf, Iraq",44.3265272,32.0106646
+"108","Bashur Airfield, Erbil Governorate, Iraq",43.9552145,36.2333658
+"109","Halabja, Iraq",45.9896078,35.1654999
+"110","Samawah, Iraq",45.2806177,31.3188393
+"111","Haditha Dam, Iraq",42.355,34.206944
+"112","Al Kut, Iraq",45.8160287,32.5164908
+"113","Bashur Airbase, Iraq",44.333333,36.516667
+"114","Al Dur, Iraq",44.3164007,31.9966212
+"115","Balad, Iraq",44.148291,34.0076216
+"116","North-Central Iraq",43.679291,33.223191
+"117","Paktika Province, Afghanistan",68.5247149,32.2645386
+"118","Khost Province, Afghanistan",69.8597406,33.3585079
+"119","Paktia, Afghanistan",69.3831079,33.706199
+"120","Daychopan district, Zabul province, Afghanistan",66.712915,32.5290274
+"121","Nuristan Province, Afghanistan",70.9071236,35.3250223
+"122","Kunar Province, Afghanistan",71.097317,34.8465893
+"123","Southeast Afghanistan",67.709953,33.93911
+"124","Al Hawijah, Iraq",43.7669217,35.3248248
+"125","Abu Ghurayb, Iraq",44.0817686,33.297611
+"126","Al Mansor district of Baghdad",44.2289441,33.2818108
+"127","Lutafiyah, Iraq",43.679291,33.223191
+"128","Ad-Dawr, Iraq",43.8004115,34.4377735
+"129","Samarra, Iraq",43.9055155,34.1660043
+"130","Hillah, Iraq",44.4251904,32.4736266
+"131","Port-au-Prince, Haiti",-72.3074326,18.594395
+"132","Najaf, Al Kut, and Karbala, Iraq",44.3265272,32.0106646
+"133","Fallujah, Iraq",43.7812773,33.3443576
+"134","Sadr City, Iraq",44.4606524,33.3899339
+"135","Al Kit, Iraq",45.8160287,32.5164908
+"136","Ramadi, Iraq",43.2682801,33.4366231
+"137","Baghdad International Airport, Iraq",44.2311414,33.2669849
+"138","Husaybah, Iraq",43.4512361,33.4058544
+"139","Dai Chopan, Afghanistan",NA,NA
+"140","Federal Tribal Areas, Pakistan",69.8597406,32.667476
+"141","Khyber Pakhtunkhwa province, Pakistan",72.331113,34.9526205
+"142","Korangal Valley, Kunar province, Afghanistan",70.9097616,34.8848618
+"143","Baghdad",44.3660671,33.315241
+"144","Saqlawiyah, Iraq",43.7046653,33.3962011
+"145","Abu Ghraib, Iraq",44.0817686,33.297611
+"146","Laghman Province, Afghanistan",70.1455805,34.6897687
+"147","Ubaydi, Al-Anbar",41.228128,34.4299198
+"148","Badghis province, Afghanistan",63.7695384,35.1671339
+"149","Western Iraq",44.019991,36.202016
+"150","Near Haditha in western Iraq",42.374164,34.1251832
+"151","Karabillah, Iraq",41.0183205,34.3843134
+"152","western Iraq",44.019991,36.202016
+"153","Sawtalo Sar Mountain",70.9602778,34.8697222
+"154","Shuryek (Matin) Valley",NA,NA
+"155","Korangal Valley",NA,NA
+"156","Pech District",NA,NA
+"157","Kunar Province",71.097317,34.8465893
+"158","Hit, Al Anbar Governorate, Iraq",42.8253662,33.6435199
+"159","Haditha, Al Anbar Governorate, Iraq",42.374164,34.1251832
+"160","Husaybah, Al Anbar Governorate, Iraq",43.4512361,33.4058544
+"161","al-Qa'im",41.1602597,34.316858
+"162","Haditha, Iraq",42.374164,34.1251832
+"163","Tal Afar, Iraq",42.4036715,36.3623583
+"164","Husaybah, Karabilah, Ubaydi, Iraq",41.0183205,34.3843134
+"165","Hït, Iraq",42.8253662,33.6435199
+"166","Khadisia, Iraq",NA,NA
+"167","Helmand province",63.9586111,31.3636474
+"168","Damadola, Bajaur, Pakistan",71.466445,34.8005683
+"169","Central Iraq and Baghdad",44.3660671,33.315241
+"170","Kirkuk, Iraq",44.3798895,35.4666329
+"171","Helmand province, Afghanistan",63.9586111,31.3636474
+"172","Yusufiyah, Iraq",44.2519564,33.0790908
+"173","Helmand, Afghanistan",63.9586111,31.3636474
+"174","Paktika, Afghanistan",68.5247149,32.2645386
+"175","Zabul, Afghanistan",67.1894488,32.1918782
+"176","Uruzgan province, Afghanistan",66.1415263,32.9271287
+"177","Near Kandahar, Afghanistan",65.7371749,31.628871
+"178","Chora valley, Orūzgān Province, Afghanistan",66.0106684,32.8475517
+"179","just west of Kirkuk",44.3798895,35.4666329
+"180","Panjwayi District, Kandahar Province, Afghanistan",65.4608867,31.5434701
+"181","Sayifiyah, Iraq",NA,NA
+"182","Habbaniyah, Iraq",43.584719,33.3806001
+"183","Al Diwaniyah, Iraq",44.8957445,31.9740458
+"184","Al Anbar Province, Iraq",41.9196471,32.5597614
+"185","Panjwaye and Zhari districts, Kandahar Province, Afghanistan",65.4608867,31.5434701
+"186","Paktika, Khost, Ghazni, Paktia, Logar, Afghanistan",69.3831079,33.706199
+"187","Chenagai, Bajaur, Pakistan",71.5130445,34.7313165
+"188","Baqubah, Iraq",44.6080708,33.7517053
+"189","Diyala Governorate, Iraq",45.1494505,33.7733487
+"190","Ras Kambodi, Somalia",41.5837116,-1.6360371
+"191","Erbil, Iraq",43.9930303,36.190073
+"192","Zarqa, Najaf Governorate, Iraq",36.0941795,32.0608187
+"193","Sahara Desert and North Africa",25.66283,23.4162027
+"194","Hīt, Iraq",42.8253662,33.6435199
+"195","Laghman, Afghanistan",70.1455805,34.6897687
+"196","Albu Bali, Iraq",43.47411,33.4607434
+"197","East Rashid, Baghdad, Iraq",44.3425754,33.2309855
+"198","Bargal, Somalia",51.0762536,11.2854783
+"199","the Adhamiyah District, Baghdad, Iraq",44.363851,33.3681412
+"200","Babil Province, Iraq",44.5501935,32.468191
+"201","Muqayllihah, Iraq",46.1061111,30.9608333
+"202","Hyderabad village, Gerishk District, Helmand province, Afghanistan",63.9586111,31.3636474
+"203","Sherween, Iraq",NA,NA
+"204","south of Mahmudiyah, Iraq",44.3578639,33.0546082
+"205","Lutifiyah, Iraq",NA,NA
+"206","the villages near al-Owesat and al-Thobat, Iraq",-82.0037608,28.927019
+"207","Western Al Anbar",41.9196471,32.5597614
+"208","southern Baghdad, Iraq",44.3660671,33.315241
+"209","Korengal Valley, Kunar, Afghanistan",71.097317,34.8465893
+"210","Diwaniya, Iraq",44.8957445,31.9740458
+"211","North-central Iraq",43.679291,33.223191
+"212","Nineveh Governorate, Iraq",42.2362435,36.229574
+"213","Dobley, Somalia",46.199616,5.152149
+"214","Saladin Governorate, Iraq",43.483738,34.5337527
+"215","Shok Valley, Nuristan Province, Afghanistan",70.9071236,35.3250223
+"216","Kapisa Province, Afghanistan",69.6214562,34.9810572
+"217","Dhuusamarreeb, Somalia",46.3864672,5.5380625
+"218","Mohmand Agency, FATA, Pakistan",71.2874209,34.5355951
+"219","Durand Line, Western Pakistan, Afghanistan-Pakistan Border",72.331113,34.9526205
+"220","Haska Meyna, Haska Meyna District, Nangarhar Province, Afghanistan",70.4692245,34.0926303
+"221","Diyala, Iraq",45.1494505,33.7733487
+"222","Ebrahimkhel, Afghanistan",68.356674,33.217487
+"223","Farah Province, Afghanistan",62.2626627,32.495328
+"224","Azizabad, Herat, Afghanistan",62.343346,33.363956
+"225","Kandahar Province, Afghanistan",65.475736,30.9960679
+"226","Helmand Province Afghanistan",63.9586111,31.3636474
+"227","Khaz Oruzgan, Oruzgan Province, Afghanistan",66.6890963,32.9298484
+"228","North Waziristan, Pakistan",69.9550338,32.9430659
+"229","South Waziristan, Pakistan",69.8597406,32.3202371
+"230","Sukkariyeh, Syria",-74.3238165,40.3819121
+"231","Wech Baghtu village, Shah Wali Kot District, Kandahar province, Afghanistan",66.1415263,32.0740778
+"232","North-Eastern Kenya",37.906193,-0.023559
+"233","Makeen, Waziristan, Pakistan",69.8418718,32.6265744
+"234","Alasay, Kapisa Province, Afghanistan",69.9312117,34.844218
+"235","Kakarak, Orūzgān Province, Afghanistan",66.1415263,32.9271287
+"236","Northern Afghanistan",67.709953,33.93911
+"237","Chechnya",45.7187468,43.4023301
+"238","Dagestan",47.0949799,42.1431886
+"239","Ingushetia",44.8202999,43.4051698
+"240","Kabardino-Balkaria",43.5628498,43.3932469
+"241","Karachay-Cherkessia",41.7303939,43.8845143
+"242","North Ossetia-Alania",44.2870972,43.0451302
+"243","Kunar province, Afghanistan",71.097317,34.8465893
+"244","Granai, Bala Buluk District, Farah Province, Afghanistan",62.7323884,32.6898446
+"245","Kunduz Province, Afghanistan",68.8678982,36.7285511
+"246","Borno State",13.1519665,11.8846356
+"247","Yobe State",11.4390411,12.293876
+"248","Northern Cameroon",13.914399,8.5809013
+"249","Southeast Niger",8.081666,17.607789
+"250","Western Chad",-95.712891,37.09024
+"251","Dahaneh, Afghanistan",62.141293,33.028072
+"252","Kunduz City, Kunduz Province, Afghanistan",68.8680663,36.7285907
+"253","Ganjgal village, Kunar Province, Afghanistan",71.097317,34.8465893
+"254","Baraawe, Somalia",44.0318162,1.1161954
+"255","Kamesh, Nuristan Province, Afghanistan",71.3386437,35.4098732
+"256","Nawzad district in Afghanistan",64.4318916,32.4000226
+"257","Surobi District, Afghanistan",69.7182676,34.6313402
+"258","Ghazi Khan Ghondi village, Narang District, Kunar province, Afghanistan",71.0376754,34.7575631
+"259","Khataba village, Paktia Province, Afghanistan",69.3831079,33.706199
+"260","Marja, Helmand Province, Afghanistan",64.114227,31.517771
+"261","Uruzgan, Afghanistan",66.1415263,32.9271287
+"262","Shah Wali Kot District, Kandahar Province, Afghanistan",66.1415263,32.0740778
+"263","Sabging District, Helmand Province, Afghanistan",64.8525866,32.0710999
+"264","Sangin, Helmand province, Afghanistan",64.8525866,32.0710999
+"265","Duyyala, Iraq",45.1494505,33.7733487
+"266","Kandahar province, Afghanistan",65.475736,30.9960679
+"267","Kunduz Province",68.8678982,36.7285511
+"268","North Africa, Middle East",42.5509603,29.2985278
+"269","off Oman, Indian Ocean",NA,NA
+"270","Sinai Peninsula, Egypt",34,29.5
+"271","Libya",17.228331,26.3351
+"272","Dara-I-Pech District, Kunar province, Afghanistan",71.1556204,34.8728983
+"273","Syria",38.996815,34.802075
+"274","Datta Khel, North Waziristan, Pakistan",70.4333615,33.1500497
+"275","Nuristan providence, Afghanistan",70.9071236,35.3250223
+"276","Lebanon",35.862285,33.854721
+"277","Turkey",35.243322,38.963745
+"278","Jordan",-95.712891,37.09024
+"279","Israeli Golan Heights",35.784354,33.0155854
+"280","Egypt",30.802498,26.820553
+"281","Bangladesh",90.356331,23.684994
+"282","the Philippines",121.774017,12.879721
+"283","Southeast Asia",115.66283,-2.2179704
+"284","Southern and Central Africa",19.5687103,2.3184621
+"285","Europe",15.2551187,54.5259614
+"286","Gambir Jungle, Kunar Province, Northeast Afghanistan",71.1,35
+"287","Baraki Barak district, Logar province, Afghanistan",68.9509787,33.9690929
+"288","Central African Republic",20.939444,6.611111
+"289","Democratic Republic of Congo",21.758664,-4.038333
+"290","South Sudan",31.3069788,6.8769919
+"291","Uganda",32.290275,1.373333
+"292","Salala, Baizai Tehsil, Mohmand Agency, FATA, Pakistan",71.2874209,34.5355951
+"293","Giawa village, Nijrab District, Kapisa Province, Afghanistan",69.8359154,34.9971359
+"294","Chawki district of Kunar province, Afghanistan",71.097317,34.8465893
+"295","Al-Hasakah Governorate, Syria",40.7969149,36.405515
+"296","Raqqa Governorate, Syria",38.9876741,35.8059055
+"297","Aleppo Governorate, Syria",37.4681396,36.2262393
+"298","Camp Bastion, Helmand Province, Afghanistan",63.9586111,31.3636474
+"299","Northern Syria",37.341313,36.6144176
+"300","Barawe, Somalia",44.0318162,1.1161954
+"301","Habban District and Azzan, Shabwah Governorate, Yemen",47.0802023,14.3545083
+"302","Salahuddin Province, Iraq",43.483738,34.5337527
+"303","Amirli, Saladin Governorate, Iraq",44.5854917,34.7264563
+"304","Nigeri",8.675277,9.081999
+"305","the North Caucasus",45,43.5851814
+"306","Tikrit, Iraq",43.675025,34.5990025
+"307","Kirkuk Governorate, Iraq",43.9436788,35.3292014
+"308","Mosul Dam",42.823056,36.630278
+"309","Suq al Ghazi, Baghdad, Iraq",44.3660671,33.315241
+"310","Derna, Libya",22.6377432,32.755613
+"311","Baiji, Saladin Governorate, Iraq",43.4452148,35.0180032
+"312","Tikrit",43.675025,34.5990025
+"313","Saladin Governorate",43.483738,34.5337527
+"314","Sarrin, Ayn al-Arab District, Syria",38.3007613,36.5907952
+"315","Al-Jarmah, Anbar Governorate,  Iraq",41.9196471,32.5597614
+"316","Kunduz, Kunduz Province, Afghanistan",68.8680663,36.7285907
+"317","al-Amr, Dier ez-Zor Governorate, Syria",40.1350341,35.3296518
+"318","Al-Hasakah, Syria",40.7462671,36.507867
+"319","Anbar Governorate, Iraq",41.9196471,32.5597614
+"320","Ramadi, Anbar Governorate, Iraq",43.2682801,33.4366231
+"321","Omar, Syria",NA,NA
+"322","Tanak, Syria",NA,NA
+"323","El Isbah, Syria",NA,NA
+"324","Sijan, Syria",NA,NA
+"325","Jafra, Syria",36.2916059,33.5180168
+"326","Azraq, Syria",36.8143061,31.8349316
+"327","Barghooth Syria",NA,NA
+"328","Abu Hardan, Syria",NA,NA
+"329","Al-Harakah Governorate, Syria",40.7969149,36.405515
+"330","Nineveh Plains, Iraq",43.1531426,36.6133338
+"331","Northeastern Aleppo Govenorate, Syria",37.4681396,36.2262393
+"332","Fallujah and Al-Karmah, Anbar Governorate, Iraq",43.7812773,33.3443576
+"333","Achin District, Nangarhar Province, Afghanistan",70.667035,34.08218
+"334","Shinwar District, Nangarhar Province, Afghanistan",70.8357792,34.1852074
+"335","Kot District, Nangarhar Province, Afghanistan",70.78821,34.2631487
+"336","Al-Hawakah Governorate, Syria",40.7969149,36.405515
+"337","Abyan Governorate, Yemen",46.0563212,13.6343413
+"338","Northern Aleppo Governorate, Syria",37.4681396,36.2262393
+"339","Hīt District, Anbar Governorate, Iraq",42.6293446,33.6691115
+"340","Southwest Erbil Governorate",44.3851263,36.5570628
+"341","Mukalla, Hadramaut, Yemen",49.127197,14.5404328
+"342","Hadramaut Governorate, Yemen",49.3653149,16.9304135
+"343","Sirte District, Libya",16.912251,30.1505798
+"344","Northern Raqqa Governorate, Syria",38.9981052,35.9594106
+"345","Fallujah, Anbar Governorate, Iraq",43.7812773,33.3443576
+"346","Tokhar and Hoshriya, Manbij District, Aleppo Governorate, Syria",37.8936663,35.9949821
+"347","Al-Hasakah, Al-Hasakah Governorate, Syria",40.7462671,36.507867
+"348","Al-Bab District, Aleppo Governorate, Syria",37.5534526,36.2697715
+"349","Deir ez-Zor Airport, Deir ez-Zor, Syria",40.1762432,35.2851153
+"350","Northern Iraq: Southwest Erbil Governorate",44.3851263,36.5570628
+"351","Nineveh Governorate",42.2362435,36.229574
+"352","Raqqa Governorate",38.9876741,35.8059055
+"353","Deir ez-Zor Governorate, Syria",40.1350341,35.3296518
+"354","Tadmur District, Eastern Homs Governorate, Syria",38.3165725,34.2567123
+"355","Syrian Desert, Suwayda Governorate, Rif Dimashq Governorate, Eastern Homs Governorate, Eastern Deir ez-Zor Governorate",36.5662858,32.7128968
+"356","Sangin, Afghanistan",64.8525866,32.0710999
+"357","East Aleppo Governorate, Syria",37.4681396,36.2262393
+"358","Al-Ghayil, Al Bayda Governorate, Yemen",45.4498065,14.3588662
+"359","United States",-95.712891,37.09024
+"360","al Jinah, Syria",37.46854,35.16217
+"361","Al-Thawrah District, Raqqa Governorate, Syria",38.4849923,35.5501285
+"362","Western Nineveh Governorate, Iraq",42.2362435,36.229574
+"363","Mohmand Valley, Achin District, Nangarhar Province, Afghanistan",70.667035,34.08218
+"364","Barii, Somalia",49.6911374,10.1203847
+"365","Shayrat Airbase, Shayrat, Syria",36.8980529,34.5011599
+"366","Syrian Desert, Syria",38.6600205,34.3504343
+"367","Al Hathla, Ma'rib Governorate, Yemen",45.4498065,15.515888
+"368","Raqqa, Raqqa Governorate, Syria",38.9981052,35.9594106
+"369","Ja'Din, Raqqa Governorate, Syria",38.9876741,35.8059055
+"370","Eastern Saladin Governorate, Iraq",43.483738,34.5337527
+"371","Northern Diyala Governorate, Iraq",45.1494505,33.7733487
+"372","Hiran, Somalia",45.2993862,4.321015
+"373","Diffa Region, Niger",12.7135121,13.6768647
+"374","Khasham, Deir ez-Zor Governorate, Syria",40.2935452,35.2987144
+"375","Euphrates, Dier ez-Zor Governorate, Syria",40.1350341,35.3296518
+"376","Gandarshe, Banaadir, Somalia",45.3369459,2.1187375
+"377","Barisha, Harem District, Idlib Governorate, Syria",36.6390794,36.1749434
+"378","Al-Baghuz Fawqani, Abu Kamai District, Dier ez-Zor Governorate, Syria",40.9877081,34.4319825
+"379","Western Indian Ocean",81.826172,-33.137551
+"380","Gulf of Oman",58.7373634,24.7142573
+"381","Strait of Hormuz",56.4719928,26.5944754
+"382","Arabian Sea",64.33717,12.2501506
+"383","Strait of Gibralter",-5.6878736,35.9982398
+"384","Red Sea",38.512573,20.280232
+"385","Tehran",51.3889736,35.6891975
+"386","Bagdad Airport Road, Bagdad International Airport, Bagdad Governorate, Bagdad, Iraq",44.2311414,33.2669849

@@ -6,8 +6,6 @@ author:
   - Cole Reynolds
   - Thomas Brailey
 format:
-  pdf:
-    fig-format: png
   html:
     title-block-banner: true
     toc: true
@@ -44,25 +42,6 @@ Our universe of cases is US military interventions after the Cold War.
 We start by identifying list of US interventions coded in existing IR datasets as well as their temporal scope. We can then compare their coverage to see what covariates may conflict and where things may be missing.
 
 The first step will be loading each dataset and subsetting it to the appropriate actor (US as intervenor) and time period (post-Cold War).
-
-## Aerial bombing
-
-```{r}
-allen_17 <- readstata13::read.dta13(paste0(here::here(), "/inst/extdata/AllenMtzMachainAerialBombingData2016CMPS.dta")) %>%
-  dplyr::filter(year >= 1989,
-                ccode1 == 2)
-
-horowitz_01 <- foreign::read.dta(paste0(here::here(), "/inst/extdata/jcr01.dta")) %>%
-  dplyr::filter(attacker %in% c('United States', 'Allies', 'U.S./Britain', 'NATO', 'US')) %>%
-  dplyr::mutate(date = dplyr::recode(date,
-                                     '1944-1945' = "1944",
-                                     '1942-1944' = "1942",
-                                     'Aug. 1945' = "1945",
-                                     '1965-1968' = "1965",
-                                     '1950-1951' = "1950")) %>%
-  dplyr::mutate(date = as.numeric(date)) %>%
-  dplyr::filter(date >= 1989)
-```
 
 ## ICB
 
@@ -111,8 +90,6 @@ mip <- readstata13::read.dta13(paste0(here::here(),"/inst/extdata/MIP/MIPDataKus
 
 The MIP data also covers US military interventions, broadly defined as "united instances of international conflict or potential conflict outside of normal peacetime activities in which the purposeful threat, display, or use of military force by official US government channels is explicitly directed toward the government, official representatives, official forces, property, or territory of another state actor" [@kushi_introducingmilitaryintervention_2022, 4]. This is inclusive of IMI (purposeful movement of troops inside another country), CRS (armed forces abroad outside of normal peacetime purposes), RAND RUGID (at least 100 ground troops in a year), MIPS (at least 500 military personnel), and MID (military force short of war).[^1]
 
-[^1]: As there are `r ncol(mip)` columns in the MIP dataset, a table summary cannot be rendered in this document.
-
 ## MIPS
 
 The MIPS dataset codes Military Interventions by Powerful States from 1946-2003 [@sullivan_militaryinterventionpowerful_2009]. It includes the US, China, France, and Russia using force against state and non-state targets as well as their political objects, the costs of the operation, and the interventions outcomes. We filter the dataset so that it only includes the interventions in which the United States was an actor in the post-Cold War period.
@@ -146,6 +123,79 @@ rand <- read.csv(paste0(here::here(),"/inst/extdata/rand_interventionlist.csv"))
   dplyr::filter(incident_start_year >= 1989)
 
 DT::datatable(rand)
+```
+
+## Aerial bombing
+
+A number of other datasets on aerial bombing analyze similar conflicts and contain variables of interest. We can make our dataset compatible with those. The next task is to make them compatible by subsetting to just US aerial bombing cases and checking the unit of analysis. We'll start with @allen_understandingimpactair_2017 and @horowitz_whendoesaerial_2001.
+
+The war ID's only have a partial match to one another and not every cruise missile bombing has a COW code so we will have to make a new campaign variable for each dataset to merge the cases. Since the unique rows in our new dataset is smaller, we'll change the names in the other datasets to match the equivalents in the new cruise missile data. In this case, that will be the wikidata ID. That has the advantage of being uniform since it's an external source and can be merged using unique IDs later which will help make the data compatible with other datasets. This will allow us to then merge on the war_wikidata_name variable.
+
+While @allen_understandingimpactair_2017 has unique war names that correspond fairly closely with those in the cruise missile dataset, the other datasets do not so that will have to be manually added. Confirming that's the case, we can re-name those levels to be consistent with the corresponding column in the cruise missile data.
+
+@horowitz_whendoesaerial_2001 build on @pape_bombingwinair_1996's work to test whether air power will succeed in accomplishing foreign policy objectives by testing theories about target regime type and demand for regime change. They add more cases that represent instance of aerial bombing both after Pape's work was published and also cases he missed. Similar to @pape_bombingwinair_1996, they seek to explain success in aerial bombing and argue that when the target is militarily vulnerable, air power will succeed. The civilian vulnerability of the target does not matter. Air power works less well if the attacker demands that the target government step down and it does not matter if the target is democratic.
+
+```{r}
+# Prep Allen data
+allen_17 <- readstata13::read.dta13(paste0(here::here(), "/inst/extdata/AllenMtzMachainAerialBombingData2016CMPS.dta")) %>%
+  dplyr::filter(year >= 1989 &
+                  ccode1 == 2 &
+                  bomb == 1) %>%
+  dplyr::mutate(war_wikidata_name = war) %>%
+  dplyr::mutate(war_wikidata_name = dplyr::recode(war_wikidata_name,
+                                           "WWI" = "World War I", 
+                                            "WWII" = "World War II", 
+                                            "Korean War" = "Korean War", 
+                                            "Vietnam Phase 2" = "Vietnam War",
+                                            "Vietnam (163)" = "Vietnam War",
+                                            "Vietnam" = "Vietnam War",
+                                            "Vietnam Phase2" = "Vietnam War", 
+                                            "Second Laotian (170)" = "Laotian Civil War",
+                                            "2nd Laotian War, ph 2" = "Laotian Civil War",
+                                            "Gulf War" = "Gulf War",
+                                            "War for Kosovo" = "Kosovo War",
+                                            "Invasion of Afghanistan" = "War in Afghanistan",
+                                            "Invasion of Iraq" = "Iraq War")) %>%
+  dplyr::mutate(allen = 1)
+
+# Prep Horowitz data
+horowitz_01 <- foreign::read.dta(paste0(here::here(), "/inst/extdata/jcr01.dta")) %>%
+  dplyr::filter(attacker %in% c('United States', 'Allies', 'U.S./Britain', 'NATO', 'US')) %>%
+  dplyr::mutate(date = dplyr::recode(date,
+                                     '1944-1945' = "1944",
+                                     '1942-1944' = "1942",
+                                     'Aug. 1945' = "1945",
+                                     '1965-1968' = "1965",
+                                     '1950-1951' = "1950")) %>%
+  dplyr::mutate(date = as.numeric(date)) %>%
+  dplyr::filter(date >= 1989) %>%
+  dplyr::mutate(war_wikidata_name = warid) %>%
+  dplyr::mutate(war_wikidata_name = ifelse(date == "1991", "Gulf War", war_wikidata_name),
+                war_wikidata_name = ifelse(date == "1996", "Iraqi Kurdish Civil War", war_wikidata_name),
+                war_wikidata_name = ifelse(date == "1998", "Iraqi no-fly zones", war_wikidata_name)) %>%
+  dplyr::mutate(horowitz = 1)
+
+# Merge together
+aerial_prior <- dplyr::full_join(allen_17, horowitz_01) %>%
+  dplyr::mutate(allen = ifelse(is.na(allen), 0, 1),
+                horowitz = ifelse(is.na(horowitz), 0, 1))
+
+### AG pick up here by adding more mods to the aerial prior in the above section
+### Attacker ccode
+aerial_prior$ccode1 <- 2
+
+### Defender ccode
+aerial_prior$ccode2_merge <- countrycode::countrycode(aerial_prior$defender, "country.name", "cown")
+aerial_prior$ccode2 <- ifelse(is.na(aerial_prior$ccode2), aerial_prior$ccode2_merge, aerial_prior$ccode2)
+aerial_prior$ccode2_merge <- NULL
+
+### Defender name
+aerial_prior$defender2_merge <- countrycode::countrycode(aerial_prior$ccode2, "cown", "country.name")
+aerial_prior$defender2 <- ifelse(is.na(aerial_prior$defender2), aerial_prior$defender2_merge, aerial_prior$defender2)
+aerial_prior$defender2_merge <- NULL
+
+aerial_prior %>%
+  DT::datatable()
 ```
 
 # Merge
@@ -281,7 +331,113 @@ df <- read.csv(paste0(here::here(), "/data/raw/","01b_interventions_priordata_po
 
 DT::datatable(df)
 
-write.csv(df, paste0(here::here(), "/data/raw","01c_interventions_priordata_unique.csv"))
+write.csv(df, paste0(here::here(), "/data/raw/","01c_interventions_priordata_unique.csv"))
 ```
 
 The dataframe is now set up so that coders can identify whether each wikidata entry qualified as a US military intervention as well as what unit of analysis that intervention describes. Coders can then fill in the rest of the unit of analysis columns to populate the full universe of cases.
+
+# Compare Existing Datasets to Wiki
+
+We want to identify the US military interventions in current political science datasets that are on wikipedia and what interventions are on wikipedia but not in current datasets.
+
+```{r}
+# Loading interv list here
+wiki <- read.csv(paste0(here::here(), "/data/raw/","01d_interventions_newdata_list.csv"))
+
+# Load and prep 01b postcoding
+prior <- read.csv(paste0(here::here(), "/data/raw/","01b_interventions_priordata_postcoding.csv")) %>% 
+  dplyr::filter(drop == 0) %>%
+  dplyr::select(dataset, wikidata_name, wikidata_id)
+
+prior$dataset <- as.factor(prior$dataset)
+prior <- fastDummies::dummy_cols(prior, select_columns = "dataset")
+prior$dataset <- NULL
+
+prior <- prior %>%
+  dplyr::distinct()
+
+# Merge common rows
+prior_temp <- prior %>%
+  tidyr::pivot_longer(cols = dplyr::starts_with("dataset_"),
+                      names_to = "dataset",
+                      values_to = "contains") %>%
+  dplyr::filter(contains == 1) %>%
+  tidyr::pivot_wider(id_cols = dplyr::starts_with("wikidata_"),
+                     names_from = "dataset",
+                     values_from = "contains") %>%
+  dplyr::mutate_if(is.numeric, ~tidyr::replace_na(., 0))
+
+library(plyr)
+prior_temp <- plyr::ddply(prior_temp, .(wikidata_id), summarize,
+                          wikidata_name = paste(wikidata_name, collapse = ","),
+                          dataset_icb = paste(dataset_icb, collapse = ","),
+                          dataset_imi = paste(dataset_imi, collapse = ","),
+                          dataset_mids = paste(dataset_mids, collapse = ","),
+                          dataset_mip = paste(dataset_mip, collapse = ","),
+                          dataset_mips = paste(dataset_mips, collapse = ","),
+                          dataset_prio = paste(dataset_prio, collapse = ","),
+                          dataset_rand = paste(dataset_rand, collapse = ","))
+
+prior_temp <- prior_temp %>%
+  dplyr::select(-wikidata_name)
+
+## Format air power dataset
+aerial_sub <- aerial_prior[, c("war_wikidata_name", "allen", "horowitz")] %>%
+  dplyr::rename(wikidata_name = war_wikidata_name)
+wide <- aerial_sub
+
+#fix coding error
+wide$wikidata_name <- gsub("Iraqi Kurdish civil war", "Iraqi Kurdish Civil War", wide$wikidata_name)
+
+wide_fin <- wide %>%  
+  dplyr::rename(dataset_allen = allen,
+                dataset_horowitz = horowitz)
+
+wide_fin$dataset_allen <- as.character(wide_fin$dataset_allen)
+wide_fin$dataset_horowitz <- as.character(wide_fin$dataset_horowitz)
+
+# Merge the new dummy encodings into the original list of all mil op interv on wiki
+df <- wiki
+
+df <- dplyr::left_join(df, prior_temp, by = "wikidata_id")
+df <- dplyr::full_join(df, wide_fin, by = "wikidata_name")
+
+# Visualize comparison
+df <- df %>%
+  dplyr::filter(!is.na(wikidata_id)) %>%
+  dplyr::select(wikidata_name, wikidata_id, dplyr::starts_with("dataset_")) %>%
+  dplyr::distinct() %>%
+  dplyr::rename_at(vars(dplyr::starts_with("dataset_")),
+                   dplyr::funs(stringr::str_replace(., "dataset_", ""))) %>%
+  dplyr::mutate('MONSTr' = 1) %>%
+  replace(is.na(.), "0")
+
+df %>%
+  dplyr::select(-wikidata_name, -wikidata_id) %>%
+  dplyr::mutate_if(is.character, as.numeric) %>%
+  dplyr::rename(Allen = allen,
+                Horowitz = horowitz,
+                ICB = icb,
+                MIPS = mips,
+                IMI = imi,
+                MID = mids,
+                MIP = mip,
+                RAND = rand) %>%
+  UpSetR::upset(nsets = 9,
+      number.angles = 0,
+      point.size = 2.5,
+      line.size = 1,
+      text.scale = 1.8,
+      mainbar.y.label = "Number of Interventions",
+      sets.x.label = "Observations",
+      set_size.numbers_size = 1.2,
+      order.by = "freq")
+```
+
+Save .csv that is list of all interventions on wiki and their coverage in existing datasets
+
+```{r}
+write.csv(df, paste0(here::here(), "/data/","01_interventions_newdata_comparison.csv"))
+```
+
+[^1]: As there are `r ncol(mip)` columns in the MIP dataset, a table summary cannot be rendered in this document.

@@ -1,0 +1,346 @@
+---
+title: "07 Air Power Campaign Results"
+author: "J Andres Gannon"
+date: "March 4, 2018"
+output:
+  html_document:
+    toc: yes
+  html_notebook:
+    toc: yes
+    toc_float: yes
+editor_options:
+  chunk_output_type: inline
+---
+<style>
+    body .main-container {
+        max-width: 100%;
+    }
+</style>
+
+# Set up
+```{r}
+library(magrittr)
+library(tidyverse)
+```
+
+# Intervention list
+Start by loading the cleaned intervention list
+```{r}
+df <- read.csv(paste0(here::here(), "/data/","02a_interventions_newdata_dbpedia.csv")) %>%
+  dplyr::select(wikidata_name, wikidata_id,
+                location_name, lat, lon,
+                start_date, end_date, duration,
+                belligerent_sideA, belligerent_sideB,
+                dplyr::starts_with("means_"),
+                dplyr::starts_with("casualties_")) %>%
+  dplyr::distinct()
+
+# Merge with parent observations which gives us the current list of operations
+ops <- read.csv(paste0(here::here(), "/data/","03_interventions_newdata_childof_operations.csv")) %>%
+  dplyr::select(-X) %>%
+  dplyr::distinct()
+
+df <- dplyr::left_join(ops, df)
+```
+
+## Clean
+Subset to just the US, and drop dyads that don't involve the US
+```{r}
+ally <- df %>%
+  dplyr::group_by(wikidata_name, wikidata_id) %>%
+  dplyr::summarise(participants = dplyr::n_distinct(belligerent_sideA)) %>%
+  dplyr::mutate(participants = participants-1)
+
+ally %>%
+  DT::datatable()
+
+df <- dplyr::left_join(df, ally) %>%
+  dplyr::mutate(belligerent_sideA = "United States") %>%
+  dplyr::mutate(ccode1 = as.numeric(2),
+                cname1 = "USA",
+                qcode1 = "Q30",
+                multilateral1 = dplyr::if_else(participants > 0, 1, 0)) %>%
+  dplyr::rename(belligerent1 = belligerent_sideA,
+                belligerent2 = belligerent_sideB,
+                allycount1 = participants) %>%
+  dplyr::distinct()
+```
+
+## Quick checks
+Intervention that span more than a year. Make a temporary variable for start year
+```{r}
+df %>%
+  dplyr::select(wikidata_name, start_date, end_date) %>%
+  dplyr::mutate(year_start = format(as.Date(start_date, format="%Y-%m-%d"),"%Y"),
+                year_end = format(as.Date(end_date, format="%Y-%m-%d"),"%Y")) %>%
+  dplyr::filter(year_end > year_start) %>%
+  dplyr::select(!dplyr::starts_with("year_")) %>%
+  dplyr::distinct() %>%
+  DT::datatable(filter = "top")
+
+df <- df %>%
+  dplyr::mutate(year = as.numeric(format(as.Date(start_date, format="%Y-%m-%d"),"%Y")))
+```
+
+# Prep variables
+
+## Actors
+Get ccode for state actors
+```{r}
+qcodes <- read.csv(paste0(here::here(), "/data/aux/","belligerent_list.csv")) %>%
+  dplyr::filter(is.na(ccode_wrong)) %>%
+  dplyr::select(belligerent, ccode, cname, Qcode) %>%
+  dplyr::rename(belligerent2 = belligerent,
+                ccode2 = ccode,
+                cname2 = cname,
+                qcode2 = Qcode)
+
+df <- dplyr::left_join(df, qcodes) %>%
+  dplyr::mutate(sideB_nonstate = dplyr::if_else(is.na(ccode2), 1, 0))
+
+df %>%
+  dplyr::select(belligerent2, ccode2, cname2) %>%
+  dplyr::distinct() %>%
+  dplyr::arrange(ccode2) %>%
+  DT::datatable(filter = "top")
+
+# New list of sideB non-state actor info
+sideb_nonstate <- read.csv(paste0(here::here(), "/data/aux/","nonstate_actors.csv")) %>%
+  dplyr::rename(sideB_nonstate_major = X) %>%
+  dplyr::select(belligerent2, qcode2, sideB_nonstate_major)
+
+df <- dplyr::left_join(df, sideb_nonstate)
+
+# Make all state actors 0 for nonstate major
+df <- df %>%
+  dplyr::mutate(sideB_nonstate_major = ifelse(is.na(sideB_nonstate_major), 0, sideB_nonstate_major))
+
+df %>%
+  dplyr::select(belligerent2, cname2, sideB_nonstate, sideB_nonstate_major) %>%
+  DT::datatable()
+```
+
+Match parents to the main data, including the start date of the parent intervention and days into the parent intervention
+```{r}
+# Pull all interventions so we have the start dates
+df_parent <- read.csv(paste0(here::here(), "/data/","02a_interventions_newdata_dbpedia.csv")) %>%
+  dplyr::select(wikidata_id, start_date) %>%
+  dplyr::rename(parent_id = "wikidata_id",
+                parent_start = "start_date")
+
+df <- dplyr::left_join(df, df_parent)
+
+# Calculate how many days into the parent intervention the child intervention occurred
+df <- df %>%
+  dplyr::mutate(start_date = as.Date(start_date, "%Y-%m-%d"),
+                parent_start = as.Date(parent_start, "%Y-%m-%d"),
+                daysinto_parent = difftime(start_date, parent_start, units = c("days")),
+                daysinto_parent = as.numeric(daysinto_parent, units = "days")) %>%
+  dplyr::distinct()
+```
+
+# Condense UoA
+Collapse the data from intervention-dyad to intervention
+
+```{r}
+df_interv <- df %>%
+  dplyr::select(dplyr::starts_with("wikidata_"), dplyr::starts_with("parent_"),
+                dplyr::starts_with("means_"),
+                lat, lon, 
+                year, start_date, end_date, duration, parent_start, daysinto_parent,
+                allycount1, multilateral1,
+                dplyr::starts_with("casualties_")) %>%
+  dplyr::distinct()
+
+df_target <- df %>%
+  dplyr::select(wikidata_id,
+                cname2, sideB_nonstate, sideB_nonstate_major) %>%
+  dplyr::group_by(wikidata_id) %>%
+  dplyr::summarise(sideB_state_count = dplyr::n_distinct(cname2, na.rm = TRUE),
+                   sideB_nonstate_all_count = sum(sideB_nonstate, na.rm = TRUE),
+                   sideB_nonstate_major_count = sum(sideB_nonstate_major == 2, na.rm = TRUE),
+                   sideB_nonstate_minor_count = sum(sideB_nonstate_major == 1, na.rm = TRUE)) %>%
+  dplyr::mutate(sideB_state_ratio = sideB_state_count/(sideB_state_count + sideB_nonstate_all_count)) %>%
+  dplyr::mutate(sideB_statenonstate_ordinal = dplyr::if_else(sideB_state_ratio == 1, 
+                                                              0, 0),
+                sideB_statenonstate_ordinal = dplyr::if_else(sideB_state_ratio < 1 & sideB_state_ratio > 0, 
+                                                              1, sideB_statenonstate_ordinal),
+                sideB_statenonstate_ordinal = dplyr::if_else(sideB_state_ratio == 1,
+                                                              2, sideB_statenonstate_ordinal)) %>%
+  dplyr::mutate(sideB_state_binary = dplyr::if_else(sideB_state_count > 0,
+                                                    1, 0),
+                sideB_nonstate_all_binary = dplyr::if_else(sideB_nonstate_all_count > 0,
+                                                       1, 0),
+                sideB_nonstate_major_binary = dplyr::if_else(sideB_nonstate_major_count > 0,
+                                                       1, 0),
+                sideB_nonstate_minor_binary = dplyr::if_else(sideB_nonstate_minor_count > 0,
+                                                       1, 0))
+
+df_interv <- dplyr::left_join(df_interv, df_target)
+```
+
+# Add variables
+## Public approval
+```{r}
+approval <- read.csv(paste0(here::here(), "/data/aux/","approval.csv"))
+
+# Prep date variables
+approval <- approval %>%
+  dplyr::mutate(month = stringr::str_pad(month, 2, pad = "0")) %>%
+  dplyr::mutate(start_date_month = paste0(year, "-", month),
+                approveL1 = dplyr::lag(approve),
+                disapproveL1 = dplyr::lag(disapprove))
+
+df_interv <- df_interv %>%
+  dplyr::mutate(start_date_month = substr(start_date, start = 1, stop = 7))
+
+# Merge
+df_interv <- dplyr::left_join(df_interv, approval)
+
+# Add Biden events
+df_interv <- df_interv %>%
+  dplyr::mutate(presidentid = ifelse(is.na(presidentid), "Joseph Biden", presidentid))
+```
+
+## Casualties
+```{r}
+dates <- approval %>%
+  dplyr::select(start_date_month)
+
+casualties_oef <- readxl::read_xls(paste0(here::here(), "/inst/extdata/casualties/", "OEFMonthly.xls")) %>%
+  dplyr::mutate(conflict = "oef") %>%
+  dplyr::rename(date = "Month/Year") %>%
+  dplyr::mutate("date" = stringr::str_squish(date)) %>%
+  tidyr::separate(col = date, into = c("month", "year"), sep = " ") %>%
+  dplyr::mutate(month = stringr::str_to_title(month)) %>%
+  dplyr::mutate(month = match(month, month.name)) %>%
+  dplyr::mutate(month = stringr::str_pad(month, 2, pad = "0"),
+                start_date_month = paste0(year, "-", month)) %>%
+  dplyr::select(start_date_month, conflict, TOTL_hostile, TOTL_all)
+
+casualties_ofs <- readxl::read_xls(paste0(here::here(), "/inst/extdata/casualties/", "OFSMonthly.xls")) %>%
+  dplyr::mutate(conflict = "ofs") %>%
+  dplyr::rename(date = "Month/Year") %>%
+  dplyr::mutate("date" = stringr::str_squish(date)) %>%
+  tidyr::separate(col = date, into = c("month", "year"), sep = " ") %>%
+  dplyr::mutate(month = stringr::str_to_title(month)) %>%
+  dplyr::mutate(month = match(month, month.name)) %>%
+  dplyr::mutate(month = stringr::str_pad(month, 2, pad = "0"),
+                start_date_month = paste0(year, "-", month)) %>%
+  dplyr::select(start_date_month, conflict, TOTL_hostile, TOTL_all)
+
+casualties_oif <- readxl::read_xls(paste0(here::here(), "/inst/extdata/casualties/", "OIFMonthly.xls")) %>%
+  dplyr::mutate(conflict = "oif") %>%
+  dplyr::rename(date = "Month/Year") %>%
+  dplyr::mutate("date" = stringr::str_squish(date)) %>%
+  tidyr::separate(col = date, into = c("month", "year"), sep = " ") %>%
+  dplyr::mutate(month = stringr::str_to_title(month)) %>%
+  dplyr::mutate(month = match(month, month.name)) %>%
+  dplyr::mutate(month = stringr::str_pad(month, 2, pad = "0"),
+                start_date_month = paste0(year, "-", month)) %>%
+  dplyr::select(start_date_month, conflict, TOTL_hostile, TOTL_all)
+
+casualties_oir <- readxl::read_xls(paste0(here::here(), "/inst/extdata/casualties/", "OIRMonthly.xls")) %>%
+  dplyr::mutate(conflict = "oir") %>%
+  dplyr::rename(date = "Month/Year") %>%
+  dplyr::mutate("date" = stringr::str_squish(date)) %>%
+  tidyr::separate(col = date, into = c("month", "year"), sep = " ") %>%
+  dplyr::mutate(month = stringr::str_to_title(month)) %>%
+  dplyr::mutate(month = match(month, month.name)) %>%
+  dplyr::mutate(month = stringr::str_pad(month, 2, pad = "0"),
+                start_date_month = paste0(year, "-", month)) %>%
+  dplyr::select(start_date_month, conflict, TOTL_hostile, TOTL_all)
+
+casualties_ond <- readxl::read_xls(paste0(here::here(), "/inst/extdata/casualties/","ONDMonthly.xls")) %>%
+  dplyr::mutate(conflict = "ond") %>%
+  dplyr::rename(date = "Month/Year") %>%
+  dplyr::mutate("date" = stringr::str_squish(date)) %>%
+  tidyr::separate(col = date, into = c("month", "year"), sep = " ") %>%
+  dplyr::mutate(month = stringr::str_to_title(month)) %>%
+  dplyr::mutate(month = match(month, month.name)) %>%
+  dplyr::mutate(month = stringr::str_pad(month, 2, pad = "0"),
+                start_date_month = paste0(year, "-", month)) %>%
+  dplyr::select(start_date_month, conflict, TOTL_hostile, TOTL_all)
+
+casualties_aad <- read.csv(paste0(here::here(), "/inst/extdata/casualties/","aad-search-results.csv")) %>%
+  dplyr::select(INCIDENT.OR.DEATH.DATE,
+                HOSTILE.OR.NON.HOSTILE.DEATH.INDICATOR) %>%
+  tidyr::separate(col = INCIDENT.OR.DEATH.DATE, into = c("month", "day", "year"), sep = "/") %>%
+  dplyr::mutate(start_date_month = paste0(year, "-", month)) %>%
+  dplyr::group_by(start_date_month, HOSTILE.OR.NON.HOSTILE.DEATH.INDICATOR) %>%
+  dplyr::summarise(count = n()) %>%
+  dplyr::ungroup() %>%
+  tidyr::pivot_wider(id_cols = start_date_month,
+                     names_from = HOSTILE.OR.NON.HOSTILE.DEATH.INDICATOR,
+                     values_from = count) %>%
+  dplyr::rename(TOTL_hostile = 'Hostile Death', TOTL_nonhostile = 'Non-Hostile Death') %>%
+  dplyr::mutate(TOTL_hostile = dplyr::coalesce(TOTL_hostile, 0),
+                TOTL_nonhostile = dplyr::coalesce(TOTL_nonhostile, 0)) %>%
+  dplyr::mutate(TOTL_all = as.numeric(TOTL_hostile) + as.numeric(TOTL_nonhostile)) %>%
+  dplyr::select(-TOTL_nonhostile) %>%
+  dplyr::mutate(conflict = "aad")
+
+casualties_all <- rbind(casualties_aad,
+                        casualties_oef,
+                        casualties_ofs,
+                        casualties_oif,
+                        casualties_oir,
+                        casualties_ond)
+
+casualties_all <- casualties_all %>%
+  dplyr::group_by(start_date_month) %>%
+  dplyr::summarise(TOTL_hostile_all = sum(TOTL_hostile),
+                   TOTL_all_all = sum(TOTL_all))
+
+casualties_all <- dplyr::left_join(dates, casualties_all) %>%
+  dplyr::mutate(TOTL_hostile = dplyr::coalesce(TOTL_hostile_all, 0),
+                TOTL_all = dplyr::coalesce(TOTL_all_all, 0)) %>%
+  dplyr::select(start_date_month,
+                TOTL_hostile, TOTL_all) %>%
+  dplyr::mutate(TOTL_hostileL1 = lag(TOTL_hostile),
+                TOTL_allL1 = lag(TOTL_all),
+                TOTL_hostileL2 = lag(TOTL_hostileL1),
+                TOTL_allL2 = lag(TOTL_allL1),
+                TOTL_hostile_chg = TOTL_hostileL2 - TOTL_hostileL1,
+                TOTL_all_chg = TOTL_allL2 - TOTL_allL1)
+
+# Merge
+df_interv <- dplyr::left_join(df_interv, casualties_all)
+```
+
+## Collateral damage
+Urban areas mean low tech
+```{r}
+gis <- read.csv(paste0(here::here(), "/data/aux/","coordinates.csv")) %>%
+  dplyr::select(wikidata_id, urban, forested, mountainous) %>%
+  dplyr::mutate(urban_binary = dplyr::if_else(urban == 2, 1, 0))
+
+df_interv <- dplyr::left_join(df_interv, gis)
+```
+
+# Final clean
+Fix variable types
+```{r}
+str(df_interv)
+
+df_interv <- df_interv %>%
+  dplyr::mutate_at(c("wikidata_id",
+                     "parent_id",
+                     "multilateral1",
+                     "sideB_statenonstate_ordinal",
+                     "sideB_state_binary",
+                     "sideB_nonstate_all_binary",
+                     "sideB_nonstate_major_binary",
+                     "sideB_nonstate_minor_binary",
+                     "demparty",
+                     "urban",
+                     "urban_binary",
+                     "forested",
+                     "mountainous"), factor) %>%
+  dplyr::distinct()
+```
+
+# Save
+```{r}
+write.csv(df_interv, paste0(here::here(), "/data/","MONSTr.csv"))
+```

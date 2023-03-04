@@ -1,0 +1,98 @@
+---
+title: "06 Results"
+author: "J Andres Gannon"
+date: "March 4, 2018"
+output:
+  html_document:
+    toc: yes
+  html_notebook:
+    toc: yes
+    toc_float: yes
+editor_options:
+  chunk_output_type: inline
+---
+<style>
+    body .main-container {
+        max-width: 100%;
+    }
+</style>
+
+# Set up
+```{r}
+library(magrittr)
+library(tidyverse)
+library(ggplot2)
+```
+
+Load the cleaned intervention data that only includes operation-level children
+```{r}
+df_interv <- read.csv(paste0(here::here(), "/data/","MONSTr.csv")) %>%
+  dplyr::select(-X) %>%
+  dplyr::distinct()
+```
+
+Model prep
+```{r}
+df_interv <- df_interv %>%
+  dplyr::mutate(year_base = year - 1989,
+                year_square = year_base^2,
+                year_cube = year_base^3,
+                duration_log = log(duration + 1),
+                daysinto_parent_log = log(daysinto_parent + 1),
+                presidentid = as.factor(presidentid),
+                presidentid = relevel(presidentid, ref = "George Bush"),
+                means_ground = ifelse(means_groundtroops == 1 |
+                                        means_paramilitary == 1, 1, 0),
+                means_air_manned = ifelse(means_aerialbombing == 1 |
+                                     means_closeairsupport == 1, 1, 0),
+                means_air_unmanned = ifelse(means_drones == 1 |
+                                          means_cruisemissiles == 1, 1, 0),
+                means_air_all = ifelse(means_air_manned == 1 |
+                                          means_air_unmanned == 1, 1, 0),
+                means_mixed = ifelse(means_ground == 1 &
+                                          means_air_all == 1, 1, 0))
+```
+
+Run models
+```{r}
+#| label: tbl-results
+
+# Models
+models <- list()
+
+models[['Ground']] <- lme4::glmer(means_ground ~
+                                    sideB_nonstate_all_binary +
+                                    mountainous +
+                                    urban_binary +
+                                    duration_log +
+                                    daysinto_parent_log +
+                                    presidentid +
+                                    year_base +
+                                    year_square +
+                                    year_cube +
+                                    (1 | parent_id),
+                                  data = df_interv,
+                                  family = binomial,
+                                  control = lme4::glmerControl(optimizer = "bobyqa",
+                                                               optCtrl = list(maxfun = 2e5)),
+                                  nAGQ = 0)
+
+models[['Ground and Air']] <- update(models[['Ground']], means_mixed ~ .)
+models[['Air (all)']] <- update(models[['Ground']], means_air_all ~ .)
+models[['Air (Piloted)']] <- update(models[['Ground']], means_air_manned ~ .)
+models[['Air (Unpiloted)']] <- update(models[['Ground']], means_air_unmanned ~ .)
+
+# Table of results
+modelsummary::modelsummary(models,
+                           statistic = 'p.value',
+                           stars = c('*' = 0.1, '**' = 0.05, '***' = 0.01),
+                           coef_omit = "Intercept|presidentid*|year_",
+                           coef_rename = c("daysinto_parent_log" = "Day into Parent (log)",
+                                           "duration_log" = "Duration (log)",
+                                           "urban_binary" = "Urban target",
+                                           "mountainous" = "Mountainous target",
+                                           "sideB_nonstate_all_binary" = "Non-state target"),
+                           notes = list('All models include president fixed effects and cubic spline polynomials.'),
+                           title = "Exploratory Models of Determinants of Means of Military Force",
+                           output = paste0(here::here(), "/paper/figures/", "model-results.tex"))
+```
