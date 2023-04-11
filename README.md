@@ -4,11 +4,11 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-This is a package, documentation, and replication repository for the paper "A Wiki-based Dataset of Military Operations with Novel Strategic Technologies (MONSTr)". This paper is part of the broader military operations project which can be found at [http://military-operations.com/](http://military-operations.com/).
+This is a package, documentation, and replication repository for the paper "A Wiki-based Dataset of Military Operations with Novel Strategic Technologies (MONSTr)" which is forthcoming in **International Interactions**. This paper is part of the broader military operations project which can be found at [http://military-operations.com/](http://military-operations.com/).
 
-* Paper
+* [Pre-print](https://github.com/jandresgannon/MONSTr/blob/main/paper/Gannon-Chavez_MONSTr.pdf)
 
-* Appendix
+* [Appendix](https://github.com/jandresgannon/MONSTr/blob/main/paper/Gannon-Chavez_MONSTr_Appendix.pdf)
 
 For any questions, please email either of the authors, [J Andres Gannon](https://jandresgannon.com/), at: [andres.gannon@gmail.com](mailto:andres.gannon@gmail.com) or [Kerry Chavez](https://kerrychavez.us/), at: [kerry.chavez@ttu.edu](mailto:kerry.chavez@ttu.edu)
 
