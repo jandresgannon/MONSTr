@@ -4,7 +4,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-This is a package, documentation, and replication repository for the paper "A Wiki-based Dataset of Military Operations with Novel Strategic Technologies (MONSTr)". This paper is part of the broader military interventions project which can be found [here](http://militaryinterventions.com/).
+This is a package, documentation, and replication repository for the paper "A Wiki-based Dataset of Military Operations with Novel Strategic Technologies (MONSTr)". This paper is part of the broader military interventions project which can be found [here](http://military-operations.com/).
 
 * Paper
 
