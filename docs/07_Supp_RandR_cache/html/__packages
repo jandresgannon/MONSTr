@@ -2,3 +2,4 @@ knitr
 kableExtra
 magrittr
 ggplot2
+rlang

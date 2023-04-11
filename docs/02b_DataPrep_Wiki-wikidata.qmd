@@ -8,6 +8,7 @@ format:
     title-block-banner: true
     toc: true
     toc-location: right
+    toc-depth: 2
     html-math-method: katex
     css: styles.css
     citations-hover: true
@@ -19,7 +20,7 @@ format:
     code-copy: true
 editor: visual
 execute:
-  echo: false
+  echo: true
   warning: false
   cache: true
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
@@ -557,5 +558,5 @@ query %>%
 We save the final dataframe of the variables identified from dbpedia.
 
 ```{r}
-write.csv(df, paste0(here::here(), "/data/","02b_interventions_newdata_wikidata.csv"))
+write.csv(query, paste0(here::here(), "/data/","02b_interventions_newdata_wikidata.csv"))
 ```

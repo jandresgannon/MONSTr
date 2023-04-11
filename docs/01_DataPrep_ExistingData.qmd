@@ -10,6 +10,7 @@ format:
     title-block-banner: true
     toc: true
     toc-location: right
+    toc-expand: 2
     html-math-method: katex
     css: styles.css
     citations-hover: true
@@ -21,7 +22,7 @@ format:
     code-copy: true
 editor: visual
 execute:
-  echo: false
+  echo: true
   warning: false
   cache: true
 date: "`r format(Sys.Date(), '%B %d, %Y')`"

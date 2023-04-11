@@ -1,0 +1,16 @@
+rlang
+magrittr
+tidyverse
+ggplot2
+tibble
+tidyr
+readr
+purrr
+dplyr
+stringr
+forcats
+lubridate
+kableExtra
+igraph
+ggraph
+ggtree

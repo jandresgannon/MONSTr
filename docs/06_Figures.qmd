@@ -31,6 +31,7 @@ date: "`r format(Sys.Date(), '%B %d, %Y')`"
 library(magrittr)
 library(tidyverse)
 library(ggplot2)
+library(kableExtra)
 ```
 
 Load the cleaned intervention data that only includes youngest children
@@ -118,7 +119,7 @@ df_interv %>%
   row_spec(0, bold = TRUE) %>%
   add_header_above(c("", "Means" = 4, "Location" = 2, "Time" = 4, "Casualties" = 3)) %>%
   kable_styling(latex_options = "scale_down") %>%
-  save_kable(file = paste0(here::here(), "/paper/figures/","sample.tex"))
+  kableExtra::save_kable(file = paste0(here::here(), "/paper/figures/","sample.tex"))
 ```
 
 # Nested dependencies
@@ -385,8 +386,11 @@ counts <- read.csv(paste0(here::here(), "/data/raw/","02a_newdata_dbpedia.csv"))
 
 parents <- read.csv(paste0(here::here(), "/data/","MONSTr.csv")) %>%
   dplyr::select(wikidata_id, parent_id, parent_name)
+```
 
-# Gulf War
+## Gulf War
+
+```{r}
 ## New df of node attributes
 nodes <- dplyr::left_join(counts, parents) %>%
   dplyr::filter(parent_name == "Gulf War") %>%
@@ -442,8 +446,11 @@ E(network_gulf)$width <- E(network_gulf)$weight
 ## Visualize network
 l <- layout_with_graphopt(network_gulf,
                           charge = 5)
+```
 
-# Afghanistan war
+## Afghanistan war
+
+```{r}
 ## New df of node attributes
 nodes <- dplyr::left_join(counts, parents) %>%
   dplyr::filter(parent_name == "War in Afghanistan") %>%
@@ -507,8 +514,11 @@ E(network_isaf)$width <- E(network_isaf)$weight/3
 # Visualize network
 l <- layout_with_graphopt(network_isaf,
                           charge = 5)
+```
 
-# Syrian War
+## Syrian War
+
+```{r}
 ## Prep
 nodes <- dplyr::left_join(counts, parents) %>%
   dplyr::filter(parent_name == "Syrian Civil War") %>%
@@ -564,8 +574,11 @@ my_color_syria <- colrs[as.numeric(as.factor(V(network_syria)$type))]
 
 deg <- degree(network_syria, mode = "all")
 E(network_syria)$width <- E(network_syria)$weight
+```
 
-# Combine all plots
+
+## Combine all plots
+```{r}
 ## Fix color matches by switching orange to purple for ISAF
 my_color_gulf[my_color_gulf == "#D95F02"] <- "#7570B3"
 

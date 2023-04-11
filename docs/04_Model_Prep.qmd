@@ -1,21 +1,29 @@
 ---
 title: "Model Prep"
 author: "J Andres Gannon"
-date: "March 4, 2018"
-output:
-  html_document:
-    toc: yes
-  html_notebook:
-    toc: yes
-    toc_float: yes
-editor_options:
-  chunk_output_type: inline
+format:
+  html:
+    title-block-banner: true
+    toc: true
+    toc-location: right
+    toc-depth: 2
+    html-math-method: katex
+    css: styles.css
+    citations-hover: true
+    footnotes-hover: true
+    code-tools: true
+    code-fold: true
+    code-summary: "Show the code"
+    code-overflow: wrap
+    code-copy: true
+editor: visual
+execute:
+  echo: true
+  warning: false
+  cache: true
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+bibliography: ../paper/MONSTr.bib
 ---
-<style>
-    body .main-container {
-        max-width: 100%;
-    }
-</style>
 
 # Set up
 ```{r}
