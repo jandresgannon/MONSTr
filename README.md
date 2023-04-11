@@ -29,8 +29,14 @@ The analysis and figures in the paper and statistical appendix are produced in a
 
 File Preparation:
 
-* 
+* 01 [Existing Data](https://github.com/jandresgannon/MONSTr/blob/main/docs/01_DataPrep_ExistingData.qmd)
+* 02a [DBpedia](https://github.com/jandresgannon/MONSTr/blob/main/docs/02a_DataPrep_Wiki-DBpedia.qmd)
+* 02b [Wikidata](https://github.com/jandresgannon/MONSTr/blob/main/docs/02b_DataPrep_Wiki-wikidata.qmd)
+* 03 [Parent-child](https://github.com/jandresgannon/MONSTr/blob/main/docs/03_DataPrep_ParentChild.qmd)
 
 Models and Figures:
 
-* 
+* 04 [Model Prep](https://github.com/jandresgannon/MONSTr/blob/main/docs/04_Model_Prep.qmd)
+* 05 [Model Results](https://github.com/jandresgannon/MONSTr/blob/main/docs/05_Model_Results.qmd)
+* 06 [Figures](https://github.com/jandresgannon/MONSTr/blob/main/docs/06_Figures.qmd)
+* 07 [R&R Supplement](https://github.com/jandresgannon/MONSTr/blob/main/docs/07_Supp_RandR.qmd)
