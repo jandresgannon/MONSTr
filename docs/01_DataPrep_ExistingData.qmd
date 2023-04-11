@@ -90,6 +90,8 @@ mip <- readstata13::read.dta13(paste0(here::here(),"/inst/extdata/MIP/MIPDataKus
 
 The MIP data also covers US military interventions, broadly defined as "united instances of international conflict or potential conflict outside of normal peacetime activities in which the purposeful threat, display, or use of military force by official US government channels is explicitly directed toward the government, official representatives, official forces, property, or territory of another state actor" [@kushi_introducingmilitaryintervention_2022, 4]. This is inclusive of IMI (purposeful movement of troops inside another country), CRS (armed forces abroad outside of normal peacetime purposes), RAND RUGID (at least 100 ground troops in a year), MIPS (at least 500 military personnel), and MID (military force short of war).[^1]
 
+[^1]: As there are `r ncol(mip)` columns in the MIP dataset, a table summary cannot be rendered in this document.
+
 ## MIPS
 
 The MIPS dataset codes Military Interventions by Powerful States from 1946-2003 [@sullivan_militaryinterventionpowerful_2009]. It includes the US, China, France, and Russia using force against state and non-state targets as well as their political objects, the costs of the operation, and the interventions outcomes. We filter the dataset so that it only includes the interventions in which the United States was an actor in the post-Cold War period.
@@ -439,5 +441,3 @@ Save .csv that is list of all interventions on wiki and their coverage in existi
 ```{r}
 write.csv(df, paste0(here::here(), "/data/","01_interventions_newdata_comparison.csv"))
 ```
-
-[^1]: As there are `r ncol(mip)` columns in the MIP dataset, a table summary cannot be rendered in this document.
