@@ -1,0 +1,47 @@
+\documentclass[fleqn,12pt]{article}
+\usepackage{setspace,url,fullpage,latexsym,amsmath,amsthm,amssymb,natbib,graphicx,appendix,float,rotating,caption, subcaption,multirow,longtable,colortbl,xcolor,graphics,graphicx,enumitem,pdflscape,epstopdf,hyperref}
+\hypersetup{
+	backref =       true,
+	pagebackref  =  true,
+	colorlinks =    true,
+	linkcolor =     blue,
+	citecolor =     blue,
+	urlcolor =      blue,
+}
+\bibliographystyle{apsr}
+\usepackage[utf8]{inputenc}
+\setlength{\tabcolsep}{3pt}										
+\singlespacing
+\graphicspath{{../figures/}}
+
+\title{Response Memo for ``A Wiki-based Dataset of Military Operations with Novel Strategic Technologies (MONSTr)''}
+\date{April 2023}
+
+\begin{document}
+\thispagestyle{empty}
+\setcounter{page}{0}
+
+\maketitle
+
+Thank you to the reviewers for evaluating the manuscript a second time after the Revise and Resubmit decision. We appreciate the editors conditionally accepting the manuscript and the minor suggestions provided by the reviewers in the second round.
+
+All replication material has been submitted to \url{iijournalpitt@gmail.com} as requested. Full replication material, including all raw data, all code, and all final outputs, are publicly available at \url{https://github.com/jandresgannon/MONSTr}. Furthermore, a website that serves as a repository for the data and user-friendly interface has been produced at \url{http://military-operations.com/}.
+
+Regarding Reviewer 1's wish that the data included CIA drone strikes and not just DOD drone strikes, we are sympathetic to this issue and hope to expand beyond just US DOD military operations in future iterations of the project. Their suggestion has given us a sound justification for expanding the data at a later point in time.
+
+Reviewer 2 suggested that the paper showcase the data a bit more by descriptively showing how US operations have changed over time. To this end, we have added a simple figure that shows the cumulative count of operations with each military means over time. Mindful of the word count, and appreciate of the editors already extending the word count for this piece, the in-text description of this figure is brief and, as per the reviewer's suggestion, intended to showcase the data as a hypothesis-generating exercise. The new figure and new text are both provided below:
+
+\newpage
+
+\textit{Figure \ref{fig:fig-timeline-1} shows the cumulative count of the means of force across the time scope of the dataset. Several confirming trends stand out. The Gulf War air campaign was potent and swift, ratcheting up operations in a steep blip. Given debates about whether air power drove victory or was overrated, having these fine-grained data will help scholars adjudicate its role. The 2007 Iraq surge, largely comprising ground troops, is readily apparent. The concentration of aerial bombing in the Syria campaign is also conspicuous, supporting notions that Obama was trying to signal resolve to the Assad regime.}
+
+\begin{figure}[h]
+	\begin{center}
+		\caption{Timeline of US Military Operations}
+		{\includegraphics[width = \textwidth]{../figures/fig-timeline-1.png}}
+		\label{fig:fig-timeline-1}
+		\vspace{0.1 in}
+	\end{center}
+\end{figure}
+
+\end{document}

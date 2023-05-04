@@ -85,6 +85,98 @@ horowitz_01 <- foreign::read.dta(paste0(here::here(), "/inst/extdata/jcr01.dta")
   dplyr::filter(date >= 1989)
 ```
 
+# Timeline
+
+How have US operations changed over time?
+
+```{r}
+
+df_interv %>%
+  dplyr::select(start_date,
+                dplyr::starts_with("means_")) %>%
+  tidyr::pivot_longer(cols = dplyr::starts_with("means_"),
+                      names_to = "means",
+                      values_to = "used") %>%
+  dplyr::mutate(means = stringr::str_remove(means, "means_"),
+                used = as.numeric(used),
+                start_date = as.Date(start_date)) %>%
+  dplyr::group_by(means) %>%
+  dplyr::arrange(start_date) %>%
+  dplyr::mutate(used = dplyr::coalesce(used, 0),
+                means_cum = cumsum(used),
+                means = recode(means,
+                               "groundtroops" = "Ground troops",
+                               "aerialbombing" = "Aerial bombing",
+                               "closeairsupport" = "Close air support",
+                               "paramilitary" = "Paramilitary",
+                               "drones" = "Drones",
+                               "cruisemissiles" = "Cruise missiles",
+                               "airtoair" = "Air to air"),
+                label = dplyr::if_else(start_date == max(start_date, na.rm = TRUE),
+                                       as.factor(means),
+                                       NA_character_)) %>%
+  ggplot(aes(x = start_date,
+             y = means_cum,
+             group = means,
+             color = means)) +
+  geom_line(aes(fill = factor(label))) +
+  geomtextpath::geom_textvline(xintercept = as.Date("1990-08-02"),
+                               label = "Gulf War",
+                               hjust = 0.8,
+                               linetype = 2,
+                               color = "darkslategray") +
+  geomtextpath::geom_textvline(xintercept = as.Date("1998-02-01"),
+                               label = "Kosovo War",
+                               hjust = 0.8, 
+                               linetype = 2,
+                               color = "darkslategray") +
+  geomtextpath::geom_textvline(xintercept = as.Date("2001-10-07"), 
+                               label = "Afghanistan War", 
+                               hjust = 0.8, 
+                               linetype = 2, 
+                               color = "darkslategray") +
+  geomtextpath::geom_textvline(xintercept = as.Date("2003-03-20"), 
+                               label = "Iraq War", 
+                               hjust = 0.75, 
+                               linetype = 2, 
+                               color = "darkslategray") +
+  geomtextpath::geom_textvline(xintercept = as.Date("2011-03-19"), 
+                               label = "Libyan Intervention", 
+                               hjust = 0.9, 
+                               linetype = 2, 
+                               color = "darkslategray") +
+  geomtextpath::geom_textvline(xintercept = as.Date("2014-09-22"), 
+                               label = "Syrian Civil War",
+                               hjust = 0.92, 
+                               linetype = 2, 
+                               color = "darkslategray") +
+  geom_label(aes(label = label,
+                 fill = factor(label),
+                 x = as.Date("2022-01-01")),
+             size = 3,
+             color = "white",
+             hjust = "outward") +
+  scale_fill_hue(l = 40) +
+  coord_cartesian(clip = "off") +
+  scale_y_continuous(breaks = seq(0, 150, 25),
+                     minor_breaks = NULL,
+                     expand = c(0, 5)) +
+  scale_x_date(date_labels = "%Y",
+               date_breaks = "3 years",
+               date_minor_breaks = "1 year",
+               limits = as.Date(c("1989-01-01", "2022-01-01")),
+               expand = c(0, 0)) +
+  theme_classic() +
+  theme(text = element_text(size = 11),
+        legend.position = "none",
+        plot.margin = margin(r = 35, l = 5, b = 5, t = 5, unit = "mm")) +
+  labs(title = "Cumulative Count of US Operations by Means (1989-2021)",
+       x = "Date",
+       y = "Count")
+
+ggsave(height = 4, width = 7, paste0(here::here(), "/paper/figures/","fig_timeline1.png"))
+```
+
 # Sample table
 
 Sample table showing a sample of operations and some relevant covariates.
@@ -151,7 +243,7 @@ ggraph(tree, layout = 'tree') +
   scale_y_reverse() +
   theme_void()
 
-ggsave(height = 10, paste0(here::here(), "/paper/figures/","fig-dendrogram-1.png"))
+ggsave(height = 10, paste0(here::here(), "/paper/figures/","fig_dendrogram1.png"))
 ```
 
 # Nested Gulf War
@@ -302,7 +394,7 @@ hmap <- ggplot2::ggplot(heat,
                               "Paramilitary"))
 
 cowplot::plot_grid(tree, hmap, align = "h", rel_widths = c(4.7, 1)) %>%
-  cowplot::save_plot(filename = paste0(here::here(), "/paper/figures/","fig-nested-1.png"))
+  cowplot::save_plot(filename = paste0(here::here(), "/paper/figures/","fig_nested1.png"))
 ```
 
 # Map
@@ -375,14 +467,19 @@ ggplot(data = WorldData) +
         plot.margin = margin(0, 0, 0, 0, "cm")) +
   guides(color = guide_legend(override.aes = list(size = 4)))
 
-ggsave(height = 5, width = 6, paste0(here::here(), "/paper/figures/","fig-map-1.png"))
+ggsave(height = 5, width = 6, paste0(here::here(), "/paper/figures/","fig_map1.png"))
 ```
 
 # Network plot
 
 ```{r}
 # load
-counts <- read.csv(paste0(here::here(), "/data/raw/","02a_newdata_dbpedia.csv"))
+counts <- read.csv(paste0(here::here(), "/data/raw/","02a_newdata_dbpedia.csv")) %>%
+  dplyr::select(wikidata_name, wikidata_id, belligerent_sideA) %>%
+  dplyr::mutate(belligerent_sideA = stringi::stri_replace_all_fixed(belligerent_sideA, "(", ";"),
+                belligerent_sideA = stringi::stri_replace_all_fixed(belligerent_sideA, ")", "")) %>%
+  tidyr::separate_longer_delim(cols = belligerent_sideA, delim = ";") %>%
+  dplyr::mutate(belligerent_sideA = trimws(belligerent_sideA))
 
 parents <- read.csv(paste0(here::here(), "/data/","MONSTr.csv")) %>%
   dplyr::select(wikidata_id, parent_id, parent_name)
@@ -468,13 +565,14 @@ qcodes <- read.csv(paste0(here::here(), "/data/aux/","belligerent_list.csv")) %>
 nodes <- dplyr::left_join(nodes, qcodes,
                           by = c("belligerent_sideA" = "belligerent2")) %>%
   dplyr::mutate(sideA_nonstate = dplyr::if_else(is.na(ccode2), 1, 0),
-                label = dplyr::if_else(is.na(cname2), belligerent_sideA, cname2)) %>%
+                label = dplyr::if_else(is.na(ccode2), belligerent_sideA, cname2)) %>%
   dplyr::select(label, belligerent_sideA, n, sideA_nonstate) %>%
   dplyr::filter(!label %in% c("Coalition forces",
                               "International Security Assistance Force",
                               "ISAF",
                               "NATO",
-                              "Resolute Support Mission"))
+                              "Resolute Support Mission",
+                              "loyal Afghan fighters"))
 
 ## Prep adjacency matrix
 actors <- dplyr::left_join(counts, parents) %>%
@@ -513,7 +611,7 @@ E(network_isaf)$width <- E(network_isaf)$weight/3
 
 # Visualize network
 l <- layout_with_graphopt(network_isaf,
-                          charge = 5)
+                          charge = 1)
 ```
 
 ## Syrian War
@@ -533,15 +631,17 @@ qcodes <- read.csv(paste0(here::here(), "/data/aux/","belligerent_list.csv")) %>
                 cname2 = cname,
                 qcode2 = Qcode)
 
-sort(unique(nodes$label))
-
 nodes <- dplyr::left_join(nodes, qcodes,
                           by = c("belligerent_sideA" = "belligerent2")) %>%
   dplyr::mutate(sideA_nonstate = dplyr::if_else(is.na(ccode2), 1, 0),
-                label = dplyr::if_else(is.na(cname2), belligerent_sideA, cname2)) %>%
+                label = dplyr::if_else(is.na(ccode2), belligerent_sideA, cname2)) %>%
   dplyr::select(label, belligerent_sideA, n, sideA_nonstate) %>%
   dplyr::filter(!label %in% c("CJTF-OIR",
-                              "Islamic State of Iraq and the Levant"))
+                              "Islamic State of Iraq and the Levant",
+                              "International Freedom Battalion",
+                              "Jordan, United States"))
+
+sort(unique(nodes$label))
 
 # Prep adjacency matrix
 actors <- dplyr::left_join(counts, parents) %>%
@@ -595,7 +695,8 @@ n_gulf <- plot(network_gulf,
                main = "Gulf War (1991)",
                asp = 0)
 
-l <- layout_with_gem(network_isaf)
+l <- layout_with_graphopt(network_isaf, 
+                          charge = 1)
 n_isaf <- plot(network_isaf,
                edge.color = "gray",
                vertex.shape = "none",
