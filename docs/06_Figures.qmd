@@ -113,7 +113,7 @@ df_interv %>%
                                "cruisemissiles" = "Cruise missiles",
                                "airtoair" = "Air to air"),
                 label = dplyr::if_else(start_date == max(start_date, na.rm = TRUE),
-                                       as.factor(means),
+                                       as.character(means),
                                        NA_character_)) %>%
   ggplot(aes(x = start_date,
              y = means_cum,
